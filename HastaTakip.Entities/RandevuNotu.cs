@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace HastaTakip.Entities
+{
+    public class RandevuNotu
+    {
+        public short RandevuNotID { get; set; }
+        public string HastaTC { get; set; } = string.Empty;
+        public short DoktorID { get; set; }
+        public int RandevuTarihID { get; set; }
+        public string GorusmeTipi { get; set; } = string.Empty;
+        public string GorusmeNotu { get; set; } = string.Empty;
+        public DateTime? SonrakiRandevuTarihi { get; set; }
+    }
+}

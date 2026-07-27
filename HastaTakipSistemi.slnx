@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="HastaTakip.Business/HastaTakip.Business.csproj" />
+  <Project Path="HastaTakip.DataAccess/HastaTakip.DataAccess.csproj" />
+  <Project Path="HastaTakip.Entities/HastaTakip.Entities.csproj" />
+  <Project Path="HastaTakip.Web/HastaTakip.Web.csproj" />
+</Solution>
