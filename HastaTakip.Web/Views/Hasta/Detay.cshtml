@@ -1,0 +1,56 @@
+﻿@model HastaTakip.Entities.Hasta
+
+@{
+    ViewData["Title"] = "Hasta Detayı";
+}
+
+<h2>Hasta Detayı</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Dosya No</dt>
+    <dd class="col-sm-9">@Model.HastaDosyaNo</dd>
+
+    <dt class="col-sm-3">Ad Soyad</dt>
+    <dd class="col-sm-9">@Model.HastaAd @Model.HastaSoyad</dd>
+
+    <dt class="col-sm-3">TC Kimlik No</dt>
+    <dd class="col-sm-9">@Model.HastaTC</dd>
+
+    <dt class="col-sm-3">Telefon</dt>
+    <dd class="col-sm-9">@Model.HastaTel</dd>
+
+    <dt class="col-sm-3">Adres</dt>
+    <dd class="col-sm-9">@Model.HastaAdres</dd>
+
+    <dt class="col-sm-3">Cinsiyet</dt>
+    <dd class="col-sm-9">@Model.HastaCinsiyet</dd>
+
+    <dt class="col-sm-3">Doğum Tarihi</dt>
+    <dd class="col-sm-9">@Model.HastaDogumTarihi.ToString("dd.MM.yyyy")</dd>
+
+    <dt class="col-sm-3">Okul</dt>
+    <dd class="col-sm-9">@Model.HastaOkul</dd>
+
+    <dt class="col-sm-3">Sınıf</dt>
+    <dd class="col-sm-9">@Model.HastaSinif</dd>
+
+    <dt class="col-sm-3">Okul Başarısı</dt>
+    <dd class="col-sm-9">@Model.HastaOkulBasarisi</dd>
+
+    <dt class="col-sm-3">Boy / Kilo</dt>
+    <dd class="col-sm-9">@Model.HastaBoy cm / @Model.HastaKilo kg</dd>
+
+    <dt class="col-sm-3">Yönlendiren</dt>
+    <dd class="col-sm-9">@Model.HastaYonlendiren</dd>
+
+    <dt class="col-sm-3">Başvuru Nedeni</dt>
+    <dd class="col-sm-9">@Model.HastaBasvuruNedeni</dd>
+
+    <dt class="col-sm-3">Başvuru Tarihi</dt>
+    <dd class="col-sm-9">@Model.HastaBasvuruTarihi.ToString("dd.MM.yyyy")</dd>
+
+    <dt class="col-sm-3">Durum</dt>
+    <dd class="col-sm-9">@(Model.HastaAktif ? "Aktif" : "Pasif")</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

@@ -3,15 +3,29 @@ using HastaTakip.Business;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// DI(dependency injection) container
 builder.Services.AddControllersWithViews();
 
+//session kullanımı
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddScoped<DbHelper>(sp =>
-    new DbHelper(builder.Configuration.GetConnectionString("HastaTakipSistemi")
+    new DbHelper(builder.Configuration.GetConnectionString("HastaTakipDb")
         ?? throw new InvalidOperationException("HastaTakipDb connection string bulunamadı. appsettings.json dosyasını kontrol edin.")));
 
 builder.Services.AddScoped<HastaDal>();
 builder.Services.AddScoped<HastaBusiness>();
+
+builder.Services.AddScoped<KullaniciDal>();
+builder.Services.AddScoped<KullaniciBusiness>();
+
 
 var app = builder.Build();
 
@@ -25,7 +39,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();

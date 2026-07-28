@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Giriş";
+}
+
+<h2>Hasta Takip Sistemi Giriş</h2>
+
+@if (ViewBag.Hata != null)
+{
+    <div style="color:red">
+        @ViewBag.Hata
+    </div>
+}
+
+<form method="post">
+
+    <div>
+        <label>Kullanıcı Adı</label><br />
+        <input type="text" name="kullaniciAdi" required />
+    </div>
+
+    <br />
+
+    <div>
+        <label>Şifre</label><br />
+        <input type="password" name="sifre" required />
+    </div>
+
+    <br />
+
+    <button type="submit">Giriş Yap</button>
+
+</form>

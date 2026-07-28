@@ -1,0 +1,39 @@
+﻿@model List<HastaTakip.Entities.Hasta>
+
+@{
+    ViewData["Title"] = "Hasta Listesi";
+}
+
+<h2>Hasta Listesi</h2>
+
+<p>
+    <a asp-action="Ekle" class="btn btn-primary">Yeni Hasta Ekle</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Dosya No</th>
+            <th>Ad Soyad</th>
+            <th>TC</th>
+            <th>Telefon</th>
+            <th>Doğum Tarihi</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var hasta in Model)
+        {
+            <tr>
+                <td>@hasta.HastaDosyaNo</td>
+                <td>@hasta.HastaAd @hasta.HastaSoyad</td>
+                <td>@hasta.HastaTC</td>
+                <td>@hasta.HastaTel</td>
+                <td>@hasta.HastaDogumTarihi.ToString("dd.MM.yyyy")</td>
+                <td>
+                    <a asp-action="Detay" asp-route-tc="@hasta.HastaTC" class="btn btn-sm btn-info">Detay</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
