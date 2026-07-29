@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DI (dependency injection) container
+// DI (dependency injection) container. biri DbHelper isterse, ona appsettings.json'daki HastaTakipDb connection string'i ile oluşturulmuş bir DbHelper nesnesi ver
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<DbHelper>(sp =>
@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline."geliştirirken bana her şeyi göster, ama gerçek kullanıcılara teknik detayları gösterme" diyen bir güvenlik/kullanılabilirlik ayrımı
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -37,7 +37,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
