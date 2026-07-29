@@ -3,7 +3,13 @@
 @{
     ViewData["Title"] = "Hasta Listesi";
 }
-
+@if (TempData["Basari"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Basari"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 <h2>Hasta Listesi</h2>
 
 <p>
@@ -37,3 +43,14 @@
         }
     </tbody>
 </table>
+
+@* <script>
+    setTimeout(function() {
+        var alert = document.querySelector('.alert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 300);
+        }
+    }, 4000);
+</script> *@ @*çıkan uyarının 4 saniye kalması için diyor ama sunucu zaman aşımına uğrayıp hata oluşturdu*@
