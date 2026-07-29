@@ -1,8 +1,5 @@
 ﻿using HastaTakip.DataAccess;
 using HastaTakip.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HastaTakip.Business
 {
@@ -17,12 +14,24 @@ namespace HastaTakip.Business
 
         public Kullanici? GirisYap(string kullaniciAdi, string sifre)
         {
-            return _kullaniciDal.GirisYap(kullaniciAdi, sifre);
+            var kullanici = _kullaniciDal.KullaniciGetir(kullaniciAdi);
+
+            if (kullanici == null || !kullanici.KullaniciAktif)
+                return null;
+
+            bool sifreDogruMu = BCrypt.Net.BCrypt.Verify(sifre, kullanici.SifreHash);
+            if (!sifreDogruMu)
+                return null;
+
+            _kullaniciDal.SonGirisGuncelle(kullanici.KullaniciID);
+
+            return kullanici;
         }
 
         public void KullaniciEkle(Kullanici kullanici, string sifre)
         {
-            _kullaniciDal.KullaniciEkle(kullanici, sifre);
+            kullanici.SifreHash = BCrypt.Net.BCrypt.HashPassword(sifre);
+            _kullaniciDal.KullaniciEkle(kullanici);
         }
 
         public Kullanici? KullaniciGetir(string kullaniciAdi)

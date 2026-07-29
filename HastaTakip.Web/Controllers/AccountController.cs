@@ -1,5 +1,10 @@
 ﻿using HastaTakip.Business;
+using HastaTakip.Entities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HastaTakip.Web.Controllers
 {
@@ -13,13 +18,16 @@ namespace HastaTakip.Web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Login(string kullaniciAdi, string sifre)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string kullaniciAdi, string sifre)
         {
             var kullanici = _kullaniciBusiness.GirisYap(kullaniciAdi, sifre);
 
@@ -29,12 +37,39 @@ namespace HastaTakip.Web.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetInt32("KullaniciID", kullanici.KullaniciID);
-            HttpContext.Session.SetString("KullaniciAdi", kullanici.KullaniciAdi);
-            HttpContext.Session.SetString("AdSoyad", kullanici.AdSoyad);
-            HttpContext.Session.SetInt32("RolID", kullanici.RolID);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, kullanici.KullaniciID.ToString()),
+                new Claim(ClaimTypes.Name, kullanici.KullaniciAdi),
+                new Claim("AdSoyad", kullanici.AdSoyad),
+                new Claim(ClaimTypes.Role, RolAdiGetir(kullanici.RolID))
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             return RedirectToAction("Index", "Hasta");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
+        private string RolAdiGetir(byte rolID)
+        {
+            return rolID switch
+            {
+                1 => "Yönetici",
+                2 => "Doktor",
+                3 => "Sekreter",
+                4 => "Psikolog",
+                _ => "Bilinmiyor"
+            };
         }
     }
 }

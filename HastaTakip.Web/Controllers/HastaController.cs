@@ -1,9 +1,11 @@
 ﻿using HastaTakip.Business;
 using HastaTakip.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HastaTakip.Web.Controllers
 {
+    [Authorize]
     public class HastaController : Controller
     {
         private readonly HastaBusiness _hastaBusiness;
@@ -12,16 +14,10 @@ namespace HastaTakip.Web.Controllers
         {
             _hastaBusiness = hastaBusiness;
         }
-        private bool GirisYapilmisMi()
-        {
-            return HttpContext.Session.GetInt32("KullaniciID") != null;
-        }
+
         // GET: /Hasta
         public IActionResult Index()
         {
-            if (!GirisYapilmisMi())
-                return RedirectToAction("Login", "Account");
-
             var hastalar = _hastaBusiness.HastaListele();
             return View(hastalar);
         }
@@ -29,9 +25,6 @@ namespace HastaTakip.Web.Controllers
         // GET: /Hasta/Detay/12345678901
         public IActionResult Detay(string tc)
         {
-            if (!GirisYapilmisMi())
-                return RedirectToAction("Login", "Account");
-
             var hasta = _hastaBusiness.HastaGetir(tc);
 
             if (hasta == null)
@@ -45,9 +38,6 @@ namespace HastaTakip.Web.Controllers
         // GET: /Hasta/Ekle
         public IActionResult Ekle()
         {
-            if (!GirisYapilmisMi())
-                return RedirectToAction("Login", "Account");
-
             return View();
         }
 
@@ -55,9 +45,6 @@ namespace HastaTakip.Web.Controllers
         [HttpPost]
         public IActionResult Ekle(Hasta hasta)
         {
-            if (!GirisYapilmisMi())
-                return RedirectToAction("Login", "Account");
-
             if (!ModelState.IsValid)
             {
                 return View(hasta);

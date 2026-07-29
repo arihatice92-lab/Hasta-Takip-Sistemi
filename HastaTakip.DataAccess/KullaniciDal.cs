@@ -1,10 +1,7 @@
 ﻿using HastaTakip.Entities;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
-using BCrypt.Net;
-using System.Text;
 
 namespace HastaTakip.DataAccess
 {
@@ -17,7 +14,7 @@ namespace HastaTakip.DataAccess
             _dbHelper = dbHelper;
         }
 
-        // Kullanıcı adına göre kullanıcı getir
+        // Kullanıcı adına göre kullanıcı getir (sadece veri getirir, doğrulama yapmaz)
         public Kullanici? KullaniciGetir(string kullaniciAdi)
         {
             using var connection = _dbHelper.GetConnection();
@@ -38,18 +35,16 @@ namespace HastaTakip.DataAccess
             return null;
         }
 
-        // Yeni kullanıcı ekle
-        public void KullaniciEkle(Kullanici kullanici, string sifre)
+        // Yeni kullanıcı ekle — hash'i dışarıdan (Business'tan) hazır alır
+        public void KullaniciEkle(Kullanici kullanici)
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_KullaniciEkle", connection);
 
             command.CommandType = CommandType.StoredProcedure;
 
-            string hash = BCrypt.Net.BCrypt.HashPassword(sifre);
-
             command.Parameters.AddWithValue("@KullaniciAdi", kullanici.KullaniciAdi);
-            command.Parameters.AddWithValue("@SifreHash", hash);
+            command.Parameters.AddWithValue("@SifreHash", kullanici.SifreHash);
             command.Parameters.AddWithValue("@AdSoyad", kullanici.AdSoyad);
             command.Parameters.AddWithValue("@RolID", kullanici.RolID);
             command.Parameters.AddWithValue("@DoktorID",
@@ -59,27 +54,6 @@ namespace HastaTakip.DataAccess
 
             connection.Open();
             command.ExecuteNonQuery();
-        }
-
-        // Giriş kontrolü
-        public Kullanici? GirisYap(string kullaniciAdi, string sifre)
-        {
-            var kullanici = KullaniciGetir(kullaniciAdi);
-
-            if (kullanici == null)
-                return null;
-
-            if (!kullanici.KullaniciAktif)
-                return null;
-
-            bool dogruMu = BCrypt.Net.BCrypt.Verify(sifre, kullanici.SifreHash);
-
-            if (!dogruMu)
-                return null;
-
-            SonGirisGuncelle(kullanici.KullaniciID);
-
-            return kullanici;
         }
 
         // Son giriş tarihini güncelle
