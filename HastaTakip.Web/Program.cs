@@ -5,7 +5,17 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 
 // DI (dependency injection) container. biri DbHelper isterse, ona appsettings.json'daki HastaTakipDb connection string'i ile oluşturulmuş bir DbHelper nesnesi ver
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(
+        value => "Bu alan geçerli bir değer içermiyor.");
+
+    options.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor(
+        name => "Bu alan boş geçilemez.");
+
+    options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor(
+        (value, name) => "Bu alan geçerli bir değer içermiyor.");
+});
 
 builder.Services.AddScoped<DbHelper>(sp =>
     new DbHelper(builder.Configuration.GetConnectionString("HastaTakipDb")
