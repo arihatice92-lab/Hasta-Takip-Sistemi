@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Şifre Değiştir";
+}
+
+<h2>Şifre Değiştir</h2>
+
+@if (ViewBag.Hata != null)
+{
+    <div class="alert alert-danger">@ViewBag.Hata</div>
+}
+@if (ViewBag.Basari != null)
+{
+    <div class="alert alert-success">@ViewBag.Basari</div>
+}
+
+<form asp-action="SifreDegistir" asp-controller="Account" method="post">
+    <div class="mb-3">
+        <label>Mevcut Şifre</label>
+        <input type="password" name="eskiSifre" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Yeni Şifre</label>
+        <input type="password" name="yeniSifre" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Yeni Şifre (Tekrar)</label>
+        <input type="password" name="yeniSifreTekrar" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Şifreyi Değiştir</button>
+</form>

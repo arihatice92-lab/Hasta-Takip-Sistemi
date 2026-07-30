@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<h2>Hoş geldiniz, @User.FindFirst("AdSoyad")?.Value</h2>
+<p class="text-muted">Hasta Takip Sistemi ana menüsü</p>
+
+<div class="row mt-4">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Hasta Yönetimi</h5>
+                <p class="card-text">Hasta kaydı oluşturun, listeleyin ve detaylarını görüntüleyin.</p>
+                <a asp-controller="Hasta" asp-action="Index" class="btn btn-primary">Hasta Listesi</a>
+                <a asp-controller="Hasta" asp-action="Ekle" class="btn btn-outline-primary">Yeni Hasta</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Randevular</h5>
+                <p class="card-text">Randevu takvimini görüntüleyin ve yeni randevu oluşturun.</p>
+                <a class="btn btn-secondary disabled">Yakında</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Hasta Öyküleri</h5>
+                <p class="card-text">Aile bilgileri, gelişimsel öykü ve tanı/tedavi kayıtları.</p>
+                <a class="btn btn-secondary disabled">Yakında</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -68,7 +68,75 @@ namespace HastaTakip.DataAccess
             connection.Open();
             command.ExecuteNonQuery();
         }
+        public void SifreGuncelle(int kullaniciID, string yeniSifreHash)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_SifreGuncelle", connection);
 
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@KullaniciID", kullaniciID);
+            command.Parameters.AddWithValue("@YeniSifreHash", yeniSifreHash);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        // Kullanıcıyı ID ile getirmek için
+        public Kullanici? KullaniciGetirById(int kullaniciID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_KullaniciGetirById", connection);
+
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@KullaniciID", kullaniciID);
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                return MapToKullanici(reader);
+            }
+            return null;
+        }
+
+        public List<Kullanici> KullaniciListele()
+        {
+            var kullanicilar = new List<Kullanici>();
+
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand(
+                "SELECT * FROM tblKullanicilar ORDER BY adSoyad", connection);
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                kullanicilar.Add(MapToKullanici(reader));
+            }
+
+            return kullanicilar;
+        }
+
+        public void KullaniciPasifeAl(int kullaniciID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_KullaniciPasifeAl", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@KullaniciID", kullaniciID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        public void KullaniciAktifEt(int kullaniciID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_KullaniciAktifEt", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@KullaniciID", kullaniciID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
         private Kullanici MapToKullanici(SqlDataReader reader)
         {
             return new Kullanici

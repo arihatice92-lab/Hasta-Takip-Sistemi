@@ -27,6 +27,9 @@ builder.Services.AddScoped<HastaBusiness>();
 builder.Services.AddScoped<KullaniciDal>();
 builder.Services.AddScoped<KullaniciBusiness>();
 
+builder.Services.AddScoped<DoktorDal>();
+builder.Services.AddScoped<DoktorBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

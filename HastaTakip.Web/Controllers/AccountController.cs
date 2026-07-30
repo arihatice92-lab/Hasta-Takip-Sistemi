@@ -50,15 +50,56 @@ namespace HastaTakip.Web.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            return RedirectToAction("Index", "Hasta");
+            return RedirectToAction("Index", "Dashboard");
         }
 
+        [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
+
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult SifreDegistir()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SifreDegistir(string eskiSifre, string yeniSifre, string yeniSifreTekrar)
+        {
+            if (yeniSifre != yeniSifreTekrar)
+            {
+                ViewBag.Hata = "Yeni şifreler birbiriyle uyuşmuyor.";
+                return View();
+            }
+
+            var kullaniciIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(kullaniciIdStr, out int kullaniciID))
+            {
+                return RedirectToAction("Login");
+            }
+
+            try
+            {
+                _kullaniciBusiness.SifreDegistir(kullaniciID, eskiSifre, yeniSifre);
+                ViewBag.Basari = "Şifreniz başarıyla değiştirildi.";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Hata = ex.Message;
+            }
+
+            return View();
+        }
+
+        
 
         private string RolAdiGetir(byte rolID)
         {

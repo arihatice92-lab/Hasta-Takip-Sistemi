@@ -1,0 +1,75 @@
+﻿@model List<HastaTakip.Entities.Kullanici>
+
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+}
+
+<h2>Kullanıcı Yönetimi</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
+
+<p>
+    <a asp-action="Ekle" class="btn btn-primary">Yeni Kullanıcı Ekle</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Kullanıcı Adı</th>
+            <th>Ad Soyad</th>
+            <th>Durum</th>
+            <th>Son Giriş</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var k in Model)
+        {
+            <tr>
+                <td>@k.KullaniciAdi</td>
+                <td>@k.AdSoyad</td>
+                <td>
+                    @if (k.KullaniciAktif)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Pasif</span>
+                    }
+                </td>
+                <td>@(k.SonGirisTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "Hiç giriş yapmadı")</td>
+                <td>
+                    <form asp-action="SifreSifirla" method="post" class="d-inline">
+                        <input type="hidden" name="kullaniciID" value="@k.KullaniciID" />
+                        <input type="password" name="yeniSifre" placeholder="Yeni şifre" required
+                               style="width:120px; display:inline-block;" class="form-control form-control-sm d-inline" />
+                        <button type="submit" class="btn btn-sm btn-warning">Sıfırla</button>
+                    </form>
+
+                    @if (k.KullaniciAktif)
+                    {
+                        <form asp-action="PasifeAl" method="post" class="d-inline">
+                            <input type="hidden" name="kullaniciID" value="@k.KullaniciID" />
+                            <button type="submit" class="btn btn-sm btn-secondary">Pasife Al</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="AktifEt" method="post" class="d-inline">
+                            <input type="hidden" name="kullaniciID" value="@k.KullaniciID" />
+                            <button type="submit" class="btn btn-sm btn-success">Aktife Al</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

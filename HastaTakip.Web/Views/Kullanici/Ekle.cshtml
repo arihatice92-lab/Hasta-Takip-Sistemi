@@ -1,0 +1,39 @@
+﻿@model HastaTakip.Entities.Kullanici
+
+@{
+    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+}
+
+<h2>Yeni Kullanıcı Ekle</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Ekle" method="post">
+    <div class="mb-3">
+        <label>Kullanıcı Adı</label>
+        <input asp-for="KullaniciAdi" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Ad Soyad</label>
+        <input asp-for="AdSoyad" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Başlangıç Şifresi</label>
+        <input type="password" name="sifre" class="form-control" required minlength="6" />
+    </div>
+
+    <div class="mb-3">
+        <label>Rol</label>
+        <select asp-for="RolID" class="form-control">
+            <option value="1">Yönetici</option>
+            <option value="2">Doktor</option>
+            <option value="3">Sekreter</option>
+            <option value="4">Psikolog</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Oluştur</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
