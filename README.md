@@ -40,10 +40,13 @@ json
 3.	Solution'ı Visual Studio'da açıp HastaTakip.Web projesini başlatın.
 ## Geliştirme Durumu
 Proje aktif geliştirme aşamasındadır. Şu ana kadar tamamlananlar:
-•	 Veritabanı şeması (tablolar, trigger'lar, stored procedure'ler, view'lar, index'ler)
-•	 Entity katmanı (21 sınıf)
-•	 Hasta modülü — DataAccess ve Business katmanları
-•	 Hasta modülü — Controller ve View'lar
-•	 Diğer modüller (Doktor, Randevu, Tedavi, Tanı, Test/Ölçek Sonuçları, Aile Bilgileri, Gelişimsel Öykü)
+-   Veritabanı şeması (tablolar, trigger'lar, stored procedure'ler, view'lar, index'ler)
+-	 Entity katmanı (21 sınıf)
+-	 Hasta modülü — DataAccess ve Business katmanları
+-	 Hasta modülü — Controller ve View'lar
+-	 Hasta modülünde arama, filtreleme, sıralama işlemleri
+-	 Yönetici paneli, rol bazlı yetkilendirme (yönetici)
+-	 Dashboard (giriş sonrası ana menü)
+-	 Diğer modüller (Doktor, Randevu, Tedavi, Tanı, Test/Ölçek Sonuçları, Aile Bilgileri, Gelişimsel Öykü)
 
 
