@@ -53,7 +53,9 @@ namespace HastaTakip.Web.Controllers
             try
             {
                 _hastaBusiness.HastaKaydet(hasta);
-                TempData["Basari"] = $"✓ {hasta.HastaAd} {hasta.HastaSoyad} isimli hasta başarıyla sisteme kaydedildi.";//buraya  Dosya No: {hasta.HastaDosyaNo} eklediğimde hata vermedi ama test aşamasında kayıt olmadı, zaman aşımı oldu??
+                // Trigger dosya numarasını oluşturduğu için hastayı tekrar getiriyoruz.
+                var yeniHasta = _hastaBusiness.HastaGetir(hasta.HastaTC);
+                TempData["Basari"] = $"✓ {yeniHasta!.HastaAd} {yeniHasta.HastaSoyad} isimli hasta başarıyla sisteme kaydedildi. Dosya No: {yeniHasta.HastaDosyaNo}";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
