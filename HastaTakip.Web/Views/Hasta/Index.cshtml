@@ -15,29 +15,83 @@
 <p>
     <a asp-action="Ekle" class="btn btn-primary">Yeni Hasta Ekle</a>
 </p>
-<form asp-action="Index" method="get" class="row mb-3">
+<form asp-action="Index" method="get" class="row g-3 mb-4">
 
-    <div class="col-md-5">
+    <!-- Arama -->
+    <div class="col-md-3">
+        <label class="form-label">Arama Kutusu</label>
         <input type="text"
                name="ara"
                value="@ViewBag.Ara"
                class="form-control"
-               placeholder="Dosya No, TC, Ad veya Soyad giriniz..." />
+               placeholder="Dosya No, TC, Ad, Soyad..." />
     </div>
 
-    <div class="col-auto">
+    <!-- Durum -->
+    <div class="col-md-2">
+        <label class="form-label">Durum (Hepsi)</label>
+        <select name="aktif" class="form-select">
+            @* <option value="">Durum (Hepsi)</option> *@
+            <option value="true" selected="@(ViewBag.Aktif?.ToString() == "True")">Aktif</option>
+            <option value="false" selected="@(ViewBag.Aktif?.ToString() == "False")">Pasif</option>
+        </select>
+    </div>
+
+    <!-- Cinsiyet -->
+    <div class="col-md-2">
+        <label class="form-label">Cinsiyet</label>
+        <select name="cinsiyet" class="form-select">
+            <option value="">Hepsi</option>
+            <option value="Kadın" selected="@(ViewBag.Cinsiyet == "Kadın")">Kadın</option>
+            <option value="Erkek" selected="@(ViewBag.Cinsiyet == "Erkek")">Erkek</option>
+        </select>
+    </div>
+
+    <!-- Başlangıç -->
+    <div class="col-md-2">
+        <label class="form-label">Başvuru Başlangıç Tarihi</label>
+        <input type="date"
+               name="baslangicTarihi"
+               value="@(ViewBag.Baslangic?.ToString("yyyy-MM-dd"))"
+               class="form-control" />
+    </div>
+
+    <!-- Bitiş -->
+    <div class="col-md-2">
+        <label class="form-label">Başvuru Bitiş Tarihi</label>
+        <input type="date"
+               name="bitisTarihi"
+               value="@(ViewBag.Bitis?.ToString("yyyy-MM-dd"))"
+               class="form-control" />
+    </div>
+
+    <!-- Sıralama -->
+    <div class="col-md-3">
+        <select name="siralama" class="form-select">
+            <option value="AdAZ">Ada Göre (A-Z)</option>
+            <option value="AdZA">Ada Göre (Z-A)</option>
+            <option value="DosyaNo">Dosya No</option>
+            <option value="Yeni">En Yeni Başvuru</option>
+            <option value="Eski">En Eski Başvuru</option>
+        </select>
+    </div>
+
+    <!-- Butonlar -->
+    <div class="col-md-2 d-grid">
         <button type="submit" class="btn btn-primary">
-            Ara
+            Filtrele
         </button>
     </div>
 
-    <div class="col-auto">
+    <div class="col-md-2 d-grid">
         <a asp-action="Index" class="btn btn-secondary">
             Temizle
         </a>
     </div>
 
 </form>
+
+
 <table class="table table-striped">
     <thead>
         <tr>

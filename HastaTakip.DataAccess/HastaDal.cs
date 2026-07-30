@@ -86,7 +86,13 @@ namespace HastaTakip.DataAccess
             return hastalar;
         }
 
-        public List<Hasta> HastaAra(string? ara)
+        public List<Hasta> HastaAra(
+            string? ara,
+            string siralama,
+            bool? aktif,
+            string? cinsiyet,
+            DateTime? baslangicTarihi,
+            DateTime? bitisTarihi)
         {
             var hastalar = new List<Hasta>();
 
@@ -97,6 +103,20 @@ namespace HastaTakip.DataAccess
 
                 command.Parameters.AddWithValue("@Ara",
                     string.IsNullOrWhiteSpace(ara) ? DBNull.Value : (object)ara);
+
+                command.Parameters.AddWithValue("@Siralama", siralama);
+
+                command.Parameters.AddWithValue("@Aktif",
+                    aktif.HasValue ? (object)aktif.Value : DBNull.Value);
+
+                command.Parameters.AddWithValue("@Cinsiyet",
+                    string.IsNullOrWhiteSpace(cinsiyet) ? DBNull.Value : (object)cinsiyet);
+
+                command.Parameters.AddWithValue("@BaslangicTarihi",
+                    baslangicTarihi.HasValue ? (object)baslangicTarihi.Value : DBNull.Value);
+
+                command.Parameters.AddWithValue("@BitisTarihi",
+                    bitisTarihi.HasValue ? (object)bitisTarihi.Value : DBNull.Value);
 
                 connection.Open();
 

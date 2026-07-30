@@ -22,23 +22,28 @@ namespace HastaTakip.Web.Controllers
         //    return View(hastalar);
         //}
 
-        public IActionResult Index(string ara)
+        public IActionResult Index(
+            string? ara,
+            string siralama = "AdAZ",
+            bool? aktif = null,
+            string? cinsiyet = null,
+            DateTime? baslangicTarihi = null,
+            DateTime? bitisTarihi = null)
         {
-            var hastalar = _hastaBusiness.HastaAra(ara);
-
-            //if (!string.IsNullOrWhiteSpace(ara))
-            //{
-            //    ara = ara.Trim().ToLower();
-
-            //    hastalar = hastalar.Where(h =>
-            //        h.HastaAd.ToLower().Contains(ara) ||
-            //        h.HastaSoyad.ToLower().Contains(ara) ||
-            //        h.HastaTC.Contains(ara) ||
-            //        (h.HastaDosyaNo != null && h.HastaDosyaNo.ToLower().Contains(ara))
-            //    ).ToList();
-            //}
+            var hastalar = _hastaBusiness.HastaAra(
+                ara,
+                siralama,
+                aktif,
+                cinsiyet,
+                baslangicTarihi,
+                bitisTarihi);
 
             ViewBag.Ara = ara;
+            ViewBag.Siralama = siralama;
+            ViewBag.Aktif = aktif;
+            ViewBag.Cinsiyet = cinsiyet;
+            ViewBag.Baslangic = baslangicTarihi;
+            ViewBag.Bitis = bitisTarihi;
 
             return View(hastalar);
         }
