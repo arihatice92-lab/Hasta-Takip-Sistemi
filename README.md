@@ -21,6 +21,7 @@ HastaTakipSistemi.sln
 ├── HastaTakip.Business      → İş kuralları ve doğrulamalar ([Tablo]Business sınıfları)
 ├── HastaTakip.Web           → MVC Controller'lar, View'lar
 └── Database/                → SQL script'leri (tablo, trigger, SP, view, index tanımları)
+```
 Bağımlılık yönü tek yönlü ilerler:
 Web  →  Business  →  DataAccess  →  Entities
 Web katmanı DataAccess'e doğrudan referans vermez; tüm veri erişimi Business katmanı üzerinden yapılır.
