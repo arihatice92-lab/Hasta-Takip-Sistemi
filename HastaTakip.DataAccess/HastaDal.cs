@@ -86,6 +86,32 @@ namespace HastaTakip.DataAccess
             return hastalar;
         }
 
+        public List<Hasta> HastaAra(string? ara)
+        {
+            var hastalar = new List<Hasta>();
+
+            using (var connection = _dbHelper.GetConnection())
+            using (var command = new SqlCommand("sp_HastaAra", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Ara",
+                    string.IsNullOrWhiteSpace(ara) ? DBNull.Value : (object)ara);
+
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        hastalar.Add(MapToHasta(reader));
+                    }
+                }
+            }
+
+            return hastalar;
+        }
+
         public void HastaGuncelle(Hasta hasta)
         {
             using (var connection = _dbHelper.GetConnection())

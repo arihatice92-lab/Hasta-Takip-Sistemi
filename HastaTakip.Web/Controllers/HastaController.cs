@@ -16,9 +16,30 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Hasta
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    var hastalar = _hastaBusiness.HastaListele();
+        //    return View(hastalar);
+        //}
+
+        public IActionResult Index(string ara)
         {
-            var hastalar = _hastaBusiness.HastaListele();
+            var hastalar = _hastaBusiness.HastaAra(ara);
+
+            //if (!string.IsNullOrWhiteSpace(ara))
+            //{
+            //    ara = ara.Trim().ToLower();
+
+            //    hastalar = hastalar.Where(h =>
+            //        h.HastaAd.ToLower().Contains(ara) ||
+            //        h.HastaSoyad.ToLower().Contains(ara) ||
+            //        h.HastaTC.Contains(ara) ||
+            //        (h.HastaDosyaNo != null && h.HastaDosyaNo.ToLower().Contains(ara))
+            //    ).ToList();
+            //}
+
+            ViewBag.Ara = ara;
+
             return View(hastalar);
         }
 
