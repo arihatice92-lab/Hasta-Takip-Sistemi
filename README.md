@@ -14,6 +14,7 @@ Psikiyatri/psikoloji kliniklerinde kullanılmak üzere geliştirilen, hasta kay�
 •	SQL Server — veritabanı (stored procedure, trigger, view ve CHECK constraint'ler ile)
 •	Katmanlı Mimari (N-Tier) — Entities / DataAccess / Business / Web katmanları
 ## Proje Yapısı
+```text
 HastaTakipSistemi.sln
 ├── HastaTakip.Entities      → Veritabanı tablolarına karşılık gelen POCO sınıfları
 ├── HastaTakip.DataAccess    → ADO.NET ile CRUD işlemleri (DbHelper, [Tablo]Dal sınıfları)
