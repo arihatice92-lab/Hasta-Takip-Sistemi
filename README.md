@@ -26,10 +26,10 @@ Bağımlılık yönü tek yönlü ilerler:
 Web  →  Business  →  DataAccess  →  Entities
 Web katmanı DataAccess'e doğrudan referans vermez; tüm veri erişimi Business katmanı üzerinden yapılır.
 ## Veritabanı Tasarımı
-•	21 tablo: hasta, doktor, psikolog, randevu (tarih/saat/not), tedavi, tanı, test/test alt küme, ölçek, sonuç tabloları, aile bilgileri ve gelişimsel öykü
-•	Trigger'lar: otomatik hasta dosya numarası üretimi, randevu durum geçiş kontrolü, randevu tamamlanmadan önce not girişi zorunluluğu
-•	Stored procedure'ler: hasta kaydet/güncelle/sil/pasife al, randevu oluştur, hasta tedavi/tanı sorguları
-•	CHECK constraint'ler: TC kimlik formatı, telefon formatı, randevu tarihinin geçmişte olmaması gibi veri bütünlüğü kuralları
+- 21 tablo: hasta, doktor, psikolog, randevu (tarih/saat/not), tedavi, tanı, test/test alt küme, ölçek, sonuç tabloları, aile bilgileri ve gelişimsel öykü
+- Trigger'lar: otomatik hasta dosya numarası üretimi, randevu durum geçiş kontrolü, randevu tamamlanmadan önce not girişi zorunluluğu
+- Stored procedure'ler: hasta kaydet/güncelle/sil/pasife al, randevu oluştur, hasta tedavi/tanı sorguları
+- CHECK constraint'ler: TC kimlik formatı, telefon formatı, randevu tarihinin geçmişte olmaması gibi veri bütünlüğü kuralları
 ## Kurulum
 1.	Database/ klasöründeki SQL script'lerini sırasıyla SQL Server üzerinde çalıştırın.
 2.	HastaTakip.Web/appsettings.json dosyasındaki ConnectionStrings:HastaTakipDb değerini kendi SQL Server bağlantı bilginizle güncelleyin:
