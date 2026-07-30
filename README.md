@@ -1,4 +1,4 @@
-#Hasta Takip Sistemi
+##Hasta Takip Sistemi
 Psikiyatri/psikoloji kliniklerinde kullanılmak üzere geliştirilen, hasta kayıtlarını, randevuları, tanı/tedavi süreçlerini ve test-ölçek sonuçlarını yöneten bir web uygulaması.
 #Özellikler
 •	Hasta kayıt, güncelleme, listeleme ve pasife alma (arşivleme) işlemleri
