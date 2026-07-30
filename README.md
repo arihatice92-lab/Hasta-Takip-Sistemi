@@ -1,13 +1,13 @@
 # Hasta Takip Sistemi
 Psikiyatri/psikoloji kliniklerinde kullanılmak üzere geliştirilen, hasta kayıtlarını, randevuları, tanı/tedavi süreçlerini ve test-ölçek sonuçlarını yöneten bir web uygulaması.
 ## Özellikler
-•	Hasta kayıt, güncelleme, listeleme ve pasife alma (arşivleme) işlemleri
-•	Doktor ve psikolog bilgi yönetimi
-•	Randevu oluşturma, çakışma kontrolü ve durum takibi (Planlandı / Tamamlandı / İptal / Gelmedi)
-•	Tanı, tedavi (ilaç) ve görüşme notu kayıtları
-•	Psikolojik test ve ölçek sonuçlarının kaydı
-•	Aile bilgileri ve gelişimsel öykü modülleri
-•	18 yaş altı hasta kaydı doğrulaması (başvuru tarihine göre yaş hesaplama)
+- Hasta kayıt, güncelleme, listeleme ve pasife alma (arşivleme) işlemleri
+-	Doktor ve psikolog bilgi yönetimi
+-	Randevu oluşturma, çakışma kontrolü ve durum takibi (Planlandı / Tamamlandı / İptal / Gelmedi)
+-	Tanı, tedavi (ilaç) ve görüşme notu kayıtları
+-	Psikolojik test ve ölçek sonuçlarının kaydı
+-	Aile bilgileri ve gelişimsel öykü modülleri
+-	18 yaş altı hasta kaydı doğrulaması (başvuru tarihine göre yaş hesaplama)
 ## Teknolojiler
 •	ASP.NET Core MVC — sunum katmanı
 •	ADO.NET (Microsoft.Data.SqlClient) — veri erişim katmanı
