@@ -1,0 +1,50 @@
+﻿@model HastaTakip.Entities.Doktor
+
+@{
+    ViewData["Title"] = "Doktor Detayı";
+}
+
+<h2>Doktor Detayı</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Sicil No</dt>
+    <dd class="col-sm-9">@Model.DoktorSicilNo</dd>
+
+    <dt class="col-sm-3">Ad Soyad</dt>
+    <dd class="col-sm-9">@Model.DoktorAd @Model.DoktorSoyad</dd>
+
+    <dt class="col-sm-3">Telefon</dt>
+    <dd class="col-sm-9">@Model.DoktorTel</dd>
+
+    <dt class="col-sm-3">Branş</dt>
+    <dd class="col-sm-9">@Model.DoktorBrans</dd>
+
+    <dt class="col-sm-3">Kurum Başlangıç Tarihi</dt>
+    <dd class="col-sm-9">@(Model.DoktorKurumBaslangicTarih?.ToString("dd.MM.yyyy") ?? "-")</dd>
+
+    <dt class="col-sm-3">Durum</dt>
+    <dd class="col-sm-9">
+        @if (Model.DoktorKurumAyrilisTarih == null)
+        {
+            <span class="badge bg-success">Aktif</span>
+        }
+        else
+        {
+            <span>Ayrılış Tarihi: @Model.DoktorKurumAyrilisTarih?.ToString("dd.MM.yyyy")</span>
+        }
+    </dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+<a asp-action="Guncelle" asp-route-doktorID="@Model.DoktorID" class="btn btn-warning">Düzenle</a>
+
+@if (Model.DoktorKurumAyrilisTarih == null)
+{
+    <form asp-action="Ayrilis" method="post" class="d-inline">
+        <input type="hidden" name="doktorID" value="@Model.DoktorID" />
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Bu doktorun kurumdan ayrıldığını işaretlemek istediğinize emin misiniz?');">
+            Kurumdan Ayrıldı Olarak İşaretle
+        </button>
+    </form>
+}

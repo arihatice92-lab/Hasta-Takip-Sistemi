@@ -1,0 +1,114 @@
+﻿@model List<HastaTakip.Entities.Doktor>
+
+@{
+    ViewData["Title"] = "Doktor Listesi";
+}
+
+<h2>Doktor Listesi</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+
+<p>
+    <a asp-action="Ekle" class="btn btn-primary">Yeni Doktor Ekle</a>
+</p>
+
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <input type="text"
+               name="ara"
+               value="@ViewBag.Ara"
+               class="form-control"
+               placeholder="Ad veya soyad ara..." />
+    </div>
+
+    <div class="col-md-2">
+        <select name="aktif" class="form-select">
+
+            <option value="true"
+                    selected="@(ViewBag.Aktif?.ToString() == "True")">
+                Aktif
+            </option>
+
+            <option value="false"
+                    selected="@(ViewBag.Aktif?.ToString() == "False")">
+                Pasif
+            </option>
+
+            <option value=""
+                    selected="@(ViewBag.Aktif == null)">
+                Tümü
+            </option>
+
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="siralama" class="form-select">
+
+            <option value="AZ"
+                    selected="@(ViewBag.Siralama == "AZ")">
+                A-Z
+            </option>
+
+            <option value="ZA"
+                    selected="@(ViewBag.Siralama == "ZA")">
+                Z-A
+            </option>
+
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+            Filtrele
+        </button>
+    </div>
+    <div class="col-md-2">
+        <a asp-action="Index" class="btn btn-outline-secondary w-100">
+            Temizle
+        </a>
+    </div>
+
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sicil No</th>
+            <th>Ad Soyad</th>
+            <th>Branş</th>
+            <th>Telefon</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doktor in Model)
+        {
+            <tr>
+                <td>@doktor.DoktorSicilNo</td>
+                <td>@doktor.DoktorAd @doktor.DoktorSoyad</td>
+                <td>@doktor.DoktorBrans</td>
+                <td>@doktor.DoktorTel</td>
+                <td>
+                    @if (doktor.DoktorKurumAyrilisTarih == null)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Pasif</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Detay" asp-route-doktorID="@doktor.DoktorID" class="btn btn-sm btn-info">Detay</a>
+                    <a asp-action="Guncelle" asp-route-doktorID="@doktor.DoktorID" class="btn btn-sm btn-warning">Düzenle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

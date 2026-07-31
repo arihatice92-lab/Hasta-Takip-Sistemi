@@ -69,7 +69,43 @@ namespace HastaTakip.DataAccess
 
             return doktorlar;
         }
+        public List<Doktor> DoktorAra(
+            string? ara,
+            string siralama,
+            bool? aktif,
+            string? brans)
+        {
+            var doktorlar = new List<Doktor>();
 
+            using (var connection = _dbHelper.GetConnection())
+            using (var command = new SqlCommand("sp_DoktorAra", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Ara",
+                    string.IsNullOrWhiteSpace(ara) ? DBNull.Value : (object)ara);
+
+                command.Parameters.AddWithValue("@Siralama", siralama);
+
+                command.Parameters.AddWithValue("@Aktif",
+                    aktif.HasValue ? (object)aktif.Value : DBNull.Value);
+
+                command.Parameters.AddWithValue("@Brans",
+                    string.IsNullOrWhiteSpace(brans) ? DBNull.Value : (object)brans);
+
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        doktorlar.Add(MapToDoktor(reader));
+                    }
+                }
+            }
+
+            return doktorlar;
+        }
         public void DoktorGuncelle(Doktor doktor)
         {
             using var connection = _dbHelper.GetConnection();
@@ -81,6 +117,9 @@ namespace HastaTakip.DataAccess
             command.Parameters.AddWithValue("@doktorSoyad", doktor.DoktorSoyad);
             command.Parameters.AddWithValue("@doktorTel", doktor.DoktorTel);
             command.Parameters.AddWithValue("@doktorBrans", doktor.DoktorBrans);
+            command.Parameters.AddWithValue(
+                "@doktorKurumBaslangicTarih",
+                 (object?)doktor.DoktorKurumBaslangicTarih ?? DBNull.Value);
 
             connection.Open();
             command.ExecuteNonQuery();

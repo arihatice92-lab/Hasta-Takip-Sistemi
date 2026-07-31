@@ -35,6 +35,14 @@ namespace HastaTakip.Business
             return _doktorDal.DoktorListele(sadeceAktif);
         }
 
+        public List<Doktor> DoktorAra(
+            string? ara,
+            string siralama,
+            bool? aktif,
+            string? brans)
+        {
+            return _doktorDal.DoktorAra(ara, siralama, aktif, brans);
+        }
         public void DoktorGuncelle(Doktor doktor)
         {
             _doktorDal.DoktorGuncelle(doktor);
