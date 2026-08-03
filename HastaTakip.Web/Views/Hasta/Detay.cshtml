@@ -4,54 +4,214 @@
     ViewData["Title"] = "Hasta Detayı";
 }
 
-<h2>Hasta Detayı</h2>
+<h2>@Model.HastaAd @Model.HastaSoyad</h2>
 
-<dl class="row">
-    <dt class="col-sm-3">Dosya No</dt>
-    <dd class="col-sm-9">@Model.HastaDosyaNo</dd>
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
 
-    <dt class="col-sm-3">Ad Soyad</dt>
-    <dd class="col-sm-9">@Model.HastaAd @Model.HastaSoyad</dd>
+<ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#genelBilgiler" type="button">
+            Genel Bilgiler
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#taniTedavi" type="button">
+            Tanı / Tedavi
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#testOlcek" type="button">
+            Test / Ölçek
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#aileGelisim" type="button">
+            Aile / Gelişim
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#gecmisRandevular" type="button">
+            Geçmiş Randevular
+        </button>
+    </li>
+</ul>
 
-    <dt class="col-sm-3">TC Kimlik No</dt>
-    <dd class="col-sm-9">@Model.HastaTC</dd>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="genelBilgiler">
+        <dl class="row">
+            <dt class="col-sm-3">Dosya No</dt>
+            <dd class="col-sm-9">@Model.HastaDosyaNo</dd>
 
-    <dt class="col-sm-3">Telefon</dt>
-    <dd class="col-sm-9">@Model.HastaTel</dd>
+            <dt class="col-sm-3">TC Kimlik No</dt>
+            <dd class="col-sm-9">@Model.HastaTC</dd>
 
-    <dt class="col-sm-3">Adres</dt>
-    <dd class="col-sm-9">@Model.HastaAdres</dd>
+            <dt class="col-sm-3">Telefon</dt>
+            <dd class="col-sm-9">@Model.HastaTel</dd>
 
-    <dt class="col-sm-3">Cinsiyet</dt>
-    <dd class="col-sm-9">@Model.HastaCinsiyet</dd>
+            <dt class="col-sm-3">Adres</dt>
+            <dd class="col-sm-9">@Model.HastaAdres</dd>
 
-    <dt class="col-sm-3">Doğum Tarihi</dt>
-    <dd class="col-sm-9">@Model.HastaDogumTarihi.ToString("dd.MM.yyyy")</dd>
+            <dt class="col-sm-3">Cinsiyet</dt>
+            <dd class="col-sm-9">@Model.HastaCinsiyet</dd>
 
-    <dt class="col-sm-3">Okul</dt>
-    <dd class="col-sm-9">@Model.HastaOkul</dd>
+            <dt class="col-sm-3">Doğum Tarihi</dt>
+            <dd class="col-sm-9">@Model.HastaDogumTarihi.ToString("dd.MM.yyyy")</dd>
 
-    <dt class="col-sm-3">Sınıf</dt>
-    <dd class="col-sm-9">@Model.HastaSinif</dd>
+            <dt class="col-sm-3">Okul</dt>
+            <dd class="col-sm-9">@Model.HastaOkul</dd>
 
-    <dt class="col-sm-3">Okul Başarısı</dt>
-    <dd class="col-sm-9">@Model.HastaOkulBasarisi</dd>
+            <dt class="col-sm-3">Sınıf</dt>
+            <dd class="col-sm-9">@Model.HastaSinif</dd>
 
-    <dt class="col-sm-3">Boy / Kilo</dt>
-    <dd class="col-sm-9">@Model.HastaBoy cm / @Model.HastaKilo kg</dd>
+            <dt class="col-sm-3">Okul Başarısı</dt>
+            <dd class="col-sm-9">@Model.HastaOkulBasarisi</dd>
 
-    <dt class="col-sm-3">Yönlendiren</dt>
-    <dd class="col-sm-9">@Model.HastaYonlendiren</dd>
+            <dt class="col-sm-3">Boy / Kilo</dt>
+            <dd class="col-sm-9">@Model.HastaBoy cm / @Model.HastaKilo kg</dd>
 
-    <dt class="col-sm-3">Başvuru Nedeni</dt>
-    <dd class="col-sm-9">@Model.HastaBasvuruNedeni</dd>
+            <dt class="col-sm-3">Yönlendiren</dt>
+            <dd class="col-sm-9">@Model.HastaYonlendiren</dd>
 
-    <dt class="col-sm-3">Başvuru Tarihi</dt>
-    <dd class="col-sm-9">@Model.HastaBasvuruTarihi.ToString("dd.MM.yyyy")</dd>
+            <dt class="col-sm-3">Başvuru Nedeni</dt>
+            <dd class="col-sm-9">@Model.HastaBasvuruNedeni</dd>
 
-    <dt class="col-sm-3">Durum</dt>
-    <dd class="col-sm-9">@(Model.HastaAktif ? "Aktif" : "Pasif")</dd>
-</dl>
+            <dt class="col-sm-3">Başvuru Tarihi</dt>
+            <dd class="col-sm-9">@Model.HastaBasvuruTarihi.ToString("dd.MM.yyyy")</dd>
 
-<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
-<a asp-controller="Randevu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-primary">Randevu Oluştur</a>
+            <dt class="col-sm-3">Durum</dt>
+            <dd class="col-sm-9">@(Model.HastaAktif ? "Aktif" : "Pasif")</dd>
+        </dl>
+
+        <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+        <a asp-action="Guncelle" asp-route-tc="@Model.HastaTC" class="btn btn-warning">Düzenle</a>
+        <a asp-controller="Randevu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-primary">Randevu Oluştur</a>
+    </div>
+
+    <div class="tab-pane fade" id="taniTedavi">
+        @{
+            var tanilar = (List<HastaTakip.Entities.HastaTani>)ViewBag.Tanilar;
+            var tedaviler = (List<HastaTakip.Entities.HastaTedavi>)ViewBag.Tedaviler;
+            var taniSozlugu = (Dictionary<short, HastaTakip.Entities.Tani>)ViewBag.TaniSozlugu;
+            var ilacSozlugu = (Dictionary<short, HastaTakip.Entities.Ilac>)ViewBag.IlacSozlugu;
+            var doktorlarSozluk = (Dictionary<short, HastaTakip.Entities.Doktor>)ViewBag.Doktorlar;
+        }
+
+        <h5>Tanılar</h5>
+        <a asp-controller="Tani" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tanı Ekle</a>
+        @if (tanilar.Count == 0)
+        {
+            <p class="text-muted">Kayıtlı tanı bulunmuyor.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Tarih</th><th>Tanı</th><th>Doktor</th></tr></thead>
+                <tbody>
+                    @foreach (var t in tanilar)
+                    {
+                        <tr>
+                            <td>@t.TaniTarih.ToString("dd.MM.yyyy")</td>
+                            <td>@(taniSozlugu.TryGetValue(t.TaniID, out var tani) ? tani.TaniAdi : "-")</td>
+                            <td>@(doktorlarSozluk.TryGetValue(t.DoktorID, out var d1) ? $"{d1.DoktorAd} {d1.DoktorSoyad}" : "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <hr />
+
+        <h5>Tedaviler</h5>
+        <a asp-controller="Tedavi" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tedavi Ekle</a>
+        @if (tedaviler.Count == 0)
+        {
+            <p class="text-muted">Kayıtlı tedavi bulunmuyor.</p>
+        }
+        else
+        {
+            <table class="table table-sm table-striped">
+                <thead><tr><th>İlaç</th><th>Doz</th><th>Başlangıç</th><th>Bitiş</th><th>Doktor</th></tr></thead>
+                <tbody>
+                    @foreach (var t in tedaviler)
+                    {
+                        <tr>
+                            <td>@(ilacSozlugu.TryGetValue(t.IlacID, out var ilac) ? ilac.IlacAdi : "-")</td>
+                            <td>@t.IlacDozu</td>
+                            <td>@(t.IlacBaslangicTarihi?.ToString("dd.MM.yyyy") ?? "-")</td>
+                            <td>@(t.IlacBitisTarihi?.ToString("dd.MM.yyyy") ?? "-")</td>
+                            <td>@(doktorlarSozluk.TryGetValue(t.DoktorID, out var d2) ? $"{d2.DoktorAd} {d2.DoktorSoyad}" : "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <div class="tab-pane fade" id="testOlcek">
+        <p class="text-muted">Yakında — Test ve ölçek sonuçları burada listelenecek.</p>
+    </div>
+
+    <div class="tab-pane fade" id="aileGelisim">
+        <p class="text-muted">Yakında — Aile bilgileri ve gelişimsel öykü burada görüntülenecek.</p>
+    </div>
+    <div class="tab-pane fade" id="gecmisRandevular">
+        @{
+            var randevular = (List<HastaTakip.Entities.RandevuTarihi>)ViewBag.GecmisRandevular;
+            var doktorlar = (Dictionary<short, HastaTakip.Entities.Doktor>)ViewBag.Doktorlar;
+            var saatler = (Dictionary<byte, HastaTakip.Entities.RandevuSaat>)ViewBag.Saatler;
+        }
+
+        @if (randevular.Count == 0)
+        {
+            <p class="text-muted">Bu hastaya ait randevu kaydı bulunmuyor.</p>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>Doktor</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var randevu in randevular)
+                    {
+                        <tr>
+                            <td>@randevu.RandevuTarih.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @if (saatler.TryGetValue(randevu.SaatID, out var saat))
+                                {
+                                    @saat.RandevuBaslangicSaat.ToString(@"hh\:mm")
+                                }
+                            </td>
+                            <td>
+                                @if (doktorlar.TryGetValue(randevu.DoktorID, out var doktor))
+                                {
+                                    @($"{doktor.DoktorAd} {doktor.DoktorSoyad}")
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    var renk = randevu.RandevuDurum switch
+                                    {
+                                        "Tamamlandı" => "bg-success",
+                                        "İptal" => "bg-secondary",
+                                        "Gelmedi" => "bg-danger",
+                                        _ => "bg-primary"
+                                    };
+                                }
+                                <span class="badge @renk">@randevu.RandevuDurum</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

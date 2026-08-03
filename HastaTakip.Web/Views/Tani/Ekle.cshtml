@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Tanı Ekle";
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    var tanilar = (List<HastaTakip.Entities.Tani>)ViewBag.TaniListesi;
+}
+
+<h2>Tanı Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+
+    <div class="mb-3">
+        <label class="form-label">Doktor <span style="color:red">*</span></label>
+        <select name="DoktorID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var doktor in doktorlar)
+            {
+                <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tanı <span style="color:red">*</span></label>
+        <select name="TaniID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var tani in tanilar)
+            {
+                <option value="@tani.TaniID">@tani.TaniAdi (@tani.TaniKodu)</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mental Durum Muayenesi</label>
+        <textarea name="MentalDurumMuayenesi" class="form-control" rows="4"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" class="btn btn-secondary">İptal</a>
+</form>

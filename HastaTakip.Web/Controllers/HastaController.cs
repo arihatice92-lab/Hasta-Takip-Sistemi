@@ -9,27 +9,41 @@ namespace HastaTakip.Web.Controllers
     public class HastaController : Controller
     {
         private readonly HastaBusiness _hastaBusiness;
+        private readonly RandevuBusiness _randevuBusiness;
+        private readonly DoktorBusiness _doktorBusiness;
+        private readonly RandevuSaatBusiness _randevuSaatBusiness;
+        private readonly HastaTaniBusiness _hastaTaniBusiness;
+        private readonly HastaTedaviBusiness _hastaTedaviBusiness;
+        private readonly TaniBusiness _taniBusiness;
+        private readonly IlacBusiness _ilacBusiness;
 
-        public HastaController(HastaBusiness hastaBusiness)
+        public HastaController(
+            HastaBusiness hastaBusiness, 
+            RandevuBusiness randevuBusiness,
+            DoktorBusiness doktorBusiness,
+            RandevuSaatBusiness randevuSaatBusiness,
+            HastaTaniBusiness hastaTaniBusiness,
+            HastaTedaviBusiness hastaTedaviBusiness,
+            TaniBusiness taniBusiness,
+            IlacBusiness ilacBusiness)
         {
             _hastaBusiness = hastaBusiness;
+            _randevuBusiness = randevuBusiness;
+            _doktorBusiness = doktorBusiness;
+            _randevuSaatBusiness = randevuSaatBusiness;
+            _hastaTaniBusiness = hastaTaniBusiness;
+            _hastaTedaviBusiness = hastaTedaviBusiness;
+            _taniBusiness = taniBusiness;
+            _ilacBusiness = ilacBusiness;
         }
-
-        // GET: /Hasta
-        //public IActionResult Index()
-        //{
-        //    var hastalar = _hastaBusiness.HastaListele();
-        //    return View(hastalar);
-        //}
-
         public IActionResult Index(
-    string? ara,
-    string siralama = "AdAZ",
-    bool? aktif = null,
-    string? cinsiyet = null,
-    DateTime? baslangicTarihi = null,
-    DateTime? bitisTarihi = null,
-    int sayfa = 1)
+            string? ara,
+            string siralama = "AdAZ",
+            bool? aktif = null,
+            string? cinsiyet = null,
+            DateTime? baslangicTarihi = null,
+            DateTime? bitisTarihi = null,
+            int sayfa = 1)
         {
             const int sayfaBoyutu = 10;
 
@@ -59,6 +73,24 @@ namespace HastaTakip.Web.Controllers
             {
                 return NotFound();
             }
+            var (randevular, _) = _randevuBusiness.RandevuListele(
+                ara: null,
+                siralama: "TarihYeni",
+                baslangicTarihi: null,
+                bitisTarihi: null,
+                doktorID: null,
+                hastaTC: tc,
+                durum: null,
+                sayfa: 1,
+                sayfaBoyutu: 50);
+
+            ViewBag.GecmisRandevular = randevular;
+            ViewBag.Doktorlar = _doktorBusiness.DoktorListele(sadeceAktif: false).ToDictionary(d => d.DoktorID);
+            ViewBag.Saatler = _randevuSaatBusiness.SaatleriListele().ToDictionary(s => s.SaatID);
+            ViewBag.Tanilar = _hastaTaniBusiness.HastaTanilariListele(tc);
+            ViewBag.Tedaviler = _hastaTedaviBusiness.HastaTedavileriListele(tc);
+            ViewBag.TaniSozlugu = _taniBusiness.TanilariListele().ToDictionary(t => t.TaniID);
+            ViewBag.IlacSozlugu = _ilacBusiness.IlaclariListele().ToDictionary(i => i.IlacID);
 
             return View(hasta);
         }
@@ -92,5 +124,43 @@ namespace HastaTakip.Web.Controllers
                 return View(hasta);
             }
         }
+
+        // GET: /Hasta/Guncelle/12345678901
+        public IActionResult Guncelle(string tc)
+        {
+            var hasta = _hastaBusiness.HastaGetir(tc);
+            if (hasta == null)
+            {
+                return NotFound();
+            }
+            return View(hasta);
+        }
+
+        // POST: /Hasta/Guncelle
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Guncelle(Hasta hasta)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(hasta);
+            }
+
+            try
+            {
+                _hastaBusiness.HastaGuncelle(hasta);
+                TempData["BasariMesaji"] = "Hasta bilgileri güncellendi.";
+                return RedirectToAction(nameof(Detay), new { tc = hasta.HastaTC });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(hasta);
+            }
+        }
+    }
+
+    internal class _hastaTedaviBusiness
+    {
     }
 }

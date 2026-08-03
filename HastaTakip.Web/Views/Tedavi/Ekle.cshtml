@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Tedavi Ekle";
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    var ilaclar = (List<HastaTakip.Entities.Ilac>)ViewBag.IlacListesi;
+}
+
+<h2>Tedavi Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+
+    <div class="mb-3">
+        <label class="form-label">Doktor <span style="color:red">*</span></label>
+        <select name="DoktorID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var doktor in doktorlar)
+            {
+                <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">İlaç <span style="color:red">*</span></label>
+        <select name="IlacID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var ilac in ilaclar)
+            {
+                <option value="@ilac.IlacID">@ilac.IlacAdi (@ilac.IlacEtkenMadde)</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Doz <span style="color:red">*</span></label>
+        <input name="IlacDozu" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Başlangıç Tarihi</label>
+        <input type="date" name="IlacBaslangicTarihi" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Bitiş Tarihi</label>
+        <input type="date" name="IlacBitisTarihi" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Yan Etkiler</label>
+        <textarea name="IlacYanEtkiler" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tedavi Notları</label>
+        <textarea name="TedaviNotlari" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" class="btn btn-secondary">İptal</a>
+</form>

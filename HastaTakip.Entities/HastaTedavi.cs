@@ -13,7 +13,7 @@ namespace HastaTakip.Entities
         public string IlacDozu { get; set; } = string.Empty;
         public DateTime? IlacBaslangicTarihi { get; set; }
         public DateTime? IlacBitisTarihi { get; set; }
-        public string IlacYanEtkiler { get; set; } = string.Empty;
-        public string TedaviNotlari { get; set; } = string.Empty;
+        public string? IlacYanEtkiler { get; set; }
+        public string? TedaviNotlari { get; set; }
     }
 }

@@ -36,14 +36,14 @@ namespace HastaTakip.Business
             return _hastaDal.HastaListele(sadeceAktif);
         }
         public (List<Hasta> Hastalar, int ToplamKayit) HastaAra(
-     string? ara,
-     string siralama,
-     bool? aktif,
-     string? cinsiyet,
-     DateTime? baslangicTarihi,
-     DateTime? bitisTarihi,
-     int sayfa,
-     int sayfaBoyutu)
+             string? ara,
+             string siralama,
+             bool? aktif,
+             string? cinsiyet,
+             DateTime? baslangicTarihi,
+             DateTime? bitisTarihi,
+             int sayfa,
+             int sayfaBoyutu)
         {
             return _hastaDal.HastaAra(ara, siralama, aktif, cinsiyet, baslangicTarihi, bitisTarihi, sayfa, sayfaBoyutu);
         }
@@ -80,5 +80,7 @@ namespace HastaTakip.Business
                 yas--;
             return yas;
         }
+
+
     }
 }

@@ -11,6 +11,6 @@ namespace HastaTakip.Entities
         public short DoktorID { get; set; }
         public short TaniID { get; set; }
         public DateTime TaniTarih { get; set; }
-        public string MentalDurumMuayenesi { get; set; } = string.Empty;
+        public string? MentalDurumMuayenesi { get; set; }
     }
 }

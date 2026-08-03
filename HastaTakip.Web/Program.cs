@@ -35,6 +35,15 @@ builder.Services.AddScoped<RandevuDal>();
 builder.Services.AddScoped<RandevuBusiness>();
 builder.Services.AddScoped<RandevuSaatBusiness>();
 
+builder.Services.AddScoped<TaniDal>();
+builder.Services.AddScoped<TaniBusiness>();
+builder.Services.AddScoped<IlacDal>();
+builder.Services.AddScoped<IlacBusiness>();
+builder.Services.AddScoped<HastaTaniDal>();
+builder.Services.AddScoped<HastaTaniBusiness>();
+builder.Services.AddScoped<HastaTedaviDal>();
+builder.Services.AddScoped<HastaTedaviBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
