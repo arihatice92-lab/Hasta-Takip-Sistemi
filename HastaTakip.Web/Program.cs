@@ -30,6 +30,11 @@ builder.Services.AddScoped<KullaniciBusiness>();
 builder.Services.AddScoped<DoktorDal>();
 builder.Services.AddScoped<DoktorBusiness>();
 
+builder.Services.AddScoped<RandevuSaatDal>();
+builder.Services.AddScoped<RandevuDal>();
+builder.Services.AddScoped<RandevuBusiness>();
+builder.Services.AddScoped<RandevuSaatBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

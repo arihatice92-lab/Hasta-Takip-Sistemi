@@ -86,15 +86,18 @@ namespace HastaTakip.DataAccess
             return hastalar;
         }
 
-        public List<Hasta> HastaAra(
+        public (List<Hasta> Hastalar, int toplamKayit) HastaAra(
             string? ara,
             string siralama,
             bool? aktif,
             string? cinsiyet,
             DateTime? baslangicTarihi,
-            DateTime? bitisTarihi)
+            DateTime? bitisTarihi,
+            int sayfa,
+            int sayfaBoyutu)
         {
             var hastalar = new List<Hasta>();
+            int toplamKayit;
 
             using (var connection = _dbHelper.GetConnection())
             using (var command = new SqlCommand("sp_HastaAra", connection))
@@ -117,6 +120,14 @@ namespace HastaTakip.DataAccess
 
                 command.Parameters.AddWithValue("@BitisTarihi",
                     bitisTarihi.HasValue ? (object)bitisTarihi.Value : DBNull.Value);
+                command.Parameters.AddWithValue("@Sayfa", sayfa);
+                command.Parameters.AddWithValue("@SayfaBoyutu", sayfaBoyutu);
+
+                var toplamKayitParam = new SqlParameter("@ToplamKayit", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(toplamKayitParam);
 
                 connection.Open();
 
@@ -127,9 +138,12 @@ namespace HastaTakip.DataAccess
                         hastalar.Add(MapToHasta(reader));
                     }
                 }
+
+                // OUTPUT parametresinin değeri, reader kapandıktan sonra okunabilir hale gelir
+                toplamKayit = (int)toplamKayitParam.Value;
             }
 
-            return hastalar;
+            return (hastalar, toplamKayit);
         }
 
         public void HastaGuncelle(Hasta hasta)

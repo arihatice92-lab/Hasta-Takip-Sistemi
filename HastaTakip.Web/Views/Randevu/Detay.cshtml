@@ -1,0 +1,32 @@
+﻿@model HastaTakip.Entities.RandevuTarihi
+
+@{
+    ViewData["Title"] = "Randevu Detayı";
+    var hasta = (HastaTakip.Entities.Hasta?)ViewBag.Hasta;
+    var doktor = (HastaTakip.Entities.Doktor?)ViewBag.Doktor;
+    var saat = (HastaTakip.Entities.RandevuSaat?)ViewBag.Saat;
+}
+
+<h2>Randevu Detayı</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Tarih</dt>
+    <dd class="col-sm-9">@Model.RandevuTarih.ToString("dd.MM.yyyy")</dd>
+
+    <dt class="col-sm-3">Saat</dt>
+    <dd class="col-sm-9">@(saat != null ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") + " - " + saat.RandevuBitisSaat.ToString(@"hh\:mm") : "-")</dd>
+
+    <dt class="col-sm-3">Hasta</dt>
+    <dd class="col-sm-9">@(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad} ({hasta.HastaDosyaNo})" : "-")</dd>
+
+    <dt class="col-sm-3">Doktor</dt>
+    <dd class="col-sm-9">@(doktor != null ? $"{doktor.DoktorAd} {doktor.DoktorSoyad}" : "-")</dd>
+
+    <dt class="col-sm-3">Durum</dt>
+    <dd class="col-sm-9">@Model.RandevuDurum</dd>
+
+    <dt class="col-sm-3">Oluşturma Tarihi</dt>
+    <dd class="col-sm-9">@Model.RandevuOlusturmaTarihi.ToString("dd.MM.yyyy")</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

@@ -121,7 +121,29 @@
         }
     </tbody>
 </table>
-
+@if (ViewBag.ToplamSayfa > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+            {
+                <li class="page-item @(i == ViewBag.SayfaNo ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-ara="@ViewBag.Ara"
+                       asp-route-siralama="@ViewBag.Siralama"
+                       asp-route-aktif="@ViewBag.Aktif"
+                       asp-route-cinsiyet="@ViewBag.Cinsiyet"
+                       asp-route-baslangicTarihi="@ViewBag.Baslangic"
+                       asp-route-bitisTarihi="@ViewBag.Bitis"
+                       asp-route-sayfa="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
  <script>
     setTimeout(function() {
         var alert = document.querySelector('.alert');
@@ -132,3 +154,20 @@
         }
     }, 4000);
 </script>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var aramaKutusu = document.querySelector('input[name="ara"]');
+            var form = aramaKutusu.closest('form');
+            var zamanlayici;
+
+            aramaKutusu.addEventListener('input', function () {
+                clearTimeout(zamanlayici);
+                zamanlayici = setTimeout(function () {
+                    form.submit();
+                }, 400);
+            });
+        });
+    </script>
+}

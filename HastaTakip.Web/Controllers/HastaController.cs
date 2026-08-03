@@ -23,20 +23,20 @@ namespace HastaTakip.Web.Controllers
         //}
 
         public IActionResult Index(
-            string? ara,
-            string siralama = "AdAZ",
-            bool? aktif = null,
-            string? cinsiyet = null,
-            DateTime? baslangicTarihi = null,
-            DateTime? bitisTarihi = null)
+    string? ara,
+    string siralama = "AdAZ",
+    bool? aktif = null,
+    string? cinsiyet = null,
+    DateTime? baslangicTarihi = null,
+    DateTime? bitisTarihi = null,
+    int sayfa = 1)
         {
-            var hastalar = _hastaBusiness.HastaAra(
-                ara,
-                siralama,
-                aktif,
-                cinsiyet,
-                baslangicTarihi,
-                bitisTarihi);
+            const int sayfaBoyutu = 10;
+
+            var (hastalar, toplamKayit) = _hastaBusiness.HastaAra(
+                ara, siralama, aktif, cinsiyet, baslangicTarihi, bitisTarihi, sayfa, sayfaBoyutu);
+
+            int toplamSayfa = (int)Math.Ceiling(toplamKayit / (double)sayfaBoyutu);
 
             ViewBag.Ara = ara;
             ViewBag.Siralama = siralama;
@@ -44,6 +44,8 @@ namespace HastaTakip.Web.Controllers
             ViewBag.Cinsiyet = cinsiyet;
             ViewBag.Baslangic = baslangicTarihi;
             ViewBag.Bitis = bitisTarihi;
+            ViewBag.SayfaNo = sayfa;
+            ViewBag.ToplamSayfa = toplamSayfa;
 
             return View(hastalar);
         }

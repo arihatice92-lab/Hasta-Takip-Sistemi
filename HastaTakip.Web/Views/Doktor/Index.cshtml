@@ -27,22 +27,9 @@
 
     <div class="col-md-2">
         <select name="aktif" class="form-select">
-
-            <option value="true"
-                    selected="@(ViewBag.Aktif?.ToString() == "True")">
-                Aktif
-            </option>
-
-            <option value="false"
-                    selected="@(ViewBag.Aktif?.ToString() == "False")">
-                Pasif
-            </option>
-
-            <option value=""
-                    selected="@(ViewBag.Aktif == null)">
-                Tümü
-            </option>
-
+            <option value="aktif" selected="@(ViewBag.Aktif == "aktif")">Aktif</option>
+            <option value="pasif" selected="@(ViewBag.Aktif == "pasif")">Pasif</option>
+            <option value="hepsi" selected="@(ViewBag.Aktif == "hepsi")">Tümü</option>
         </select>
     </div>
 
@@ -112,3 +99,41 @@
         }
     </tbody>
 </table>
+
+@if (ViewBag.ToplamSayfa > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+            {
+                <li class="page-item @(i == ViewBag.SayfaNo ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-ara="@ViewBag.Ara"
+                       asp-route-siralama="@ViewBag.Siralama"
+                       asp-route-aktif="@ViewBag.Aktif"
+                       asp-route-brans="@ViewBag.Brans"
+                       asp-route-sayfa="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var aramaKutusu = document.querySelector('input[name="ara"]');
+            var form = aramaKutusu.closest('form');
+            var zamanlayici;
+
+            aramaKutusu.addEventListener('input', function() {
+                clearTimeout(zamanlayici);
+                zamanlayici = setTimeout(function() {
+                    form.submit();
+                }, 400);
+            });
+        });
+    </script>
+}

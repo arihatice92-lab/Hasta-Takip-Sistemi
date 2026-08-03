@@ -35,21 +35,17 @@ namespace HastaTakip.Business
         {
             return _hastaDal.HastaListele(sadeceAktif);
         }
-        public List<Hasta> HastaAra(
-            string? ara,
-            string siralama,
-            bool? aktif,
-            string? cinsiyet,
-            DateTime? baslangic,
-            DateTime? bitis)
+        public (List<Hasta> Hastalar, int ToplamKayit) HastaAra(
+     string? ara,
+     string siralama,
+     bool? aktif,
+     string? cinsiyet,
+     DateTime? baslangicTarihi,
+     DateTime? bitisTarihi,
+     int sayfa,
+     int sayfaBoyutu)
         {
-            return _hastaDal.HastaAra(
-                ara,
-                siralama,
-                aktif,
-                cinsiyet,
-                baslangic,
-                bitis);
+            return _hastaDal.HastaAra(ara, siralama, aktif, cinsiyet, baslangicTarihi, bitisTarihi, sayfa, sayfaBoyutu);
         }
         public void HastaGuncelle(Hasta hasta)
         {

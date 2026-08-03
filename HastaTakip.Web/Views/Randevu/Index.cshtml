@@ -1,0 +1,192 @@
+﻿@model List<HastaTakip.Entities.RandevuTarihi>
+
+@{
+    ViewData["Title"] = "Randevu Listesi";
+    var hastalar = (Dictionary<string, HastaTakip.Entities.Hasta>)ViewBag.Hastalar;
+    var doktorlar = (Dictionary<short, HastaTakip.Entities.Doktor>)ViewBag.Doktorlar;
+    var saatler = (Dictionary<byte, HastaTakip.Entities.RandevuSaat>)ViewBag.Saatler;
+}
+
+<h2>Randevu Listesi</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
+
+<p>
+    <a asp-action="Ekle" class="btn btn-primary">Yeni Randevu Oluştur</a>
+</p>
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <label class="form-label">Hasta Ara</label>
+        <input type="text" name="ara" value="@ViewBag.Ara" class="form-control" placeholder="Ad veya soyad..." />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Hasta TC</label>
+        <input type="text" name="hastaTC" value="@ViewBag.SeciliHastaTC" maxlength="11" class="form-control" placeholder="TC ile ara" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Başlangıç Tarihi</label>
+        <input type="date" name="baslangicTarihi" value="@(ViewBag.Baslangic?.ToString("yyyy-MM-dd"))" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Bitiş Tarihi</label>
+        <input type="date" name="bitisTarihi" value="@(ViewBag.Bitis?.ToString("yyyy-MM-dd"))" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Doktor</label>
+        <select name="doktorID" class="form-select">
+            <option value="">Tümü</option>
+            @foreach (var doktor in (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi)
+            {
+                <option value="@doktor.DoktorID" selected="@(doktor.DoktorID.ToString() == Context.Request.Query["doktorID"])">
+                    @doktor.DoktorAd @doktor.DoktorSoyad
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Durum</label>
+        <select name="durum" class="form-select">
+            <option value="">Tümü</option>
+            <option value="Planlandı" selected="@(ViewBag.SeciliDurum == "Planlandı")">Planlandı</option>
+            <option value="Tamamlandı" selected="@(ViewBag.SeciliDurum == "Tamamlandı")">Tamamlandı</option>
+            <option value="İptal" selected="@(ViewBag.SeciliDurum == "İptal")">İptal</option>
+            <option value="Gelmedi" selected="@(ViewBag.SeciliDurum == "Gelmedi")">Gelmedi</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Sıralama</label>
+        <select name="siralama" class="form-select">
+            <option value="TarihYeni" selected="@(ViewBag.Siralama == "TarihYeni")">Yeni → Eski</option>
+            <option value="TarihEski" selected="@(ViewBag.Siralama == "TarihEski")">Eski → Yeni</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-primary w-50">Ara</button>
+        
+    </div>
+    
+    <div class="col-md-2 d-flex align-items-end">
+        <a asp-action="Index" class="btn btn-outline-secondary w-100">Temizle</a>
+    </div>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tarih</th>
+            <th>Saat</th>
+            <th>TC</th>
+            <th>Hasta</th>
+            <th>Doktor</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var randevu in Model)
+        {
+            <tr>
+                <td>@randevu.RandevuTarih.ToString("dd.MM.yyyy")</td>
+                <td>
+                    @if (saatler.TryGetValue(randevu.SaatID, out var saat))
+                    {
+                        @saat.RandevuBaslangicSaat.ToString(@"hh\:mm")
+                    }
+                </td>
+                <td>@randevu.HastaTC</td>
+                <td>
+                    @if (hastalar.TryGetValue(randevu.HastaTC, out var hasta))
+                    {
+                        @($"{hasta.HastaAd} {hasta.HastaSoyad}")
+                    }
+                </td>
+                
+                <td>
+                    @if (doktorlar.TryGetValue(randevu.DoktorID, out var doktor))
+                    {
+                        @($"{doktor.DoktorAd} {doktor.DoktorSoyad}")
+                    }
+                </td>
+                <td>
+                    @{
+                        var renk = randevu.RandevuDurum switch
+                        {
+                            "Tamamlandı" => "bg-success",
+                            "İptal" => "bg-secondary",
+                            "Gelmedi" => "bg-danger",
+                            _ => "bg-primary"
+                        };
+                    }
+                    <span class="badge @renk">@randevu.RandevuDurum</span>
+                </td>
+                <td>
+                    <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-sm btn-info">Detay</a>
+                    @if (randevu.RandevuDurum == "Planlandı")
+                    {
+                        <form asp-action="Tamamlandi" method="post" class="d-inline">
+                            <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                            <button type="submit" class="btn btn-sm btn-success">Tamamlandı</button>
+                        </form>
+                        <form asp-action="Gelmedi" method="post" class="d-inline">
+                            <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                            <button type="submit" class="btn btn-sm btn-warning">Gelmedi</button>
+                        </form>
+                        <form asp-action="Iptal" method="post" class="d-inline">
+                            <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                            <button type="submit" class="btn btn-sm btn-secondary"
+                                    onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?');">
+                                İptal
+                            </button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (ViewBag.ToplamSayfa > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.ToplamSayfa; i++)
+            {
+                <li class="page-item @(i == ViewBag.SayfaNo ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-ara="@(ViewBag.Ara ?? "")"
+                       asp-route-hastaTC="@(ViewBag.SeciliHastaTC ?? "")"
+                       asp-route-siralama="@(ViewBag.Siralama ?? "TarihYeni")"
+                       asp-route-baslangicTarihi="@(ViewBag.Baslangic?.ToString("yyyy-MM-dd") ?? "")"
+                       asp-route-bitisTarihi="@(ViewBag.Bitis?.ToString("yyyy-MM-dd") ?? "")"
+                       asp-route-doktorID="@(ViewBag.SeciliDoktorID?.ToString() ?? "")"
+                       asp-route-durum="@(ViewBag.SeciliDurum ?? "")"
+                       asp-route-sayfa="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var aramaKutusu = document.querySelector('input[name="ara"]');
+            var form = aramaKutusu.closest('form');
+            var zamanlayici;
+
+            aramaKutusu.addEventListener('input', function () {
+                clearTimeout(zamanlayici);
+                zamanlayici = setTimeout(function () {
+                    form.submit();
+                }, 400);
+            });
+        });
+    </script>
+}

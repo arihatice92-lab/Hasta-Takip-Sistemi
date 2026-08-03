@@ -21,26 +21,43 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Index(
             string? ara,
             string siralama = "AZ",
-            bool? aktif = null,
-            string? brans = null)
+            string aktif = "aktif",
+            string? brans = null,
+            int sayfa = 1)
         {
-            // Sayfa ilk kez açıldıysa sadece aktifleri göstersin diye
-            if (!Request.Query.ContainsKey("aktif"))
+            bool? aktifFiltre = aktif switch
             {
-                aktif = true;
-            }
-            var doktorlar = _doktorBusiness.DoktorAra(
+                "aktif" => true,
+                "pasif" => false,
+                "hepsi" => (bool?)null,
+                _ => true
+            };
+
+            const int sayfaBoyutu = 10;
+            var tumDoktorlar = _doktorBusiness.DoktorAra(
                 ara,
                 siralama,
-                aktif,
+                aktifFiltre,
                 brans);
 
+            int toplamKayit = tumDoktorlar.Count;
+            int toplamSayfa = (int)Math.Ceiling(toplamKayit / (double)sayfaBoyutu);
+
+            if (sayfa < 1) sayfa = 1;
+            if (toplamSayfa > 0 && sayfa > toplamSayfa) sayfa = toplamSayfa;
+
+            var sayfalanmisDoktorlar = tumDoktorlar
+                .Skip((sayfa - 1) * sayfaBoyutu)
+                .Take(sayfaBoyutu)
+                .ToList();
             ViewBag.Ara = ara;
             ViewBag.Siralama = siralama;
             ViewBag.Aktif = aktif;
             ViewBag.Brans = brans;
+            ViewBag.SayfaNo= sayfa;
+            ViewBag.ToplamSayfa= toplamSayfa;
 
-            return View(doktorlar);
+            return View(sayfalanmisDoktorlar);
         }
 
         // GET: /Doktor/Detay/5

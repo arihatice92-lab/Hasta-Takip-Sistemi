@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Randevu Oluştur";
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    var saatler = (List<HastaTakip.Entities.RandevuSaat>)ViewBag.SaatListesi;
+    var seciliHasta = (HastaTakip.Entities.Hasta?)ViewBag.SeciliHasta;
+}
+
+<h2>Randevu Oluştur</h2>
+
+@if (ViewBag.HataMesaji != null)
+{
+    <div class="alert alert-danger">@ViewBag.HataMesaji</div>
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Ekle" method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Hasta TC Kimlik No</label>
+        <input type="text" name="hastaTC" maxlength="11" class="form-control" value="@seciliHasta?.HastaTC" required />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Hastayı Bul</button>
+    </div>
+</form>
+
+@if (seciliHasta != null)
+{
+    <div class="alert alert-info">
+        <strong>Hasta:</strong> @seciliHasta.HastaAd @seciliHasta.HastaSoyad (@seciliHasta.HastaDosyaNo)
+    </div>
+
+    <form asp-action="Ekle" method="post">
+        <input type="hidden" name="hastaTC" value="@seciliHasta.HastaTC" />
+
+        <div class="mb-3">
+            <label class="form-label">Doktor <span style="color:red">*</span></label>
+            <select name="doktorID" class="form-select" required>
+                <option value="">Seçiniz</option>
+                @foreach (var doktor in doktorlar)
+                {
+                    <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad (@doktor.DoktorBrans)</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Randevu Tarihi <span style="color:red">*</span></label>
+            <input type="date" name="randevuTarih" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Saat <span style="color:red">*</span></label>
+            <select name="saatID" class="form-select" required>
+                <option value="">Seçiniz</option>
+                @foreach (var saat in saatler)
+                {
+                    <option value="@saat.SaatID">@saat.RandevuBaslangicSaat.ToString(@"hh\:mm") - @saat.RandevuBitisSaat.ToString(@"hh\:mm")</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Randevu Oluştur</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+}

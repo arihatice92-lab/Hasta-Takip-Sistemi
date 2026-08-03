@@ -20,9 +20,21 @@
     <div class="col-md-4 mb-3">
         <div class="card h-100">
             <div class="card-body">
+                <h5 class="card-title">Doktor Yönetimi</h5>
+                <p class="card-text">Doktor kaydı oluşturun, listeleyin ve bilgilerini güncelleyin.</p>
+                <a asp-controller="Doktor" asp-action="Index" class="btn btn-primary">Doktor Listesi</a>
+                <a asp-controller="Doktor" asp-action="Ekle" class="btn btn-outline-primary">Yeni Doktor</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
                 <h5 class="card-title">Randevular</h5>
-                <p class="card-text">Randevu takvimini görüntüleyin ve yeni randevu oluşturun.</p>
-                <a class="btn btn-secondary disabled">Yakında</a>
+                <p class="card-text">Randevu oluşturun, listeleyin ve durumlarını yönetin.</p>
+                <a asp-controller="Randevu" asp-action="Index" class="btn btn-primary">Randevu Listesi</a>
+                <a asp-controller="Randevu" asp-action="Ekle" class="btn btn-outline-primary">Yeni Randevu</a>
             </div>
         </div>
     </div>
