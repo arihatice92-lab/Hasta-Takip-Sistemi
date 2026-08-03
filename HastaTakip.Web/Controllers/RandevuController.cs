@@ -67,7 +67,23 @@ namespace HastaTakip.Web.Controllers
 
             return View(randevular);
         }
+        public IActionResult Takvim(short? doktorID, DateTime? tarih, string? hastaTC)
+        {
+            ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+            ViewBag.SeciliDoktorID = doktorID;
+            ViewBag.HastaTC = hastaTC;
 
+            var seciliTarih = tarih ?? DateTime.Today;
+            ViewBag.SeciliTarih = seciliTarih;
+
+            if (doktorID.HasValue)
+            {
+                var slotlar = _randevuBusiness.DoktorGunlukTakvimGetir(doktorID.Value, seciliTarih);
+                return View(slotlar);
+            }
+
+            return View(new List<HastaTakip.Entities.DoktorTakvimSlotu>());
+        }
         // GET: /Randevu/Detay/5
         public IActionResult Detay(int randevuTarihID)
         {
@@ -86,7 +102,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         /// GET: /Randevu/Ekle?hastaTC=12345678901
-        public IActionResult Ekle(string? hastaTC)
+        public IActionResult Ekle(string? hastaTC, short? doktorID, DateTime? tarih, byte? saatID)
         {
             Hasta? seciliHasta = null;
 
@@ -102,6 +118,9 @@ namespace HastaTakip.Web.Controllers
             ViewBag.SeciliHasta = seciliHasta;
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             ViewBag.SaatListesi = _randevuSaatBusiness.SaatleriListele();
+            ViewBag.OnSeciliDoktorID = doktorID;
+            ViewBag.OnSeciliTarih = tarih;
+            ViewBag.OnSeciliSaatID = saatID;
 
             return View();
         }

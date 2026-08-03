@@ -14,6 +14,9 @@
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 <form asp-action="Ekle" method="get" class="row g-3 mb-4">
+    <input type="hidden" name="doktorID" value="@ViewBag.OnSeciliDoktorID" />
+    <input type="hidden" name="tarih" value="@(((DateTime?)ViewBag.OnSeciliTarih)?.ToString("yyyy-MM-dd"))" />
+    <input type="hidden" name="saatID" value="@ViewBag.OnSeciliSaatID" />
     <div class="col-md-4">
         <label class="form-label">Hasta TC Kimlik No</label>
         <input type="text" name="hastaTC" maxlength="11" class="form-control" value="@seciliHasta?.HastaTC" required />
@@ -38,14 +41,18 @@
                 <option value="">Seçiniz</option>
                 @foreach (var doktor in doktorlar)
                 {
-                    <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad (@doktor.DoktorBrans)</option>
+                    <option value="@doktor.DoktorID"
+                            selected="@(ViewBag.OnSeciliDoktorID != null && (short)ViewBag.OnSeciliDoktorID == doktor.DoktorID)">
+                        @doktor.DoktorAd @doktor.DoktorSoyad (@doktor.DoktorBrans)
+                    </option>
                 }
             </select>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Randevu Tarihi <span style="color:red">*</span></label>
-            <input type="date" name="randevuTarih" class="form-control" required />
+            <input type="date" name="randevuTarih" class="form-control" required
+                   value="@(((DateTime?)ViewBag.OnSeciliTarih)?.ToString("yyyy-MM-dd"))" />
         </div>
 
         <div class="mb-3">
@@ -54,9 +61,17 @@
                 <option value="">Seçiniz</option>
                 @foreach (var saat in saatler)
                 {
-                    <option value="@saat.SaatID">@saat.RandevuBaslangicSaat.ToString(@"hh\:mm") - @saat.RandevuBitisSaat.ToString(@"hh\:mm")</option>
+                    <option value="@saat.SaatID"
+                            selected="@(ViewBag.OnSeciliSaatID != null && (byte)ViewBag.OnSeciliSaatID == saat.SaatID)">
+                        @saat.RandevuBaslangicSaat.ToString(@"hh\:mm") - @saat.RandevuBitisSaat.ToString(@"hh\:mm")
+                    </option>
                 }
             </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <a asp-action="Takvim" asp-route-hastaTC="@seciliHasta?.HastaTC" class="btn btn-outline-primary w-100">
+                Doktor Takvimini Görüntüle
+            </a>
         </div>
 
         <button type="submit" class="btn btn-primary">Randevu Oluştur</button>

@@ -100,7 +100,33 @@ namespace HastaTakip.DataAccess
 
             return (randevular, toplamKayit);
         }
+        public List<DoktorTakvimSlotu> DoktorGunlukTakvimGetir(short doktorID, DateTime tarih)
+        {
+            var slotlar = new List<DoktorTakvimSlotu>();
 
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_DoktorGunlukTakvim", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@DoktorID", doktorID);
+            command.Parameters.AddWithValue("@Tarih", tarih);
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                slotlar.Add(new DoktorTakvimSlotu
+                {
+                    SaatID = (byte)reader["saatID"],
+                    BaslangicSaat = (TimeSpan)reader["randevuBaslangicSaat"],
+                    BitisSaat = (TimeSpan)reader["randevuBitisSaat"],
+                    RandevuTarihID = reader["randevuTarihID"] == DBNull.Value ? null : (int?)reader["randevuTarihID"],
+                    HastaTC = reader["hastaTC"] == DBNull.Value ? null : reader["hastaTC"].ToString(),
+                    RandevuDurum = reader["randevuDurum"] == DBNull.Value ? null : reader["randevuDurum"].ToString()
+                });
+            }
+
+            return slotlar;
+        }
         public void RandevuDurumGuncelle(int randevuTarihID, string yeniDurum)
         {
             using var connection = _dbHelper.GetConnection();

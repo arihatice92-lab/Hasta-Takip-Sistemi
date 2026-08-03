@@ -50,6 +50,11 @@ namespace HastaTakip.Business
         {
             return _randevuDal.RandevuListele(ara, siralama, baslangicTarihi, bitisTarihi, doktorID, hastaTC, durum, sayfa, sayfaBoyutu);
         }
+
+        public List<DoktorTakvimSlotu> DoktorGunlukTakvimGetir(short doktorID, DateTime tarih)
+        {
+            return _randevuDal.DoktorGunlukTakvimGetir(doktorID, tarih);
+        }
         public void RandevuIptalEt(int randevuTarihID)
         {
             _randevuDal.RandevuDurumGuncelle(randevuTarihID, "İptal");

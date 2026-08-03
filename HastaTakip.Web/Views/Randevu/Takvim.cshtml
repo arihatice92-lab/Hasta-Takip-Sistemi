@@ -1,0 +1,71 @@
+﻿@model List<HastaTakip.Entities.DoktorTakvimSlotu>
+
+@{
+    ViewData["Title"] = "Doktor Takvimi";
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    short? seciliDoktorID = ViewBag.SeciliDoktorID;
+    DateTime seciliTarih = ViewBag.SeciliTarih;
+}
+
+<h2>Doktor Takvimi</h2>
+
+<form asp-action="Takvim" method="get" class="row g-3 mb-4">
+    <input type="hidden" name="hastaTC" value="@ViewBag.HastaTC" />
+    <div class="col-md-4">
+        <label class="form-label">Doktor</label>
+        <select name="doktorID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var doktor in doktorlar)
+            {
+                <option value="@doktor.DoktorID" selected="@(doktor.DoktorID == seciliDoktorID)">
+                    @doktor.DoktorAd @doktor.DoktorSoyad (@doktor.DoktorBrans)
+                </option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Tarih</label>
+        <input type="date" name="tarih" value="@seciliTarih.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Göster</button>
+    </div>
+</form>
+
+@if (seciliDoktorID.HasValue)
+{
+    if (Model.Count == 0)
+    {
+        <p class="text-muted">Bu tarih için tanımlı randevu saati bulunamadı.</p>
+    }
+    else
+    {
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var slot in Model)
+            {
+                var saatMetin = slot.BaslangicSaat.ToString(@"hh\:mm") + " - " + slot.BitisSaat.ToString(@"hh\:mm");
+
+                if (slot.Dolu)
+                {
+                    <div class="p-3 rounded text-white text-center" style="background-color:#dc3545; min-width:140px;">
+                        <strong>@saatMetin</strong><br />
+                        <small>Dolu</small>
+                    </div>
+                }
+                else
+                {
+                    <a asp-action="Ekle"
+                       asp-route-doktorID="@seciliDoktorID"
+                       asp-route-tarih="@seciliTarih.ToString("yyyy-MM-dd")"
+                       asp-route-saatID="@slot.SaatID"
+                       asp-route-hastaTC="@ViewBag.HastaTC"
+                       class="p-3 rounded text-white text-center text-decoration-none"
+                       style="background-color:#198754; min-width:140px;">
+                        <strong>@saatMetin</strong><br />
+                        <small>Müsait</small>
+                    </a>
+                }
+            }
+        </div>
+    }
+}
