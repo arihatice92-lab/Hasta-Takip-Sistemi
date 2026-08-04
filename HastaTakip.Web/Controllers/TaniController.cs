@@ -35,7 +35,7 @@ namespace HastaTakip.Web.Controllers
         {
             _hastaTaniBusiness.HastaTaniEkle(hastaTani);
             TempData["BasariMesaji"] = "Tanı kaydedildi.";
-            return RedirectToAction("Detay", "Hasta", new { tc = hastaTani.HastaTC });
+            return RedirectToAction("Detay", "Hasta", new { tc = hastaTani.HastaTC, tab = "taniTedavi"});
         }
 
         // GET: /Tani/Guncelle/5
@@ -58,7 +58,7 @@ namespace HastaTakip.Web.Controllers
         {
             _hastaTaniBusiness.HastaTaniGuncelle(hastaTani);
             TempData["BasariMesaji"] = "Tanı güncellendi.";
-            return RedirectToAction("Detay", "Hasta", new { tc = hastaTani.HastaTC });
+            return RedirectToAction("Detay", "Hasta", new { tc = hastaTani.HastaTC, tab = "taniTedavi" });
         }
     }
 }
