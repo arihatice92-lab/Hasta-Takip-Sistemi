@@ -25,6 +25,8 @@ namespace HastaTakip.Web.Controllers
         private readonly TestAltKumeBusiness _testAltKumeBusiness;
 
         private readonly AltKumeSonucBusiness _altKumeSonucBusiness;
+
+        private readonly RandevuNotuBusiness _randevuNotuBusiness;
         public HastaController(
             HastaBusiness hastaBusiness, 
             RandevuBusiness randevuBusiness,
@@ -40,7 +42,8 @@ namespace HastaTakip.Web.Controllers
             OlcekBusiness olcekBusiness,
             PsikologBusiness psikologBusiness,
             TestAltKumeBusiness testAltKumeBusiness,
-            AltKumeSonucBusiness altKumeSonucBusiness)
+            AltKumeSonucBusiness altKumeSonucBusiness,
+            RandevuNotuBusiness randevuNotuBusiness)
         {
             _hastaBusiness = hastaBusiness;
             _randevuBusiness = randevuBusiness;
@@ -57,6 +60,7 @@ namespace HastaTakip.Web.Controllers
             _psikologBusiness = psikologBusiness;
             _testAltKumeBusiness = testAltKumeBusiness;
             _altKumeSonucBusiness = altKumeSonucBusiness;
+            _randevuNotuBusiness = randevuNotuBusiness;
         }
         public IActionResult Index(
             string? ara,
@@ -124,6 +128,8 @@ namespace HastaTakip.Web.Controllers
                 ts => ts.TestSonucID,
                 ts => _altKumeSonucBusiness.AltKumeSonuclariListele(ts.TestSonucID));
             ViewBag.AltKumeAdSozlugu = _testAltKumeBusiness.TumAltKumeleriListele().ToDictionary(a => a.TestAltKumeID);
+            ViewBag.RandevuNotlari = _randevuNotuBusiness.HastaRandevuNotlariListele(tc);
+            ViewBag.RandevuSozlugu = randevular.ToDictionary(r => r.RandevuTarihID);
             return View(hasta);
         }
 

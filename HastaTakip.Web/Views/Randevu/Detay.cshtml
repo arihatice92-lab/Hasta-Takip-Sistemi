@@ -28,5 +28,30 @@
     <dt class="col-sm-3">Oluşturma Tarihi</dt>
     <dd class="col-sm-9">@Model.RandevuOlusturmaTarihi.ToString("dd.MM.yyyy")</dd>
 </dl>
+@{
+    var randevuNotu = (HastaTakip.Entities.RandevuNotu?)ViewBag.RandevuNotu;
+}
 
+<hr />
+<h5>Randevu Notu</h5>
+
+@if (randevuNotu == null)
+{
+    <p class="text-muted">Bu randevu için henüz not girilmemiş.</p>
+    <a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-sm btn-primary">Randevu Notu Ekle</a>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Görüşme Tipi</dt>
+        <dd class="col-sm-9">@(randevuNotu.GorusmeTipi ?? "-")</dd>
+
+        <dt class="col-sm-3">Görüşme Notu</dt>
+        <dd class="col-sm-9">@(randevuNotu.GorusmeNotu ?? "-")</dd>
+
+        <dt class="col-sm-3">Sonraki Randevu Tarihi</dt>
+        <dd class="col-sm-9">@(randevuNotu.SonrakiRandevuTarihi?.ToString("dd.MM.yyyy") ?? "-")</dd>
+    </dl>
+    <a asp-controller="RandevuNotu" asp-action="Guncelle" asp-route-randevuNotID="@randevuNotu.RandevuNotID" class="btn btn-sm btn-warning">Notu Düzenle</a>
+}
 <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

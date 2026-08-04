@@ -10,8 +10,8 @@ namespace HastaTakip.Entities
         public string HastaTC { get; set; } = string.Empty;
         public short DoktorID { get; set; }
         public int RandevuTarihID { get; set; }
-        public string GorusmeTipi { get; set; } = string.Empty;
-        public string GorusmeNotu { get; set; } = string.Empty;
+        public string? GorusmeTipi { get; set; }
+        public string? GorusmeNotu { get; set; }
         public DateTime? SonrakiRandevuTarihi { get; set; }
     }
 }

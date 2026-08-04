@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Randevu Notu Ekle";
+}
+
+<h2>Randevu Notu Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+    <input type="hidden" name="DoktorID" value="@ViewBag.DoktorID" />
+    <input type="hidden" name="RandevuTarihID" value="@ViewBag.RandevuTarihID" />
+
+    <div class="mb-3">
+        <label class="form-label">Görüşme Tipi</label>
+        <select name="GorusmeTipi" class="form-select">
+            <option value="">Seçiniz</option>
+            <option value="İlk Görüşme">İlk Görüşme</option>
+            <option value="Kontrol">Kontrol</option>
+            <option value="Aile Görüşmesi">Aile Görüşmesi</option>
+            <option value="Reçete">Reçete</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Görüşme Notu</label>
+        <textarea name="GorusmeNotu" class="form-control" rows="5"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Sonraki Randevu Tarihi</label>
+        <input type="date" name="SonrakiRandevuTarihi" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-controller="Randevu" asp-action="Detay" asp-route-randevuTarihID="@ViewBag.RandevuTarihID" class="btn btn-secondary">İptal</a>
+</form>

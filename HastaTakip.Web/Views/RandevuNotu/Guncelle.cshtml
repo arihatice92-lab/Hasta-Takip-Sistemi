@@ -1,0 +1,39 @@
+﻿@model HastaTakip.Entities.RandevuNotu
+
+@{
+    ViewData["Title"] = "Randevu Notu Güncelle";
+}
+
+<h2>Randevu Notu Güncelle</h2>
+
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="RandevuNotID" />
+    <input type="hidden" asp-for="HastaTC" />
+    <input type="hidden" asp-for="DoktorID" />
+    <input type="hidden" asp-for="RandevuTarihID" />
+
+    <div class="mb-3">
+        <label class="form-label">Görüşme Tipi</label>
+        <select asp-for="GorusmeTipi" class="form-select">
+            <option value="">Seçiniz</option>
+            <option value="">Seçiniz</option>
+            <option value="İlk Görüşme">İlk Görüşme</option>
+            <option value="Kontrol">Kontrol</option>
+            <option value="Aile Görüşmesi">Aile Görüşmesi</option>
+            <option value="Reçete">Reçete</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Görüşme Notu</label>
+        <textarea asp-for="GorusmeNotu" class="form-control" rows="5"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Sonraki Randevu Tarihi</label>
+        <input asp-for="SonrakiRandevuTarihi" type="date" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+    <a asp-controller="Randevu" asp-action="Detay" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-secondary">İptal</a>
+</form>

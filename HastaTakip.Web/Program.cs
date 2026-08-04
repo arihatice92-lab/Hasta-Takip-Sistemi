@@ -60,6 +60,9 @@ builder.Services.AddScoped<TestAltKumeBusiness>();
 builder.Services.AddScoped<AltKumeSonucDal>();
 builder.Services.AddScoped<AltKumeSonucBusiness>();
 
+builder.Services.AddScoped<RandevuNotuDal>();
+builder.Services.AddScoped<RandevuNotuBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

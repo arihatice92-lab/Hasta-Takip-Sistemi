@@ -105,7 +105,9 @@
                 <td>
                     @if (hastalar.TryGetValue(randevu.HastaTC, out var hasta))
                     {
-                        @($"{hasta.HastaAd} {hasta.HastaSoyad}")
+                        <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@hasta.HastaTC">
+                        @hasta.HastaAd @hasta.HastaSoyad
+                        </a>
                     }
                 </td>
                 
