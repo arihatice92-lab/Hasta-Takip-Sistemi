@@ -1,0 +1,93 @@
+﻿@using System.Text.Json
+@using System.Linq
+@{
+    ViewData["Title"] = "Test Sonucu Ekle";
+    var testler = (List<HastaTakip.Entities.Test>)ViewBag.TestListesi;
+    var psikologlar = (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi;
+    var tumAltKumeler = (List<HastaTakip.Entities.TestAltKume>)ViewBag.TumAltKumeler;
+
+    var altKumeGruplari = tumAltKumeler
+        .Where(a => a.TestID.HasValue)
+        .GroupBy(a => a.TestID!.Value)
+        .ToDictionary(
+            g => g.Key.ToString(),
+            g => g.Select(a => new { id = a.TestAltKumeID, ad = a.TestAltKumeAdi }).ToList());
+    var altKumeJson = JsonSerializer.Serialize(altKumeGruplari);
+}
+
+<h2>Test Sonucu Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+
+    <div class="mb-3">
+        <label class="form-label">Psikolog <span style="color:red">*</span></label>
+        <select name="PsikologID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var p in psikologlar)
+            {
+                <option value="@p.PsikologID">@p.PsikologAd @p.PsikologSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Test <span style="color:red">*</span></label>
+        <select name="TestID" id="testSecimi" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var t in testler)
+            {
+                <option value="@t.TestID">@t.TestAdi</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Test Tarihi <span style="color:red">*</span></label>
+        <input type="date" name="TestTarih" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Genel Sonuç</label>
+        <input name="SonucDegeri" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Genel Değerlendirme</label>
+        <textarea name="TestDegerlendirme" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div id="altKumeAlanlari" class="mb-3"></div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" asp-route-tab="testOlcek" class="btn btn-secondary">İptal</a>
+</form>
+
+@section Scripts {
+    <script>
+        var altKumeVerisi = @Html.Raw(altKumeJson);
+
+        document.getElementById('testSecimi').addEventListener('change', function() {
+            var testID = this.value;
+            var container = document.getElementById('altKumeAlanlari');
+            container.innerHTML = '';
+
+            if (altKumeVerisi[testID]) {
+                var baslik = document.createElement('h6');
+                baslik.textContent = 'Alt Küme Sonuçları';
+                container.appendChild(baslik);
+
+                altKumeVerisi[testID].forEach(function(altKume) {
+                    var satir = document.createElement('div');
+                    satir.className = 'row mb-2 align-items-center';
+                    satir.innerHTML =
+                        '<input type="hidden" name="altKumeID" value="' + altKume.id + '" />' +
+                        '<div class="col-md-3"><label class="form-label mb-0">' + altKume.ad + '</label></div>' +
+                        '<div class="col-md-4"><input type="text" name="altKumeSonuc" class="form-control form-control-sm" placeholder="Sonuç" /></div>' +
+                        '<div class="col-md-5"><input type="text" name="altKumeYorum" class="form-control form-control-sm" placeholder="Yorum" /></div>';
+                    container.appendChild(satir);
+                });
+            }
+        });
+    </script>
+}

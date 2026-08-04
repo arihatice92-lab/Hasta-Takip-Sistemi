@@ -12,7 +12,7 @@ namespace HastaTakip.Entities
         public byte OlcekID { get; set; }
         public DateTime OlcekTarih { get; set; }
         public byte? OlcekPuan { get; set; }
-        public string OlcekYorum { get; set; } = string.Empty;
-        public string OlcekUygulanan { get; set; } = string.Empty;
+        public string? OlcekYorum { get; set; }
+        public string? OlcekUygulanan { get; set; }
     }
 }

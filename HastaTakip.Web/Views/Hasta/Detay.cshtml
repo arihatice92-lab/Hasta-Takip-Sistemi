@@ -162,9 +162,128 @@
     </div>
 
     <div class="tab-pane fade" id="testOlcek">
-        <p class="text-muted">Yakında — Test ve ölçek sonuçları burada listelenecek.</p>
-    </div>
+    @{
+        var testSonuclari = (List<HastaTakip.Entities.TestSonuc>)ViewBag.TestSonuclari;
+        var olcekSonuclari = (List<HastaTakip.Entities.OlcekSonuc>)ViewBag.OlcekSonuclari;
+        var testSozlugu = (Dictionary<byte, HastaTakip.Entities.Test>)ViewBag.TestSozlugu;
+        var olcekSozlugu = (Dictionary<byte, HastaTakip.Entities.Olcek>)ViewBag.OlcekSozlugu;
+        var psikologSozlugu = (Dictionary<byte, HastaTakip.Entities.Psikolog>)ViewBag.PsikologSozlugu;
+        var altKumeSonuclariSozluk = (Dictionary<int, List<HastaTakip.Entities.AltKumeSonuc>>)ViewBag.AltKumeSonuclariSozluk;
+        var altKumeAdSozlugu = (Dictionary<byte, HastaTakip.Entities.TestAltKume>)ViewBag.AltKumeAdSozlugu;
+    }
 
+    <h5>Test Sonuçları</h5>
+    <a asp-controller="TestSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Test Sonucu Ekle</a>
+
+    @if (testSonuclari.Count == 0)
+    {
+        <p class="text-muted">Kayıtlı test sonucu bulunmuyor.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Test</th>
+                        <th>Psikolog</th>
+                        <th>Sonuç</th>
+                        <th>Değerlendirme</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ts in testSonuclari)
+                    {
+                        <tr>
+                            <td>@ts.TestTarih.ToString("dd.MM.yyyy")</td>
+                            <td>@(testSozlugu.TryGetValue(ts.TestID, out var test) ? test.TestAdi : "-")</td>
+                            <td>@(psikologSozlugu.TryGetValue(ts.PsikologID, out var psi) ? $"{psi.PsikologAd} {psi.PsikologSoyad}" : "-")</td>
+                            <td>@(ts.SonucDegeri ?? "-")</td>
+                            <td>@(ts.TestDegerlendirme ?? "-")</td>
+                            <td>
+                                <a asp-controller="TestSonuc" asp-action="Guncelle" asp-route-testSonucID="@ts.TestSonucID" class="btn btn-sm btn-warning">Düzenle</a>
+                            </td>
+                        </tr>
+
+                            var altKumeler = altKumeSonuclariSozluk.TryGetValue(ts.TestSonucID, out var akList)
+                                ? akList
+                                : new List<HastaTakip.Entities.AltKumeSonuc>();
+                        
+                        @if (altKumeler.Count > 0)
+                        {
+                            <tr>
+                                <td></td>
+                                <td colspan="5">
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead>
+                                            <tr><th>Alt Küme</th><th>Sonuç</th><th>Yorum</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var ak in altKumeler)
+                                            {
+                                                <tr>
+                                                    <td>@(altKumeAdSozlugu.TryGetValue(ak.AltKumeID, out var akAd) ? akAd.TestAltKumeAdi : "-")</td>
+                                                    <td>@(ak.AltKumeSonucDeger ?? "-")</td>
+                                                    <td>@(ak.AltKumeYorum ?? "-")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <hr />
+
+    <h5>Ölçek Sonuçları</h5>
+    <a asp-controller="OlcekSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Ölçek Sonucu Ekle</a>
+    @if (olcekSonuclari.Count == 0)
+    {
+        <p class="text-muted">Kayıtlı ölçek sonucu bulunmuyor.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Ölçek</th>
+                        <th>Doktor</th>
+                        <th>Puan</th>
+                        <th>Yorum</th>
+                        <th>Uygulanan</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var os in olcekSonuclari)
+                    {
+                        <tr>
+                            <td>@os.OlcekTarih.ToString("dd.MM.yyyy")</td>
+                            <td>@(olcekSozlugu.TryGetValue(os.OlcekID, out var olcek) ? olcek.OlcekAdi : "-")</td>
+                            <td>@(doktorlarSozluk.TryGetValue(os.DoktorID, out var d3) ? $"{d3.DoktorAd} {d3.DoktorSoyad}" : "-")</td>
+                            <td>@(os.OlcekPuan?.ToString() ?? "-")</td>
+                            <td>@(os.OlcekYorum ?? "-")</td>
+                            <td>@(os.OlcekUygulanan ?? "-")</td>
+                            <td>
+                                <a asp-controller="OlcekSonuc" asp-action="Guncelle" asp-route-olcekSonucID="@os.OlcekSonucID" class="btn btn-sm btn-warning">Düzenle</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+    
     <div class="tab-pane fade" id="aileGelisim">
         <p class="text-muted">Yakında — Aile bilgileri ve gelişimsel öykü burada görüntülenecek.</p>
     </div>

@@ -11,7 +11,7 @@ namespace HastaTakip.Entities
         public byte PsikologID { get; set; }
         public byte TestID { get; set; }
         public DateTime TestTarih { get; set; }
-        public string SonucDegeri { get; set; } = string.Empty;
-        public string TestDegerlendirme { get; set; } = string.Empty;
+        public string? SonucDegeri { get; set; }
+        public string? TestDegerlendirme { get; set; }
     }
 }

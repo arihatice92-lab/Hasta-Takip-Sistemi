@@ -1,0 +1,117 @@
+﻿@using System.Text.Json
+@using System.Linq
+@model HastaTakip.Entities.TestSonuc
+
+@{
+    ViewData["Title"] = "Test Sonucu Güncelle";
+    var testler = (List<HastaTakip.Entities.Test>)ViewBag.TestListesi;
+    var psikologlar = (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi;
+    var tumAltKumeler = (List<HastaTakip.Entities.TestAltKume>)ViewBag.TumAltKumeler;
+    var mevcutAltKumeler = (List<HastaTakip.Entities.AltKumeSonuc>)ViewBag.MevcutAltKumeSonuclari;
+
+    var altKumeGruplari = tumAltKumeler
+        .Where(a => a.TestID.HasValue)
+        .GroupBy(a => a.TestID!.Value)
+        .ToDictionary(
+            g => g.Key.ToString(),
+            g => g.Select(a => new { id = a.TestAltKumeID, ad = a.TestAltKumeAdi }).ToList());
+    var altKumeJson = JsonSerializer.Serialize(altKumeGruplari);
+
+    var buTestinAltKumeleri = tumAltKumeler.Where(a => a.TestID == Model.TestID).ToList();
+}
+
+<h2>Test Sonucu Güncelle</h2>
+
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="TestSonucID" />
+    <input type="hidden" asp-for="HastaTC" />
+
+    <div class="mb-3">
+        <label class="form-label">Psikolog <span style="color:red">*</span></label>
+        <select asp-for="PsikologID" class="form-select" required>
+            @foreach (var p in psikologlar)
+            {
+                <option value="@p.PsikologID">@p.PsikologAd @p.PsikologSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Test <span style="color:red">*</span></label>
+        <select asp-for="TestID" id="testSecimi" class="form-select" required>
+            @foreach (var t in testler)
+            {
+                <option value="@t.TestID">@t.TestAdi</option>
+            }
+        </select>
+        <small class="text-muted">Testi değiştirirseniz alt küme alanları sıfırlanır.</small>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Test Tarihi <span style="color:red">*</span></label>
+        <input asp-for="TestTarih" type="date" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Genel Sonuç</label>
+        <input asp-for="SonucDegeri" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Genel Değerlendirme</label>
+        <textarea asp-for="TestDegerlendirme" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div id="altKumeAlanlari" class="mb-3">
+        @if (buTestinAltKumeleri.Count > 0)
+        {
+            <h6>Alt Küme Sonuçları</h6>
+            @foreach (var ak in buTestinAltKumeleri)
+            {
+                var mevcut = mevcutAltKumeler.FirstOrDefault(m => m.AltKumeID == ak.TestAltKumeID);
+                <div class="row mb-2 align-items-center">
+                    <input type="hidden" name="altKumeID" value="@ak.TestAltKumeID" />
+                    <div class="col-md-3"><label class="form-label mb-0">@ak.TestAltKumeAdi</label></div>
+                    <div class="col-md-4">
+                        <input type="text" name="altKumeSonuc" value="@mevcut?.AltKumeSonucDeger" class="form-control form-control-sm" placeholder="Sonuç" />
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="altKumeYorum" value="@mevcut?.AltKumeYorum" class="form-control form-control-sm" placeholder="Yorum" />
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@Model.HastaTC" asp-route-tab="testOlcek" class="btn btn-secondary">İptal</a>
+</form>
+
+@section Scripts {
+    <script>
+        var altKumeVerisi = @Html.Raw(altKumeJson);
+
+        document.getElementById('testSecimi').addEventListener('change', function() {
+            var testID = this.value;
+            var container = document.getElementById('altKumeAlanlari');
+            container.innerHTML = '';
+
+            if (altKumeVerisi[testID]) {
+                var baslik = document.createElement('h6');
+                baslik.textContent = 'Alt Küme Sonuçları';
+                container.appendChild(baslik);
+
+                altKumeVerisi[testID].forEach(function(altKume) {
+                    var satir = document.createElement('div');
+                    satir.className = 'row mb-2 align-items-center';
+                    satir.innerHTML =
+                        '<input type="hidden" name="altKumeID" value="' + altKume.id + '" />' +
+                        '<div class="col-md-3"><label class="form-label mb-0">' + altKume.ad + '</label></div>' +
+                        '<div class="col-md-4"><input type="text" name="altKumeSonuc" class="form-control form-control-sm" placeholder="Sonuç" /></div>' +
+                        '<div class="col-md-5"><input type="text" name="altKumeYorum" class="form-control form-control-sm" placeholder="Yorum" /></div>';
+                    container.appendChild(satir);
+                });
+            }
+        });
+    </script>
+}

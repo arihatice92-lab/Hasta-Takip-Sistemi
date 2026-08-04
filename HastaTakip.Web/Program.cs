@@ -44,6 +44,22 @@ builder.Services.AddScoped<HastaTaniBusiness>();
 builder.Services.AddScoped<HastaTedaviDal>();
 builder.Services.AddScoped<HastaTedaviBusiness>();
 
+builder.Services.AddScoped<TestDal>();
+builder.Services.AddScoped<TestBusiness>();
+builder.Services.AddScoped<OlcekDal>();
+builder.Services.AddScoped<OlcekBusiness>();
+builder.Services.AddScoped<PsikologDal>();
+builder.Services.AddScoped<PsikologBusiness>();
+builder.Services.AddScoped<HastaTestSonucDal>();
+builder.Services.AddScoped<HastaTestSonucBusiness>();
+builder.Services.AddScoped<HastaOlcekSonucDal>();
+builder.Services.AddScoped<HastaOlcekSonucBusiness>();
+
+builder.Services.AddScoped<TestAltKumeDal>();
+builder.Services.AddScoped<TestAltKumeBusiness>();
+builder.Services.AddScoped<AltKumeSonucDal>();
+builder.Services.AddScoped<AltKumeSonucBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

@@ -9,7 +9,8 @@ namespace HastaTakip.Entities
         public int AltKumeSonucID { get; set; }
         public string HastaTC { get; set; } = string.Empty;
         public byte AltKumeID { get; set; }
-        public string AltKumeSonucDeger { get; set; } = string.Empty;
-        public string AltKumeYorum { get; set; } = string.Empty;
+        public int? TestSonucID { get; set; }
+        public string? AltKumeSonucDeger { get; set; }
+        public string? AltKumeYorum { get; set; }
     }
 }

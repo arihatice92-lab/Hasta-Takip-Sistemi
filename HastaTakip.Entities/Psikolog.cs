@@ -7,9 +7,9 @@ namespace HastaTakip.Entities
     public class Psikolog
     {
         public byte PsikologID { get; set; }
-        public string PsikologSicilNo { get; set; } = string.Empty;
-        public string PsikologAd { get; set; } = string.Empty;
-        public string PsikologSoyad { get; set; } = string.Empty;
-        public string PsikologTel { get; set; } = string.Empty;
+        public string? PsikologSicilNo { get; set; }
+        public string? PsikologAd { get; set; }
+        public string? PsikologSoyad { get; set; }
+        public string? PsikologTel { get; set; }
     }
 }

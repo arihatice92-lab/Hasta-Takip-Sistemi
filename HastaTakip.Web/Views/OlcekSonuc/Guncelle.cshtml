@@ -1,0 +1,57 @@
+﻿@model HastaTakip.Entities.OlcekSonuc
+
+@{
+    ViewData["Title"] = "Ölçek Sonucu Güncelle";
+    var olcekler = (List<HastaTakip.Entities.Olcek>)ViewBag.OlcekListesi;
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+}
+
+<h2>Ölçek Sonucu Güncelle</h2>
+
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="OlcekSonucID" />
+    <input type="hidden" asp-for="HastaTC" />
+
+    <div class="mb-3">
+        <label class="form-label">Doktor <span style="color:red">*</span></label>
+        <select asp-for="DoktorID" class="form-select" required>
+            @foreach (var d in doktorlar)
+            {
+                <option value="@d.DoktorID">@d.DoktorAd @d.DoktorSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ölçek <span style="color:red">*</span></label>
+        <select asp-for="OlcekID" class="form-select" required>
+            @foreach (var o in olcekler)
+            {
+                <option value="@o.OlcekID">@o.OlcekAdi</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ölçek Tarihi <span style="color:red">*</span></label>
+        <input asp-for="OlcekTarih" type="date" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Puan</label>
+        <input asp-for="OlcekPuan" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Yorum</label>
+        <input asp-for="OlcekYorum" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Uygulanan</label>
+        <input asp-for="OlcekUygulanan" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@Model.HastaTC" asp-route-tab="testOlcek" class="btn btn-secondary">İptal</a>
+</form>

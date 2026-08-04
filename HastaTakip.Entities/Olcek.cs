@@ -8,6 +8,6 @@ namespace HastaTakip.Entities
     {
         public byte OlcekID { get; set; }
         public string OlcekAdi { get; set; } = string.Empty;
-        public string OlcekBilgi { get; set; } = string.Empty;
+        public string? OlcekBilgi { get; set; }
     }
 }

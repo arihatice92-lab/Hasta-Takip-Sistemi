@@ -1,0 +1,57 @@
+﻿@* Ekle.cshtml *@
+@{
+    ViewData["Title"] = "Ölçek Sonucu Ekle";
+    var olcekler = (List<HastaTakip.Entities.Olcek>)ViewBag.OlcekListesi;
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+}
+
+<h2>Ölçek Sonucu Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+
+    <div class="mb-3">
+        <label class="form-label">Doktor <span style="color:red">*</span></label>
+        <select name="DoktorID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var d in doktorlar)
+            {
+                <option value="@d.DoktorID">@d.DoktorAd @d.DoktorSoyad</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ölçek <span style="color:red">*</span></label>
+        <select name="OlcekID" class="form-select" required>
+            <option value="">Seçiniz</option>
+            @foreach (var o in olcekler)
+            {
+                <option value="@o.OlcekID">@o.OlcekAdi</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ölçek Tarihi <span style="color:red">*</span></label>
+        <input type="date" name="OlcekTarih" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Puan</label>
+        <input type="number" name="OlcekPuan" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Yorum</label>
+        <input name="OlcekYorum" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Uygulanan</label>
+        <input name="OlcekUygulanan" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" asp-route-tab="testOlcek" class="btn btn-secondary">İptal</a>
+</form>
