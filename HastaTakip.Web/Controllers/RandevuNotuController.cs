@@ -2,6 +2,7 @@
 using HastaTakip.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace HastaTakip.Web.Controllers
 {
@@ -10,14 +11,24 @@ namespace HastaTakip.Web.Controllers
     {
         private readonly RandevuNotuBusiness _randevuNotuBusiness;
         private readonly RandevuBusiness _randevuBusiness;
+        private readonly HastaBusiness _hastaBusiness;
+        private readonly DoktorBusiness _doktorBusiness;
+        private readonly RandevuSaatBusiness _randevuSaatBusiness;
 
-        public RandevuNotuController(RandevuNotuBusiness randevuNotuBusiness, RandevuBusiness randevuBusiness)
+        public RandevuNotuController(
+            RandevuNotuBusiness randevuNotuBusiness,
+            RandevuBusiness randevuBusiness,
+            HastaBusiness hastaBusiness,
+            DoktorBusiness doktorBusiness,
+            RandevuSaatBusiness randevuSaatBusiness)
         {
             _randevuNotuBusiness = randevuNotuBusiness;
             _randevuBusiness = randevuBusiness;
+            _hastaBusiness = hastaBusiness;
+            _doktorBusiness = doktorBusiness;
+            _randevuSaatBusiness = randevuSaatBusiness;
         }
 
-        // GET: /RandevuNotu/Ekle?randevuTarihID=5
         public IActionResult Ekle(int randevuTarihID)
         {
             var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
@@ -26,9 +37,18 @@ namespace HastaTakip.Web.Controllers
                 return NotFound();
             }
 
+            var hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
+            var doktor = _doktorBusiness.DoktorGetir(randevu.DoktorID);
+            var saat = _randevuSaatBusiness.SaatleriListele().FirstOrDefault(s => s.SaatID == randevu.SaatID);
+
             ViewBag.RandevuTarihID = randevuTarihID;
             ViewBag.HastaTC = randevu.HastaTC;
             ViewBag.DoktorID = randevu.DoktorID;
+            ViewBag.HastaAdi = hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : "-";
+            ViewBag.DoktorAdi = doktor != null ? $"{doktor.DoktorAd} {doktor.DoktorSoyad}" : "-";
+            ViewBag.RandevuTarih = randevu.RandevuTarih;
+            ViewBag.SaatMetin = saat != null ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") : "-";
+
             return View();
         }
 
@@ -38,6 +58,16 @@ namespace HastaTakip.Web.Controllers
         {
             _randevuNotuBusiness.RandevuNotuEkle(notu);
             TempData["BasariMesaji"] = "Randevu notu kaydedildi.";
+            if (notu.SonrakiRandevuTarihi.HasValue)
+            {
+                return RedirectToAction("Ekle", "Randevu", new
+                {
+                    hastaTC = notu.HastaTC,
+                    doktorID = notu.DoktorID,
+                    tarih = notu.SonrakiRandevuTarihi.Value.ToString("yyyy-MM-dd"),
+                    kaynak = "randevuNotu"
+                });
+            }
             return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
         }
 
@@ -55,8 +85,26 @@ namespace HastaTakip.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Guncelle(RandevuNotu notu)
         {
+            var mevcutNot = _randevuNotuBusiness.RandevuNotuGetir(notu.RandevuNotID);
+            var eskiSonrakiTarih = mevcutNot?.SonrakiRandevuTarihi;
+
             _randevuNotuBusiness.RandevuNotuGuncelle(notu);
             TempData["BasariMesaji"] = "Randevu notu güncellendi.";
+
+            bool yeniTarihGirildi = notu.SonrakiRandevuTarihi.HasValue
+                && notu.SonrakiRandevuTarihi != eskiSonrakiTarih;
+
+            if (yeniTarihGirildi)
+            {
+                return RedirectToAction("Ekle", "Randevu", new
+                {
+                    hastaTC = notu.HastaTC,
+                    doktorID = notu.DoktorID,
+                    tarih = notu.SonrakiRandevuTarihi!.Value.ToString("yyyy-MM-dd"),
+                    kaynak = "randevuNotu"
+                });
+            }
+
             return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
         }
     }

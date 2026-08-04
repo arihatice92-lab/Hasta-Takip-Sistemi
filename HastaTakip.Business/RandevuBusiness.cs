@@ -15,7 +15,7 @@ namespace HastaTakip.Business
             _randevuDal = randevuDal;
         }
 
-        public void RandevuOlustur(string hastaTC, short doktorID, byte saatID, DateTime tarih)
+        public int RandevuOlustur(string hastaTC, short doktorID, byte saatID, DateTime tarih)
         {
             if (tarih.Date < DateTime.Today)
             {
@@ -24,7 +24,7 @@ namespace HastaTakip.Business
 
             try
             {
-                _randevuDal.RandevuOlustur(hastaTC, doktorID, saatID, tarih);
+                return _randevuDal.RandevuOlustur(hastaTC, doktorID, saatID, tarih);
             }
             catch (SqlException ex) when (ex.Message.Contains("Bu saatte randevu bulunmaktadır"))
             {

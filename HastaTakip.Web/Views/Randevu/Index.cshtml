@@ -93,7 +93,10 @@
     <tbody>
         @foreach (var randevu in Model)
         {
-            <tr>
+            var hastaVarMi = hastalar.TryGetValue(randevu.HastaTC, out var hasta);
+            var detayUrl = hastaVarMi ? Url.Action("Detay", "Hasta", new { tc = hasta!.HastaTC }) : null;
+
+            <tr class="@(detayUrl != null ? "randevu-satiri" : "")" data-href="@detayUrl">
                 <td>@randevu.RandevuTarih.ToString("dd.MM.yyyy")</td>
                 <td>
                     @if (saatler.TryGetValue(randevu.SaatID, out var saat))
@@ -103,14 +106,11 @@
                 </td>
                 <td>@randevu.HastaTC</td>
                 <td>
-                    @if (hastalar.TryGetValue(randevu.HastaTC, out var hasta))
+                    @if (hastaVarMi)
                     {
-                        <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@hasta.HastaTC">
-                        @hasta.HastaAd @hasta.HastaSoyad
-                        </a>
-                    }
+                        @($"{ hasta!.HastaAd} {hasta.HastaSoyad}")
+                }
                 </td>
-                
                 <td>
                     @if (doktorlar.TryGetValue(randevu.DoktorID, out var doktor))
                     {
@@ -190,6 +190,16 @@
                 zamanlayici = setTimeout(function () {
                     form.submit();
                 }, 400);
+            });
+
+            document.querySelectorAll('.randevu-satiri').forEach(function(satir) {
+                satir.style.cursor = 'pointer';
+                satir.addEventListener('click', function(e) {
+                    if (e.target.closest('a, button, form, input, select')) {
+                        return;
+                    }
+                    window.location = satir.dataset.href;
+                });
             });
         });
     </script>

@@ -4,6 +4,17 @@
 
 <h2>Randevu Notu Ekle</h2>
 
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+
+<div class="alert alert-info">
+    <strong>Randevu:</strong> @ViewBag.RandevuTarih.ToString("dd.MM.yyyy") @ViewBag.SaatMetin
+    &mdash; <strong>Hasta:</strong> @ViewBag.HastaAdi
+    &mdash; <strong>Doktor:</strong> @ViewBag.DoktorAdi
+</div>
+
 <form asp-action="Ekle" method="post">
     <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
     <input type="hidden" name="DoktorID" value="@ViewBag.DoktorID" />

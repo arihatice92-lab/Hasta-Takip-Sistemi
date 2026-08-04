@@ -105,7 +105,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         /// GET: /Randevu/Ekle?hastaTC=12345678901
-        public IActionResult Ekle(string? hastaTC, short? doktorID, DateTime? tarih, byte? saatID)
+        public IActionResult Ekle(string? hastaTC, short? doktorID, DateTime? tarih, byte? saatID, string? kaynak)
         {
             Hasta? seciliHasta = null;
 
@@ -124,6 +124,7 @@ namespace HastaTakip.Web.Controllers
             ViewBag.OnSeciliDoktorID = doktorID;
             ViewBag.OnSeciliTarih = tarih;
             ViewBag.OnSeciliSaatID = saatID;
+            ViewBag.Kaynak = kaynak;
 
             return View();
         }
@@ -131,20 +132,28 @@ namespace HastaTakip.Web.Controllers
         // POST: /Randevu/Ekle
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Ekle(string hastaTC, short doktorID, byte saatID, DateTime randevuTarih)
+        public IActionResult Ekle(string hastaTC, short doktorID, byte saatID, DateTime randevuTarih, string? kaynak)
         {
             try
             {
-                _randevuBusiness.RandevuOlustur(hastaTC, doktorID, saatID, randevuTarih);
+                var yeniRandevuTarihID = _randevuBusiness.RandevuOlustur(hastaTC, doktorID, saatID, randevuTarih);
+
+                if (kaynak == "randevuNotu")
+                {
+                    TempData["BasariMesaji"] = "Sonraki randevu başarıyla oluşturuldu.";
+                    return RedirectToAction("Detay", "Hasta", new { tc = hastaTC, tab = "randevuNotlari" });
+                }
+
                 TempData["BasariMesaji"] = "Randevu başarıyla oluşturuldu.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                ViewBag.SeciliHasta = _hastaBusiness.HastaGetir(hastaTC);
+                ViewBag.HastaTC = hastaTC;
                 ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
                 ViewBag.SaatListesi = _randevuSaatBusiness.SaatleriListele();
+                ViewBag.Kaynak = kaynak;
                 return View();
             }
         }

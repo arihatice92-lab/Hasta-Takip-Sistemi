@@ -15,7 +15,7 @@ namespace HastaTakip.DataAccess
             _dbHelper = dbHelper;
         }
 
-        public void RandevuOlustur(string hastaTC, short doktorID, byte saatID, DateTime tarih)
+        public int RandevuOlustur(string hastaTC, short doktorID, byte saatID, DateTime tarih)
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_RandevuOlustur", connection);
@@ -26,8 +26,13 @@ namespace HastaTakip.DataAccess
             command.Parameters.AddWithValue("@SaatID", saatID);
             command.Parameters.AddWithValue("@Tarih", tarih);
 
+            var yeniIDParam = new SqlParameter("@YeniRandevuTarihID", SqlDbType.Int) { Direction = ParameterDirection.Output };
+            command.Parameters.Add(yeniIDParam);
+
             connection.Open();
             command.ExecuteNonQuery();
+
+            return (int)yeniIDParam.Value;
         }
 
         public RandevuTarihi? RandevuGetir(int randevuTarihID)
