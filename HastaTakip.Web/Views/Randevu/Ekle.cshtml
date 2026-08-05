@@ -7,6 +7,10 @@
 
 <h2>Randevu Oluştur</h2>
 
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
 @if (ViewBag.HataMesaji != null)
 {
     <div class="alert alert-danger">@ViewBag.HataMesaji</div>
@@ -18,6 +22,7 @@
     <input type="hidden" name="tarih" value="@(((DateTime?)ViewBag.OnSeciliTarih)?.ToString("yyyy-MM-dd"))" />
     <input type="hidden" name="saatID" value="@ViewBag.OnSeciliSaatID" />
     <input type="hidden" name="kaynak" value="@ViewBag.Kaynak" />
+    <input type="hidden" name="randevuNotID" value="@ViewBag.RandevuNotID" />
     <div class="col-md-4">
         <label class="form-label">Hasta TC Kimlik No</label>
         <input type="text" name="hastaTC" maxlength="11" class="form-control" value="@seciliHasta?.HastaTC" required />
@@ -36,6 +41,7 @@
     <form asp-action="Ekle" method="post">
         <input type="hidden" name="hastaTC" value="@seciliHasta.HastaTC" />
         <input type="hidden" name="kaynak" value="@ViewBag.Kaynak" />
+        <input type="hidden" name="randevuNotID" value="@ViewBag.RandevuNotID" />
 
         <div class="mb-3">
             <label class="form-label">Doktor <span style="color:red">*</span></label>
@@ -77,6 +83,13 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Randevu Oluştur</button>
-        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+        @if (ViewBag.Kaynak == "randevuNotu" && ViewBag.RandevuNotID != null)
+        {
+            <a asp-controller="RandevuNotu" asp-action="Guncelle" asp-route-randevuNotID="@ViewBag.RandevuNotID" class="btn btn-secondary">İptal</a>
+        }
+        else
+        {
+            <a asp-action="Index" class="btn btn-secondary">İptal</a>
+        }
     </form>
 }

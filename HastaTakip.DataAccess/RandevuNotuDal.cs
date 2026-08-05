@@ -11,7 +11,7 @@ namespace HastaTakip.DataAccess
         private readonly DbHelper _dbHelper;
         public RandevuNotuDal(DbHelper dbHelper) { _dbHelper = dbHelper; }
 
-        public void RandevuNotuEkle(RandevuNotu notu)
+        public short RandevuNotuEkle(RandevuNotu notu)
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_RandevuNotuEkle", connection);
@@ -25,10 +25,24 @@ namespace HastaTakip.DataAccess
                 string.IsNullOrWhiteSpace(notu.GorusmeNotu) ? DBNull.Value : (object)notu.GorusmeNotu);
             command.Parameters.AddWithValue("@sonrakiRandevuTarihi",
                 notu.SonrakiRandevuTarihi.HasValue ? (object)notu.SonrakiRandevuTarihi.Value : DBNull.Value);
+            var yeniIDParam = new SqlParameter("@YeniRandevuNotID", SqlDbType.SmallInt) { Direction = ParameterDirection.Output };
+            command.Parameters.Add(yeniIDParam);
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return (short)yeniIDParam.Value;
+        }
+
+        public void SonrakiTarihGuncelle(short randevuNotID, DateTime tarih)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_RandevuNotuSonrakiTarihGuncelle", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@randevuNotID", randevuNotID);
+            command.Parameters.AddWithValue("@sonrakiRandevuTarihi", tarih);
             connection.Open();
             command.ExecuteNonQuery();
         }
-
         public RandevuNotu? RandevuNotuGetir(short randevuNotID)
         {
             using var connection = _dbHelper.GetConnection();

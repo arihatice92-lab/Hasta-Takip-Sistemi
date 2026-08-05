@@ -54,10 +54,15 @@ namespace HastaTakip.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Ekle(RandevuNotu notu)
+        public IActionResult Ekle(RandevuNotu notu, string? randevuDurumu)
         {
-            _randevuNotuBusiness.RandevuNotuEkle(notu);
+            var kullaniciGirdiTarih = notu.SonrakiRandevuTarihi;
+            notu.SonrakiRandevuTarihi = null; // randevu gerçekten oluşana kadar yazmıyoruz
+
+            var yeniRandevuNotID = _randevuNotuBusiness.RandevuNotuEkle(notu);
+            UygulaRandevuDurumu(notu.RandevuTarihID, randevuDurumu);
             TempData["BasariMesaji"] = "Randevu notu kaydedildi.";
+
             if (notu.SonrakiRandevuTarihi.HasValue)
             {
                 return RedirectToAction("Ekle", "Randevu", new
@@ -65,7 +70,9 @@ namespace HastaTakip.Web.Controllers
                     hastaTC = notu.HastaTC,
                     doktorID = notu.DoktorID,
                     tarih = notu.SonrakiRandevuTarihi.Value.ToString("yyyy-MM-dd"),
-                    kaynak = "randevuNotu"
+                    kaynak = "randevuNotu",
+                    randevuNotID = yeniRandevuNotID
+
                 });
             }
             return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
@@ -83,16 +90,19 @@ namespace HastaTakip.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Guncelle(RandevuNotu notu)
+        public IActionResult Guncelle(RandevuNotu notu, string? randevuDurumu)
         {
             var mevcutNot = _randevuNotuBusiness.RandevuNotuGetir(notu.RandevuNotID);
             var eskiSonrakiTarih = mevcutNot?.SonrakiRandevuTarihi;
+            var kullaniciGirdiTarih = notu.SonrakiRandevuTarihi;
+
+            bool yeniTarihGirildi = kullaniciGirdiTarih.HasValue && kullaniciGirdiTarih != eskiSonrakiTarih;
+            notu.SonrakiRandevuTarihi = eskiSonrakiTarih; // randevu oluşana kadar değiştirmiyoruz
 
             _randevuNotuBusiness.RandevuNotuGuncelle(notu);
-            TempData["BasariMesaji"] = "Randevu notu güncellendi.";
+            UygulaRandevuDurumu(notu.RandevuTarihID, randevuDurumu);
 
-            bool yeniTarihGirildi = notu.SonrakiRandevuTarihi.HasValue
-                && notu.SonrakiRandevuTarihi != eskiSonrakiTarih;
+            TempData["BasariMesaji"] = "Randevu notu güncellendi.";
 
             if (yeniTarihGirildi)
             {
@@ -100,12 +110,41 @@ namespace HastaTakip.Web.Controllers
                 {
                     hastaTC = notu.HastaTC,
                     doktorID = notu.DoktorID,
-                    tarih = notu.SonrakiRandevuTarihi!.Value.ToString("yyyy-MM-dd"),
-                    kaynak = "randevuNotu"
+                    tarih = kullaniciGirdiTarih!.Value.ToString("yyyy-MM-dd"),
+                    kaynak = "randevuNotu",
+                    randevuNotID = notu.RandevuNotID
                 });
             }
 
             return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
+        }
+
+        private void UygulaRandevuDurumu(int randevuTarihID, string? randevuDurumu)
+        {
+            if (string.IsNullOrWhiteSpace(randevuDurumu))
+            {
+                return; // "Değiştirme" seçilmiş, dokunmuyoruz
+            }
+
+            try
+            {
+                switch (randevuDurumu)
+                {
+                    case "Tamamlandı":
+                        _randevuBusiness.RandevuTamamlandiIsaretle(randevuTarihID);
+                        break;
+                    case "Gelmedi":
+                        _randevuBusiness.RandevuGelmediIsaretle(randevuTarihID);
+                        break;
+                    case "İptal":
+                        _randevuBusiness.RandevuIptalEt(randevuTarihID);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["HataMesaji"] = ex.Message;
+            }
         }
     }
 }
