@@ -40,6 +40,13 @@
                                     <a class="nav-link text-dark" asp-controller="Kullanici" asp-action="Index">Kullanıcı Yönetimi</a>
                                 </li>
                             }
+                            @if (User.IsInRole("Doktor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="DoktorPaneli" asp-action="Index">Doktor Panelim</a>
+                                </li>
+                            }
+
                         }
                     </ul>
 

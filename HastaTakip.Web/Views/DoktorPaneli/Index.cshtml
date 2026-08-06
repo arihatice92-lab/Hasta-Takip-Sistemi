@@ -1,0 +1,119 @@
+﻿@using System.Linq
+@{
+    ViewData["Title"] = "Doktor Paneli";
+    var doktor = (HastaTakip.Entities.Doktor?)ViewBag.Doktor;
+    var randevular = (List<HastaTakip.Entities.RandevuTarihi>)ViewBag.Randevular;
+    var hastalar = (Dictionary<string, HastaTakip.Entities.Hasta>)ViewBag.Hastalar;
+    var saatler = (Dictionary<byte, HastaTakip.Entities.RandevuSaat>)ViewBag.Saatler;
+    var seciliHastaTC = (string?)ViewBag.SeciliHastaTC;
+    var seciliHasta = (HastaTakip.Entities.Hasta?)ViewBag.SeciliHasta;
+}
+
+<h2>Doktor Paneli</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@doktor?.DoktorAd @doktor?.DoktorSoyad</h5>
+                <p class="card-text mb-1"><strong>Branş:</strong> @doktor?.DoktorBrans</p>
+                <p class="card-text mb-0"><strong>Sicil No:</strong> @doktor?.DoktorSicilNo</p>
+            </div>
+        </div>
+
+        <h5>Bugünkü Hastalar (@DateTime.Today.ToString("dd.MM.yyyy"))</h5>
+
+        @if (randevular.Count == 0)
+        {
+            <p class="text-muted">Bugün için planlanmış randevu yok.</p>
+        }
+        else
+        {
+            <div class="list-group">
+                @foreach (var randevu in randevular.OrderBy(r => r.SaatID))
+                {
+                    var hasta = hastalar.TryGetValue(randevu.HastaTC, out var h) ? h : null;
+                    var aktifMi = randevu.HastaTC == seciliHastaTC;
+                    var saatMetin = saatler.TryGetValue(randevu.SaatID, out var saat)
+                        ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") : "-";
+
+                    var renk = randevu.RandevuDurum switch
+                    {
+                        "Tamamlandı" => "bg-success",
+                        "İptal" => "bg-secondary",
+                        "Gelmedi" => "bg-danger",
+                        _ => "bg-primary"
+                    };
+
+                    <a asp-action="Index" asp-route-hastaTC="@randevu.HastaTC"
+                       class="list-group-item list-group-item-action @(aktifMi ? "active" : "")">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                <strong>@saatMetin</strong> —
+                                @(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : randevu.HastaTC)
+                            </span>
+                            <span class="badge @renk">@randevu.RandevuDurum</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="col-md-8">
+        @if (seciliHasta == null)
+        {
+            <div class="alert alert-info">Soldaki listeden bir hasta seçin.</div>
+        }
+        else
+        {
+            var dogum = seciliHasta.HastaDogumTarihi.Date;
+            var bugun = DateTime.Today;
+
+            int yasYil = bugun.Year - dogum.Year;
+            int yasAy = bugun.Month - dogum.Month;
+
+            if (bugun.Day < dogum.Day)
+            {
+                yasAy--;
+            }
+            if (yasAy < 0)
+            {
+                yasYil--;
+                yasAy += 12;
+            }
+
+            var yasMetni = yasYil > 0 ? $"{yasYil} yıl {yasAy} ay" : $"{yasAy} ay";
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        @seciliHasta.HastaAd @seciliHasta.HastaSoyad
+                        <small class="text-muted">(@seciliHasta.HastaCinsiyet, @yasMetni)</small>
+                    </h4>
+
+                    <dl class="row mt-3">
+                        <dt class="col-sm-3">Dosya No</dt>
+                        <dd class="col-sm-9">@seciliHasta.HastaDosyaNo</dd>
+
+                        <dt class="col-sm-3">TC Kimlik No</dt>
+                        <dd class="col-sm-9">@seciliHasta.HastaTC</dd>
+
+                        <dt class="col-sm-3">Telefon</dt>
+                        <dd class="col-sm-9">@seciliHasta.HastaTel</dd>
+
+                        <dt class="col-sm-3">Doğum Tarihi</dt>
+                        <dd class="col-sm-9">@seciliHasta.HastaDogumTarihi.ToString("dd.MM.yyyy")</dd>
+
+                        <dt class="col-sm-3">Başvuru Nedeni</dt>
+                        <dd class="col-sm-9">@seciliHasta.HastaBasvuruNedeni</dd>
+                    </dl>
+
+                    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@seciliHasta.HastaTC" class="btn btn-primary">
+                        Tam Hasta Detayına Git
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
