@@ -1,7 +1,28 @@
 ﻿@{
     ViewData["Title"] = "Şifre Değiştir";
 }
+<style>
+    .sifre-wrapper {
+        position: relative;
+    }
 
+        .sifre-wrapper input {
+            padding-right: 2.5rem;
+        }
+
+    .sifre-goz {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-size: 1.1rem;
+        color: #6c757d;
+        padding: 0;
+    }
+</style>
 <h2>Şifre Değiştir</h2>
 
 @if (ViewBag.Hata != null)
@@ -16,15 +37,36 @@
 <form asp-action="SifreDegistir" asp-controller="Account" method="post">
     <div class="mb-3">
         <label>Mevcut Şifre</label>
-        <input type="password" name="eskiSifre" class="form-control" required />
+        <div class="sifre-wrapper">
+            <input type="password" name="eskiSifre" id="eskiSifreInput" class="form-control" required />
+            <button type="button" class="sifre-goz" onclick="sifreGosterGizle('eskiSifreInput', this)">👁</button>
+        </div>
     </div>
     <div class="mb-3">
         <label>Yeni Şifre</label>
-        <input type="password" name="yeniSifre" class="form-control" required />
+        <div class="sifre-wrapper">
+            <input type="password" name="yeniSifre" id="yeniSifreInput" class="form-control" required />
+            <button type="button" class="sifre-goz" onclick="sifreGosterGizle('yeniSifreInput', this)">👁</button>
+        </div>
     </div>
     <div class="mb-3">
         <label>Yeni Şifre (Tekrar)</label>
-        <input type="password" name="yeniSifreTekrar" class="form-control" required />
+        <div class="sifre-wrapper">
+            <input type="password" name="yeniSifreTekrar" id="yeniSifreTekrarInput" class="form-control" required />
+            <button type="button" class="sifre-goz" onclick="sifreGosterGizle('yeniSifreTekrarInput', this)">👁</button>
+        </div>
     </div>
     <button type="submit" class="btn btn-primary">Şifreyi Değiştir</button>
 </form>
+<script>
+    function sifreGosterGizle(inputId, buton) {
+        var input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            buton.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            buton.textContent = '👁';
+        }
+    }
+</script>
