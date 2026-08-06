@@ -76,5 +76,7 @@ namespace HastaTakip.Business
         {
             _randevuDal.RandevuDurumGuncelle(randevuTarihID, "Gelmedi");
         }
+        public void GelisZamaniGuncelle(int randevuTarihID) => _randevuDal.GelisZamaniGuncelle(randevuTarihID);
+        public void MuayeneBaslangicGuncelle(int randevuTarihID) => _randevuDal.MuayeneBaslangicGuncelle(randevuTarihID);
     }
 }

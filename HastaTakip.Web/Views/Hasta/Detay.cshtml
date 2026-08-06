@@ -34,7 +34,7 @@
     </li>
     <li class="nav-item">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#gecmisRandevular" type="button">
-            Geçmiş Randevular
+            Randevular
         </button>
     </li>
     <li class="nav-item">
@@ -354,6 +354,10 @@
             var randevuNotlari = (List<HastaTakip.Entities.RandevuNotu>)ViewBag.RandevuNotlari;
             var randevuSozlugu = (Dictionary<int, HastaTakip.Entities.RandevuTarihi>)ViewBag.RandevuSozlugu;
         }
+
+        <a asp-controller="Randevu" asp-action="Index" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">
+            Randevu Notu Ekle
+        </a>
 
         @if (randevuNotlari.Count == 0)
         {

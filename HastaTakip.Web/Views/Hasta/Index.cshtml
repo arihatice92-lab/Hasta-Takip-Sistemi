@@ -98,10 +98,12 @@
     <thead>
         <tr>
             <th>Dosya No</th>
-            <th>Ad Soyad</th>
             <th>TC</th>
-            <th>Telefon</th>
+            <th>Ad Soyad</th>
             <th>Doğum Tarihi</th>
+            <th>Telefon</th>
+            <th>Başvuru Tarihi</th>
+            
             <th></th>
         </tr>
     </thead>
@@ -110,10 +112,11 @@
         {
             <tr>
                 <td>@hasta.HastaDosyaNo</td>
-                <td>@hasta.HastaAd @hasta.HastaSoyad</td>
                 <td>@hasta.HastaTC</td>
-                <td>@hasta.HastaTel</td>
+                <td>@hasta.HastaAd @hasta.HastaSoyad</td>
                 <td>@hasta.HastaDogumTarihi.ToString("dd.MM.yyyy")</td>
+                <td>@hasta.HastaTel</td>
+                <td>@hasta.HastaBasvuruTarihi.ToString("dd.MM.yyyy")</td>
                 <td>
                     <a asp-action="Detay" asp-route-tc="@hasta.HastaTC" class="btn btn-sm btn-info">Detay</a>
                 </td>

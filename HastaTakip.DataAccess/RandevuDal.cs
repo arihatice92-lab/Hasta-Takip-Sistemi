@@ -143,7 +143,25 @@ namespace HastaTakip.DataAccess
             connection.Open();
             command.ExecuteNonQuery();
         }
+        public void GelisZamaniGuncelle(int randevuTarihID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_RandevuGelisZamaniGuncelle", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@randevuTarihID", randevuTarihID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
 
+        public void MuayeneBaslangicGuncelle(int randevuTarihID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_RandevuMuayeneBaslangicGuncelle", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@randevuTarihID", randevuTarihID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
         private RandevuTarihi MapToRandevu(SqlDataReader reader)
         {
             return new RandevuTarihi
@@ -154,7 +172,9 @@ namespace HastaTakip.DataAccess
                 SaatID = (byte)reader["saatID"],
                 RandevuTarih = (DateTime)reader["randevuTarih"],
                 RandevuOlusturmaTarihi = (DateTime)reader["randevuOlusturmaTarihi"],
-                RandevuDurum = reader["randevuDurum"].ToString()!
+                RandevuDurum = reader["randevuDurum"].ToString()!,
+                HastaGelisZamani = reader["hastaGelisZamani"] == DBNull.Value ? null : (DateTime?)reader["hastaGelisZamani"],
+                MuayeneBaslangicZamani = reader["muayeneBaslangicZamani"] == DBNull.Value ? null : (DateTime?)reader["muayeneBaslangicZamani"]
             };
         }
     }

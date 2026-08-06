@@ -86,7 +86,8 @@
             <th>TC</th>
             <th>Hasta</th>
             <th>Doktor</th>
-            <th>Durum</th>
+			<th>Durum</th>
+			<th>Kayıt Durumu</th>
             <th>İşlemler</th>
         </tr>
     </thead>
@@ -130,6 +131,35 @@
                     <span class="badge @renk">@randevu.RandevuDurum</span>
                 </td>
                 <td>
+                    @if (randevu.RandevuDurum == "Planlandı")
+                    {
+                        @if (randevu.MuayeneBaslangicZamani.HasValue)
+                        {
+                            <span class="badge bg-primary">Muayenede (@randevu.MuayeneBaslangicZamani.Value.ToString("HH:mm"))</span>
+                        }
+                        else if (randevu.HastaGelisZamani.HasValue)
+                        {
+                            <span class="badge bg-info">Kayıt (@randevu.HastaGelisZamani.Value.ToString("HH:mm"))</span>
+
+                            <form asp-action="MuayeneBaslat" method="post" class="d-inline mt-1">
+                                <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                                <button type="submit" class="btn btn-sm btn-primary">Muayeneyi Başlat</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="geldi" method="post" class="d-inline">
+                                <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                                <button type="submit" class="btn btn-sm btn-outline-info">Kayıt Aç</button>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+                <td>
                     <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-sm btn-info">Detay</a>
                     @if (randevu.RandevuDurum == "Planlandı")
                     {
@@ -150,6 +180,7 @@
                         </form>
                     }
                 </td>
+                
             </tr>
         }
     </tbody>

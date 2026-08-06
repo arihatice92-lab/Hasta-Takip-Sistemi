@@ -13,5 +13,7 @@ namespace HastaTakip.Entities
         public DateTime RandevuTarih { get; set; }
         public DateTime RandevuOlusturmaTarihi { get; set; }
         public string RandevuDurum { get; set; } = string.Empty;
+        public DateTime? HastaGelisZamani { get; set; }
+        public DateTime? MuayeneBaslangicZamani { get; set; }
     }
 }

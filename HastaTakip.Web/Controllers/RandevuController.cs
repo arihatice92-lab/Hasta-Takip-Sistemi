@@ -100,7 +100,6 @@ namespace HastaTakip.Web.Controllers
             ViewBag.Doktor = _doktorBusiness.DoktorGetir(randevu.DoktorID);
             ViewBag.Saat = _randevuSaatBusiness.SaatleriListele()
                 .FirstOrDefault(s => s.SaatID == randevu.SaatID);
-            ViewBag.RandevuNotu = _randevuNotuBusiness.RandevuNotuGetirByRandevuTarihID(randevuTarihID);
             return View(randevu);
         }
 
@@ -217,6 +216,24 @@ namespace HastaTakip.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Geldi(int randevuTarihID)
+        {
+            _randevuBusiness.GelisZamaniGuncelle(randevuTarihID);
+            TempData["BasariMesaji"] = "Hasta geldi olarak işaretlendi.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MuayeneBaslat(int randevuTarihID)
+        {
+            _randevuBusiness.MuayeneBaslangicGuncelle(randevuTarihID);
+            TempData["BasariMesaji"] = "Muayene başlatıldı.";
+            return RedirectToAction(nameof(Index));
+        }
         private void YukleDropdownlar(string? seciliHastaTC)
         {
             ViewBag.HastaListesi = _hastaBusiness.HastaListele();
