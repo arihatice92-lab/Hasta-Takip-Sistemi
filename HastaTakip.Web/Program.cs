@@ -15,6 +15,8 @@ builder.Services.AddControllersWithViews(options =>
 
     options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor(
         (value, name) => "Bu alan geçerli bir değer içermiyor.");
+    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+        value => "Bu alan boş geçilemez.");
 });
 
 builder.Services.AddScoped<DbHelper>(sp =>

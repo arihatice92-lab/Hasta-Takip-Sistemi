@@ -198,7 +198,5 @@ namespace HastaTakip.Web.Controllers
         }
     }
 
-    internal class _hastaTedaviBusiness
-    {
-    }
+    
 }
