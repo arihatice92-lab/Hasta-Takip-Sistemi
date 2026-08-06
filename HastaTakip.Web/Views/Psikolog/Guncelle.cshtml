@@ -10,33 +10,35 @@
 
 <form asp-action="Guncelle" method="post">
     <input type="hidden" asp-for="PsikologID" />
-    <div class="mb-3">
-        <label asp-for="PsikologSicilNo" class="form-label">Sicil No</label>
-        <input asp-for="PsikologSicilNo" class="form-control" />
-    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label">Sicil No</label>
+            <input asp-for="PsikologSicilNo" class="form-control" />
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="PsikologAd" class="form-label">Ad <span style="color:red">*</span></label>
-        <input asp-for="PsikologAd" class="form-control" />
-        <span asp-validation-for="PsikologAd" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="PsikologAd" class="form-label">Ad <span style="color:red">*</span></label>
+            <input asp-for="PsikologAd" class="form-control" />
+            <span asp-validation-for="PsikologAd" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="PsikologSoyad" class="form-label">Soyad <span style="color:red">*</span></label>
-        <input asp-for="PsikologSoyad" class="form-control" />
-        <span asp-validation-for="PsikologSoyad" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="PsikologSoyad" class="form-label">Soyad <span style="color:red">*</span></label>
+            <input asp-for="PsikologSoyad" class="form-control" />
+            <span asp-validation-for="PsikologSoyad" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="PsikologTel" class="form-label">Telefon <span style="color:red">*</span></label>
-        <input asp-for="PsikologTel" class="form-control" maxlength="11" />
-        <span asp-validation-for="PsikologTel" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="PsikologTel" class="form-label">Telefon <span style="color:red">*</span></label>
+            <input asp-for="PsikologTel" class="form-control" maxlength="11" />
+            <span asp-validation-for="PsikologTel" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Kurum Başlangıç Tarihi</label>
-        <input asp-for="PsikologKurumBaslangicTarih" type="date" class="form-control" />
-        <small class="text-muted">Değiştirmek istemiyorsanız boş bırakabilirsiniz.</small>
+        <div class="col-md-4">
+            <label class="form-label">Kurum Başlangıç Tarihi</label>
+            <input asp-for="PsikologKurumBaslangicTarih" type="date" class="form-control" />
+            <small class="text-muted">Boş bırakılırsa bugünün tarihi kullanılır.</small>
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Güncelle</button>

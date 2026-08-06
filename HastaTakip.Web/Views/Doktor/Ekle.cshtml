@@ -9,50 +9,42 @@
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 <form asp-action="Ekle" method="post">
-    <div class="mb-3">
-        <label asp-for="DoktorSicilNo" class="form-label">
-            Sicil No <span style="color:red">*</span>
-        </label>
-        <input asp-for="DoktorSicilNo" class="form-control" />
-        <span asp-validation-for="DoktorSicilNo" class="text-danger"></span>
-    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <label asp-for="DoktorSicilNo" class="form-label">Sicil No <span style="color:red">*</span></label>
+            <input asp-for="DoktorSicilNo" class="form-control" />
+            <span asp-validation-for="DoktorSicilNo" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="DoktorAd" class="form-label">
-            Ad <span style="color:red">*</span>
-        </label>
-        <input asp-for="DoktorAd" class="form-control" />
-        <span asp-validation-for="DoktorAd" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="DoktorAd" class="form-label">Ad <span style="color:red">*</span></label>
+            <input asp-for="DoktorAd" class="form-control" />
+            <span asp-validation-for="DoktorAd" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="DoktorSoyad" class="form-label">
-            Soyad <span style="color:red">*</span>
-        </label>
-        <input asp-for="DoktorSoyad" class="form-control" />
-        <span asp-validation-for="DoktorSoyad" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="DoktorSoyad" class="form-label">Soyad <span style="color:red">*</span></label>
+            <input asp-for="DoktorSoyad" class="form-control" />
+            <span asp-validation-for="DoktorSoyad" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="DoktorTel" class="form-label">
-            Telefon <span style="color:red">*</span>
-        </label>
-        <input asp-for="DoktorTel" class="form-control" maxlength="11" />
-        <span asp-validation-for="DoktorTel" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="DoktorTel" class="form-label">Telefon <span style="color:red">*</span></label>
+            <input asp-for="DoktorTel" class="form-control" maxlength="11" />
+            <span asp-validation-for="DoktorTel" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="DoktorBrans" class="form-label">
-            Branş <span style="color:red">*</span>
-        </label>
-        <input asp-for="DoktorBrans" class="form-control" />
-        <span asp-validation-for="DoktorBrans" class="text-danger"></span>
-    </div>
+        <div class="col-md-4">
+            <label asp-for="DoktorBrans" class="form-label">Branş <span style="color:red">*</span></label>
+            <input asp-for="DoktorBrans" class="form-control" />
+            <span asp-validation-for="DoktorBrans" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="DoktorKurumBaslangicTarih" class="form-label">Kurum Başlangıç Tarihi</label>
-        <input asp-for="DoktorKurumBaslangicTarih" type="date" class="form-control" />
-        <small class="text-muted">Boş bırakılırsa bugünün tarihi kullanılır.</small>
+        <div class="col-md-4">
+            <label asp-for="DoktorKurumBaslangicTarih" class="form-label">Kurum Başlangıç Tarihi</label>
+            <input asp-for="DoktorKurumBaslangicTarih" type="date" class="form-control" />
+            <small class="text-muted">Boş bırakılırsa bugünün tarihi kullanılır.</small>
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Kaydet</button>
