@@ -163,10 +163,6 @@
                     <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-sm btn-info">Detay</a>
                     @if (randevu.RandevuDurum == "Planlandı")
                     {
-                        <form asp-action="Tamamlandi" method="post" class="d-inline">
-                            <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                            <button type="submit" class="btn btn-sm btn-success">Tamamlandı</button>
-                        </form>
                         <form asp-action="Gelmedi" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
                             <button type="submit" class="btn btn-sm btn-warning">Gelmedi</button>

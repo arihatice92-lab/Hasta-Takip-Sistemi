@@ -232,6 +232,18 @@ namespace HastaTakip.Web.Controllers
         {
             _randevuBusiness.MuayeneBaslangicGuncelle(randevuTarihID);
             TempData["BasariMesaji"] = "Muayene başlatıldı.";
+
+            var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
+            if (randevu != null)
+            {
+                return RedirectToAction("Detay", "Hasta", new
+                {
+                    tc = randevu.HastaTC,
+                    tab = "randevuNotlari",
+                    aktifRandevuTarihID = randevuTarihID
+                });
+            }
+
             return RedirectToAction(nameof(Index));
         }
         private void YukleDropdownlar(string? seciliHastaTC)

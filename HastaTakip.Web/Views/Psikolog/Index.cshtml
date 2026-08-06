@@ -1,0 +1,99 @@
+﻿@model List<HastaTakip.Entities.Psikolog>
+
+@{
+    ViewData["Title"] = "Psikolog Listesi";
+}
+
+<h2>Psikolog Listesi</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+
+<p>
+    <a asp-action="Ekle" class="btn btn-primary">Yeni Psikolog Ekle</a>
+</p>
+
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="ara" value="@ViewBag.Ara" class="form-control" placeholder="Ad veya soyad ara..." />
+    </div>
+    <div class="col-md-3">
+        <select name="aktif" class="form-select">
+            <option value="aktif" selected="@(ViewBag.Aktif == "aktif")">Aktif</option>
+            <option value="pasif" selected="@(ViewBag.Aktif == "pasif")">Pasif</option>
+            <option value="hepsi" selected="@(ViewBag.Aktif == "hepsi")">Tümü</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="siralama" class="form-select">
+            <option value="AZ" selected="@(ViewBag.Siralama == "AZ")">A-Z</option>
+            <option value="ZA" selected="@(ViewBag.Siralama == "ZA")">Z-A</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrele</button>
+    </div>
+    <div class="col-md-2">
+        <a asp-action="Index" class="btn btn-outline-secondary w-100">Temizle</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sicil No</th>
+            <th>Ad Soyad</th>
+            <th>Telefon</th>
+            <th>Durum</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var psikolog in Model)
+        {
+            var detayUrl = Url.Action("Detay", "Psikolog", new { psikologID = psikolog.PsikologID });
+            <tr class="psikolog-satiri" data-href="@detayUrl">
+                <td>@(psikolog.PsikologSicilNo ?? "-")</td>
+                <td>@psikolog.PsikologAd @psikolog.PsikologSoyad</td>
+                <td>@psikolog.PsikologTel</td>
+                <td>
+                    @if (psikolog.PsikologKurumAyrilisTarih == null)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Pasif</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Detay" asp-route-psikologID="@psikolog.PsikologID" class="btn btn-sm btn-info">Detay</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var aramaKutusu = document.querySelector('input[name="ara"]');
+            var form = aramaKutusu.closest('form');
+            var zamanlayici;
+            aramaKutusu.addEventListener('input', function() {
+                clearTimeout(zamanlayici);
+                zamanlayici = setTimeout(function() { form.submit(); }, 400);
+            });
+
+            document.querySelectorAll('.psikolog-satiri').forEach(function(satir) {
+                satir.style.cursor = 'pointer';
+                satir.addEventListener('click', function(e) {
+                    if (e.target.closest('a, button, form, input, select')) return;
+                    window.location = satir.dataset.href;
+                });
+            });
+        });
+    </script>
+}

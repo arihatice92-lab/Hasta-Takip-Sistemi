@@ -110,7 +110,9 @@
     <tbody>
         @foreach (var hasta in Model)
         {
-            <tr>
+            var detayUrl = Url.Action("Detay", "Hasta", new { tc = hasta.HastaTC });
+
+            <tr class="hasta-satiri", data-href="@detayUrl" >
                 <td>@hasta.HastaDosyaNo</td>
                 <td>@hasta.HastaTC</td>
                 <td>@hasta.HastaAd @hasta.HastaSoyad</td>
@@ -160,17 +162,27 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var aramaKutusu = document.querySelector('input[name="ara"]');
             var form = aramaKutusu.closest('form');
             var zamanlayici;
 
-            aramaKutusu.addEventListener('input', function () {
+            aramaKutusu.addEventListener('input', function() {
                 clearTimeout(zamanlayici);
-                zamanlayici = setTimeout(function () {
+                zamanlayici = setTimeout(function() {
                     form.submit();
                 }, 400);
             });
-        });
+
+                document.querySelectorAll('.hasta-satiri').forEach(function (satir) {
+                        satir.style.cursor = 'pointer';
+                        satir.addEventListener('click', function (e) {
+                            if (e.target.closest('a, button, form, input, select')) {
+                                return;
+                            }
+                            window.location = satir.dataset.href;
+                        });
+                    });
+                });
     </script>
 }

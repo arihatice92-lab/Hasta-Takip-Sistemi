@@ -1,0 +1,52 @@
+﻿@model HastaTakip.Entities.Psikolog
+
+@{
+    ViewData["Title"] = "Psikolog Detayı";
+}
+
+<h2>Psikolog Detayı</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Sicil No</dt>
+    <dd class="col-sm-9">@(Model.PsikologSicilNo ?? "-")</dd>
+
+    <dt class="col-sm-3">Ad Soyad</dt>
+    <dd class="col-sm-9">@Model.PsikologAd @Model.PsikologSoyad</dd>
+
+    <dt class="col-sm-3">Telefon</dt>
+    <dd class="col-sm-9">@Model.PsikologTel</dd>
+
+    <dt class="col-sm-3">Kurum Başlangıç Tarihi</dt>
+    <dd class="col-sm-9">@(Model.PsikologKurumBaslangicTarih?.ToString("dd.MM.yyyy") ?? "-")</dd>
+
+    <dt class="col-sm-3">Durum</dt>
+    <dd class="col-sm-9">
+        @if (Model.PsikologKurumAyrilisTarih == null)
+        {
+            <span class="badge bg-success">Aktif</span>
+        }
+        else
+        {
+            <span>Ayrılış Tarihi: @Model.PsikologKurumAyrilisTarih?.ToString("dd.MM.yyyy")</span>
+        }
+    </dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+<a asp-action="Guncelle" asp-route-psikologID="@Model.PsikologID" class="btn btn-warning">Düzenle</a>
+
+@if (Model.PsikologKurumAyrilisTarih == null)
+{
+    <form asp-action="Ayrilis" method="post" class="d-inline">
+        <input type="hidden" name="psikologID" value="@Model.PsikologID" />
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Bu psikoloğun kurumdan ayrıldığını işaretlemek istediğinize emin misiniz?');">
+            Kurumdan Ayrıldı Olarak İşaretle
+        </button>
+    </form>
+}

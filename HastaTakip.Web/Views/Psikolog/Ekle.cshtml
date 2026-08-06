@@ -1,0 +1,43 @@
+﻿@model HastaTakip.Entities.Psikolog
+
+@{
+    ViewData["Title"] = "Yeni Psikolog Ekle";
+}
+
+<h2>Yeni Psikolog Ekle</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Ekle" method="post">
+    <div class="mb-3">
+        <label class="form-label">Sicil No</label>
+        <input asp-for="PsikologSicilNo" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PsikologAd" class="form-label">Ad <span style="color:red">*</span></label>
+        <input asp-for="PsikologAd" class="form-control" />
+        <span asp-validation-for="PsikologAd" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PsikologSoyad" class="form-label">Soyad <span style="color:red">*</span></label>
+        <input asp-for="PsikologSoyad" class="form-control" />
+        <span asp-validation-for="PsikologSoyad" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PsikologTel" class="form-label">Telefon <span style="color:red">*</span></label>
+        <input asp-for="PsikologTel" class="form-control" maxlength="11" />
+        <span asp-validation-for="PsikologTel" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Kurum Başlangıç Tarihi</label>
+        <input asp-for="PsikologKurumBaslangicTarih" type="date" class="form-control" />
+        <small class="text-muted">Boş bırakılırsa bugünün tarihi kullanılır.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
