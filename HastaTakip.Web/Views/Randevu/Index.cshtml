@@ -81,10 +81,10 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Tarih</th>
+			<th>TC</th>
+			<th>Hasta</th>
+			<th>Tarih</th>
             <th>Saat</th>
-            <th>TC</th>
-            <th>Hasta</th>
             <th>Doktor</th>
 			<th>Durum</th>
 			<th>Kayıt Durumu</th>
@@ -98,6 +98,13 @@
             var detayUrl = hastaVarMi ? Url.Action("Detay", "Hasta", new { tc = hasta!.HastaTC }) : null;
 
             <tr class="@(detayUrl != null ? "randevu-satiri" : "")" data-href="@detayUrl">
+                <td>@randevu.HastaTC</td>
+                <td>
+                    @if (hastaVarMi)
+                    {
+                        @($"{hasta!.HastaAd} {hasta.HastaSoyad}")
+                    }
+                </td>
                 <td>@randevu.RandevuTarih.ToString("dd.MM.yyyy")</td>
                 <td>
                     @if (saatler.TryGetValue(randevu.SaatID, out var saat))
@@ -105,13 +112,7 @@
                         @saat.RandevuBaslangicSaat.ToString(@"hh\:mm")
                     }
                 </td>
-                <td>@randevu.HastaTC</td>
-                <td>
-                    @if (hastaVarMi)
-                    {
-                        @($"{ hasta!.HastaAd} {hasta.HastaSoyad}")
-                }
-                </td>
+                
                 <td>
                     @if (doktorlar.TryGetValue(randevu.DoktorID, out var doktor))
                     {

@@ -57,25 +57,55 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Ekle(RandevuNotu notu, string? randevuDurumu)
         {
             var kullaniciGirdiTarih = notu.SonrakiRandevuTarihi;
-            notu.SonrakiRandevuTarihi = null; // randevu gerçekten oluşana kadar yazmıyoruz
+            notu.SonrakiRandevuTarihi = null;
 
-            var yeniRandevuNotID = _randevuNotuBusiness.RandevuNotuEkle(notu);
-            UygulaRandevuDurumu(notu.RandevuTarihID, randevuDurumu);
-            TempData["BasariMesaji"] = "Randevu notu kaydedildi.";
-
-            if (notu.SonrakiRandevuTarihi.HasValue)
+            try
             {
-                return RedirectToAction("Ekle", "Randevu", new
-                {
-                    hastaTC = notu.HastaTC,
-                    doktorID = notu.DoktorID,
-                    tarih = notu.SonrakiRandevuTarihi.Value.ToString("yyyy-MM-dd"),
-                    kaynak = "randevuNotu",
-                    randevuNotID = yeniRandevuNotID
+                var yeniRandevuNotID = _randevuNotuBusiness.RandevuNotuEkle(notu);
 
-                });
+                UygulaRandevuDurumu(notu.RandevuTarihID, randevuDurumu);
+
+                TempData["BasariMesaji"] = "Randevu notu kaydedildi.";
+
+                if (kullaniciGirdiTarih.HasValue)
+                {
+                    return RedirectToAction("Ekle", "Randevu", new
+                    {
+                        hastaTC = notu.HastaTC,
+                        doktorID = notu.DoktorID,
+                        tarih = kullaniciGirdiTarih.Value.ToString("yyyy-MM-dd"),
+                        kaynak = "randevuNotu",
+                        randevuNotID = yeniRandevuNotID
+                    });
+                }
+
+                return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
             }
-            return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notu.SonrakiRandevuTarihi = kullaniciGirdiTarih; // kullanıcının girdiği veriyi geri koy
+                DoldurBaglamBilgisi(notu.RandevuTarihID);
+                return View(notu);
+            }
+        }
+
+        private void DoldurBaglamBilgisi(int randevuTarihID)
+        {
+            var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
+            if (randevu == null) return;
+
+            var hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
+            var doktor = _doktorBusiness.DoktorGetir(randevu.DoktorID);
+            var saat = _randevuSaatBusiness.SaatleriListele().FirstOrDefault(s => s.SaatID == randevu.SaatID);
+
+            ViewBag.RandevuTarihID = randevuTarihID;
+            ViewBag.HastaTC = randevu.HastaTC;
+            ViewBag.DoktorID = randevu.DoktorID;
+            ViewBag.HastaAdi = hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : "-";
+            ViewBag.DoktorAdi = doktor != null ? $"{doktor.DoktorAd} {doktor.DoktorSoyad}" : "-";
+            ViewBag.RandevuTarih = randevu.RandevuTarih;
+            ViewBag.SaatMetin = saat != null ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") : "-";
         }
 
         public IActionResult Guncelle(short randevuNotID)

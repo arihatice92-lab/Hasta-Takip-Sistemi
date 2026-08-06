@@ -1,7 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Randevu Notu Ekle";
 }
-
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var hata in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p class="mb-0">@hata.ErrorMessage</p>
+        }
+    </div>
+}
 <h2>Randevu Notu Ekle</h2>
 
 @if (TempData["BasariMesaji"] != null)
