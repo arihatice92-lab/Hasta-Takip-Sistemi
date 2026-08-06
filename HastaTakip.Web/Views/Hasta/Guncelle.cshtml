@@ -16,84 +16,108 @@
     <input type="hidden" asp-for="HastaAktif" />
     <input type="hidden" asp-for="HastaDogumTarihi" />
 
-    <div class="mb-3">
-        <label class="form-label">TC Kimlik No</label>
-        <input value="@Model.HastaTC" class="form-control" disabled />
+    <div class="row">
+        <div class="mb-3 col-md-4">
+            <label class="form-label">TC Kimlik No</label>
+            <input value="@Model.HastaTC" class="form-control" disabled />
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label asp-for="HastaAd" class="form-label">
+                Ad <span style="color:red">*</span>
+            </label>
+            <input asp-for="HastaAd" class="form-control" />
+            <span asp-validation-for="HastaAd" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label asp-for="HastaSoyad" class="form-label">
+                Soyad <span style="color:red">*</span>
+            </label>
+            <input asp-for="HastaSoyad" class="form-control" />
+            <span asp-validation-for="HastaSoyad" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-md-4">
+            <label asp-for="HastaCinsiyet" class="form-label">
+                Cinsiyet <span style="color:red">*</span>
+            </label>
+            <select asp-for="HastaCinsiyet" class="form-control">
+                <option value="Erkek">Erkek</option>
+                <option value="Kadın">Kadın</option>
+            </select>
+        </div>
+        <div class="mb-3 col-md-4">
+            <label asp-for="HastaDogumTarihi" class="form-label">Doğum Tarihi <span style="color:red">*</span></label>
+            <input asp-for="HastaDogumTarihi" type="date" class="form-control" />
+            <span asp-validation-for="HastaDogumTarihi" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-md-4">
+            <label asp-for="HastaTel" class="form-label">
+                Telefon <span style="color:red">*</span>
+            </label>
+            <input asp-for="HastaTel" class="form-control" maxlength="11" />
+            <span asp-validation-for="HastaTel" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-md-12">
+            <label asp-for="HastaAdres" class="form-label">
+                Adres <span style="color:red">*</span>
+            </label>
+            <textarea asp-for="HastaAdres" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="HastaAdres" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-md-6">
+            <label asp-for="HastaOkul" class="form-label">
+                Okul <span style="color:red">*</span>
+            </label>
+            <input asp-for="HastaOkul" class="form-control" />
+            <span asp-validation-for="HastaOkul" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-md-3">
+            <label asp-for="HastaSinif" class="form-label">Sınıf</label>
+            <input asp-for="HastaSinif" type="number" min="0" max="12" class="form-control" />
+        </div>
+        <div class="mb-3 col-md-3">
+            <label asp-for="HastaOkulBasarisi" class="form-label">
+                Okul Başarısı <span style="color:red">*</span>
+            </label>
+            <select asp-for="HastaOkulBasarisi" class="form-control">
+                <option value="Düşük">Düşük</option>
+                <option value="Orta">Orta</option>
+                <option value="Yüksek">Yüksek</option>
+            </select>
+        </div>
+
+        <div class="mb-3 col-md-3">
+            <label asp-for="HastaBoy" class="form-label">Boy (cm)</label>
+            <input asp-for="HastaBoy" type="number" class="form-control" />
+        </div>
+
+        <div class="mb-3 col-md-3">
+            <label asp-for="HastaKilo" class="form-label">Kilo (kg)</label>
+            <input asp-for="HastaKilo" type="number" class="form-control" />
+        </div>
+
+        <div class="mb-3 col-md-6">
+            <label asp-for="HastaYonlendiren" class="form-label">
+                Yönlendiren <span style="color:red">*</span>
+            </label>
+            <input asp-for="HastaYonlendiren" class="form-control" />
+            <span asp-validation-for="HastaYonlendiren" class="text-danger"></span>
+        </div>
+
+       
+
+        <div class="mb-3 col-md-12">
+            <label asp-for="HastaBasvuruNedeni" class="form-label">
+                Başvuru Nedeni <span style="color:red">*</span>
+            </label>
+            <textarea asp-for="HastaBasvuruNedeni" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="HastaBasvuruNedeni" class="text-danger"></span>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="HastaAd" class="form-label">Ad <span style="color:red">*</span></label>
-        <input asp-for="HastaAd" class="form-control" />
-        <span asp-validation-for="HastaAd" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaSoyad" class="form-label">Soyad <span style="color:red">*</span></label>
-        <input asp-for="HastaSoyad" class="form-control" />
-        <span asp-validation-for="HastaSoyad" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaTel" class="form-label">Telefon <span style="color:red">*</span></label>
-        <input asp-for="HastaTel" class="form-control" maxlength="11" />
-        <span asp-validation-for="HastaTel" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaAdres" class="form-label">Adres <span style="color:red">*</span></label>
-        <textarea asp-for="HastaAdres" class="form-control"></textarea>
-        <span asp-validation-for="HastaAdres" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaCinsiyet" class="form-label">Cinsiyet <span style="color:red">*</span></label>
-        <select asp-for="HastaCinsiyet" class="form-control">
-            <option value="Erkek">Erkek</option>
-            <option value="Kadın">Kadın</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaOkul" class="form-label">Okul <span style="color:red">*</span></label>
-        <input asp-for="HastaOkul" class="form-control" />
-        <span asp-validation-for="HastaOkul" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaSinif" class="form-label">Sınıf</label>
-        <input asp-for="HastaSinif" type="number" min="0" max="12" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaOkulBasarisi" class="form-label">Okul Başarısı <span style="color:red">*</span></label>
-        <select asp-for="HastaOkulBasarisi" class="form-control">
-            <option value="Düşük">Düşük</option>
-            <option value="Orta">Orta</option>
-            <option value="Yüksek">Yüksek</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaBoy" class="form-label">Boy (cm)</label>
-        <input asp-for="HastaBoy" type="number" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaKilo" class="form-label">Kilo (kg)</label>
-        <input asp-for="HastaKilo" type="number" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaYonlendiren" class="form-label">Yönlendiren <span style="color:red">*</span></label>
-        <input asp-for="HastaYonlendiren" class="form-control" />
-        <span asp-validation-for="HastaYonlendiren" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="HastaBasvuruNedeni" class="form-label">Başvuru Nedeni <span style="color:red">*</span></label>
-        <textarea asp-for="HastaBasvuruNedeni" class="form-control"></textarea>
-        <span asp-validation-for="HastaBasvuruNedeni" class="text-danger"></span>
-    </div>
 
     <button type="submit" class="btn btn-primary">Güncelle</button>
     <a asp-action="Detay" asp-route-tc="@Model.HastaTC" class="btn btn-secondary">İptal</a>
