@@ -3,8 +3,30 @@
 @{
     ViewData["Title"] = "Hasta Detayı";
 }
+@{
+    var dogum = Model.HastaDogumTarihi.Date;
+    var bugun = DateTime.Today;
 
-<h2>@Model.HastaAd @Model.HastaSoyad</h2>
+    int yasYil = bugun.Year - dogum.Year;
+    int yasAy = bugun.Month - dogum.Month;
+
+    if (bugun.Day < dogum.Day)
+    {
+        yasAy--;
+    }
+    if (yasAy < 0)
+    {
+        yasYil--;
+        yasAy += 12;
+    }
+
+    var yasMetni = yasYil > 0
+        ? $"{yasYil} yıl {yasAy} ay"
+        : $"{yasAy} ay";
+}
+
+
+<h2>@Model.HastaAd @Model.HastaSoyad <small class="text-muted">(@Model.HastaCinsiyet, @yasMetni)</small></h2>
 
 @if (TempData["BasariMesaji"] != null)
 {
