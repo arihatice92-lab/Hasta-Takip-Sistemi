@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Gelişimsel Öykü Ekle";
+}
+
+<h2>Gelişimsel Öykü Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+
+    <h5>Doğum</h5>
+    <div class="row">
+        <div class="col-md-2"><label class="form-label">Doğumda Anne Yaşı</label><input name="DogumAnneYasi" type="number" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Doğumda Baba Yaşı</label><input name="DogumBabaYasi" type="number" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Doğum Haftası</label><input name="DogumHaftasi" type="number" class="form-control" /></div>
+        <div class="col-md-3">
+            <label class="form-label">Doğum Şekli</label>
+            <select name="DogumSekli" class="form-select">
+                <option value="">Seçiniz</option>
+                <option value="NSVY">NSVY</option>
+                <option value="Sezaryen">Sezaryen</option>
+            </select>
+        </div>
+        <div class="col-md-3"><label class="form-label">Doğum Ağırlığı (gr)</label><input name="DogumAgirligi" type="number" class="form-control" /></div>
+
+        <div class="col-md-6"><label class="form-label">Doğum Komplikasyonu</label><textarea name="DogumKomplikasyonu" class="form-control"></textarea></div>
+        <div class="col-md-3">
+            <label class="form-label">Planlı Gebelik mi?</label>
+            <select name="PlanliGebelikMi" class="form-select">
+                <option value="">-</option>
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+
+        <div class="col-md-6"><label class="form-label">Gebe Kalmada Güçlük</label><textarea name="GebeKalmadaGucluk" class="form-control"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Ailenin Cinsiyet Beklentisi</label><textarea name="AileCinsiyetBeklentisi" class="form-control"></textarea></div>
+        <div class="col-md-12"><label class="form-label">Ailenin Doğuma Tepkisi</label><textarea name="AileDogumaTepki" class="form-control"></textarea></div>
+    </div>
+
+    <hr />
+    <h5>Motor ve Dil Gelişimi</h5>
+    <div class="row">
+        <div class="col-md-2"><label class="form-label">Oturma Yaşı (ay)</label><input name="OturmaYasi" type="number" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Emekleme Yaşı (ay)</label><input name="EmeklemeYasi" type="number" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Yürüme Yaşı (ay)</label><input name="YurumeYasi" type="number" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İlk Sözcük Yaşı (ay)</label><input name="IlkSozcukYasi" type="number" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İlk Cümle Yaşı (ay)</label><input name="IlkCumleYasi" type="number" class="form-control" /></div>
+
+        <div class="col-md-6"><label class="form-label">Tuvalet Eğitimi</label><textarea name="TuvaletEgitimi" class="form-control"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Geçirilen Kaza</label><textarea name="GecirilenKaza" class="form-control"></textarea></div>
+    </div>
+
+    <hr />
+    <h5>Dönemsel Öykü</h5>
+    <div class="row">
+        <div class="col-md-6"><label class="form-label">Bebeklik Dönemi</label><textarea name="BebeklikDonemi" class="form-control" rows="3"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Çocukluk Dönemi</label><textarea name="CocuklukDonemi" class="form-control" rows="3"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Okul Öyküsü</label><textarea name="OkulOykusu" class="form-control" rows="3"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Sosyal İlişkileri</label><textarea name="SosyalIliskileri" class="form-control" rows="3"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Kişilik Özellikleri</label><textarea name="KisilikOzellikleri" class="form-control" rows="3"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Ek Notlar</label><textarea name="GelisimselOykuEkNot" class="form-control" rows="3"></textarea></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" asp-route-tab="aileGelisim" class="btn btn-secondary mt-3">İptal</a>
+</form>

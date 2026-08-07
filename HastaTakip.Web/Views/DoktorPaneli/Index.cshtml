@@ -45,16 +45,40 @@
                         _ => "bg-primary"
                     };
 
-                    <a asp-action="Index" asp-route-hastaTC="@randevu.HastaTC"
-                       class="list-group-item list-group-item-action @(aktifMi ? "active" : "")">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>
-                                <strong>@saatMetin</strong> —
-                                @(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : randevu.HastaTC)
-                            </span>
-                            <span class="badge @renk">@randevu.RandevuDurum</span>
-                        </div>
-                    </a>
+                    <div class="list-group-item @(aktifMi ? "active" : "")">
+                        <a asp-action="Index" asp-route-hastaTC="@randevu.HastaTC" class="d-block text-decoration-none @(aktifMi ? "text-white" : "text-dark")">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>
+                                    <strong>@saatMetin</strong> —
+                                    @(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : randevu.HastaTC)
+                                </span>
+                                <span class="badge @renk">@randevu.RandevuDurum</span>
+                            </div>
+                        </a>
+
+                        @if (randevu.RandevuDurum == "Planlandı")
+                        {
+                            <div class="mt-2">
+                                @if (randevu.MuayeneBaslangicZamani.HasValue)
+                                {
+                                    <span class="badge bg-primary">Muayenede</span>
+                                }
+                                else if (randevu.HastaGelisZamani.HasValue)
+                                {
+                                    <form asp-controller="Randevu" asp-action="MuayeneBaslat" method="post" class="d-inline">
+                                        <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                                        <input type="hidden" name="donus" value="doktorPaneli" />
+                                        <input type="hidden" name="hastaTC" value="@randevu.HastaTC" />
+                                        <button type="submit" class="btn btn-sm btn-primary">Muayeneyi Başlat</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Hasta henüz kayıt açtırmadı</span>
+                                }
+                            </div>
+                        }
+                    </div>
                 }
             </div>
         }

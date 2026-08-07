@@ -1,0 +1,119 @@
+﻿@model HastaTakip.Entities.AileBilgileri
+
+@{
+    ViewData["Title"] = "Aile Bilgileri Güncelle";
+}
+
+<h2>Aile Bilgileri Güncelle</h2>
+
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="AileBilgileriID" />
+    <input type="hidden" asp-for="HastaTC" />
+
+    <h5>Anne</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Yaşıyor mu?</label>
+            <select asp-for="AnneYasiyorMu" class="form-select">
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+        <div class="col-md-4"><label class="form-label">Ad</label><input asp-for="AnneAd" class="form-control" /></div>
+        <div class="col-md-4"><label class="form-label">Soyad</label><input asp-for="AnneSoyad" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Yaş</label><input asp-for="AnneYas" type="number" class="form-control" /></div>
+
+        <div class="col-md-3"><label class="form-label">Eğitim</label><input asp-for="AnneEgitim" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İş</label><input asp-for="AnneIs" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Telefon</label><input asp-for="AnneTel" class="form-control" maxlength="11" /></div>
+        <div class="col-md-3"><label class="form-label">Adres</label><input asp-for="AnneAdres" class="form-control" /></div>
+    </div>
+
+    <hr />
+    <h5>Baba</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Yaşıyor mu?</label>
+            <select asp-for="BabaYasiyorMu" class="form-select">
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+        <div class="col-md-4"><label class="form-label">Ad</label><input asp-for="BabaAd" class="form-control" /></div>
+        <div class="col-md-4"><label class="form-label">Soyad</label><input asp-for="BabaSoyad" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Yaş</label><input asp-for="BabaYas" type="number" class="form-control" /></div>
+
+        <div class="col-md-3"><label class="form-label">Eğitim</label><input asp-for="BabaEgitim" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İş</label><input asp-for="BabaIs" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Telefon</label><input asp-for="BabaTel" class="form-control" maxlength="11" /></div>
+        <div class="col-md-3"><label class="form-label">Adres</label><input asp-for="BabaAdres" class="form-control" /></div>
+    </div>
+
+    <hr />
+    <h5>Üvey Ebeveyn / Koruyucu</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Var mı?</label>
+            <select asp-for="UveyVeyaKoruyucuVarMi" class="form-select">
+                <option value="false">Hayır</option>
+                <option value="true">Evet</option>
+            </select>
+        </div>
+        <div class="col-md-3"><label class="form-label">Türü</label><input asp-for="UveyEbeveynTuru" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Ad</label><input asp-for="UveyAd" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Soyad</label><input asp-for="UveySoyad" class="form-control" /></div>
+
+        <div class="col-md-2"><label class="form-label">Yaş</label><input asp-for="UveyYas" type="number" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Eğitim</label><input asp-for="UveyEgitim" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İş</label><input asp-for="UveyIs" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Telefon</label><input asp-for="UveyTel" class="form-control" /></div>
+        <div class="col-md-2">
+            <label class="form-label">Yaşıyor mu?</label>
+            <select asp-for="UveyYasiyorMu" class="form-select">
+                <option value="">-</option>
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+        <div class="col-md-6"><label class="form-label">Adres</label><input asp-for="UveyAdres" class="form-control" /></div>
+    </div>
+
+    <hr />
+    <h5>Genel Aile Bilgileri</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Akraba Evliliği</label>
+            <select asp-for="AkrabaEvliligi" class="form-select">
+                <option value="false">Hayır</option>
+                <option value="true">Evet</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Aile Tipi</label>
+            <select asp-for="AileTipi" class="form-select">
+                <option value="">Seçiniz</option>
+                <option value="Çekirdek">Çekirdek</option>
+                <option value="Geniş">Geniş</option>
+                <option value="Parçalanmış">Parçalanmış</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Ebeveyn Durumu</label>
+            <select asp-for="EbeveynDurumu" class="form-select">
+                <option value="">Seçiniz</option>
+                <option value="Evli">Evli</option>
+                <option value="Boşanmış">Boşanmış</option>
+                <option value="Ayrı">Ayrı</option>
+                <option value="Vefat">Vefat</option>
+            </select>
+        </div>
+        <div class="col-md-3"><label class="form-label">Kardeşler</label><input asp-for="Kardesler" class="form-control" /></div>
+
+        <div class="col-md-6"><label class="form-label">Aile Psikiyatrik Öykü</label><textarea asp-for="AilePsikiyatrikOyku" class="form-control"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Aile Tıbbi Öykü</label><textarea asp-for="AileTibbiOyku" class="form-control"></textarea></div>
+        <div class="col-md-12"><label class="form-label">Ek Notlar</label><textarea asp-for="AileEkNotlar" class="form-control"></textarea></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Güncelle</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@Model.HastaTC" asp-route-tab="aileGelisim" class="btn btn-secondary mt-3">İptal</a>
+</form>

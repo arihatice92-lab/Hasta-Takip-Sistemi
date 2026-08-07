@@ -51,12 +51,13 @@
                         <input type="hidden" name="kullaniciID" value="@k.KullaniciID" />
                         <input type="password" name="yeniSifre" placeholder="Yeni şifre" required
                                style="width:120px; display:inline-block;" class="form-control form-control-sm d-inline" />
-                        <button type="submit" class="btn btn-sm btn-warning">Sıfırla</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Sıfırla</button>
                     </form>
 
                     @if (k.KullaniciAktif)
                     {
                         <form asp-action="PasifeAl" method="post" class="d-inline">
+                            <a asp-action="Guncelle" asp-route-kullaniciID="@k.KullaniciID" class="btn btn-sm btn-warning">Düzenle</a>
                             <input type="hidden" name="kullaniciID" value="@k.KullaniciID" />
                             <button type="submit" class="btn btn-sm btn-secondary">Pasife Al</button>
                         </form>
@@ -64,6 +65,7 @@
                     else
                     {
                         <form asp-action="AktifEt" method="post" class="d-inline">
+                            <a asp-action="Guncelle" asp-route-kullaniciID="@k.KullaniciID" class="btn btn-sm btn-warning">Düzenle</a>
                             <input type="hidden" name="kullaniciID" value="@k.KullaniciID" />
                             <button type="submit" class="btn btn-sm btn-success">Aktife Al</button>
                         </form>

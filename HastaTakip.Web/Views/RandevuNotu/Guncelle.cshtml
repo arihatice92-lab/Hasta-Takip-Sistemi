@@ -43,5 +43,5 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Güncelle</button>
-    <a asp-controller="Randevu" asp-action="Detay" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-secondary">İptal</a>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@Model.HastaTC" asp-route-tab="randevuNotlari" class="btn btn-secondary">İptal</a>
 </form>

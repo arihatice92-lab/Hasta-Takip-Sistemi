@@ -54,6 +54,11 @@ namespace HastaTakip.Business
         {
             return _kullaniciDal.KullaniciGetir(kullaniciAdi);
         }
+        public Kullanici? KullaniciGetirById(int kullaniciID)
+        {
+           return _kullaniciDal.KullaniciGetirById(kullaniciID); 
+        }
+       
 
         public List<Kullanici> KullaniciListele()
         {
@@ -80,5 +85,6 @@ namespace HastaTakip.Business
             string yeniHash = BCrypt.Net.BCrypt.HashPassword(yeniSifre);
             _kullaniciDal.SifreGuncelle(kullaniciID, yeniHash);
         }
+        public void KullaniciGuncelle(Kullanici kullanici) => _kullaniciDal.KullaniciGuncelle(kullanici);
     }
 }

@@ -1,0 +1,34 @@
+﻿@model HastaTakip.Entities.AileOykusu
+
+@{
+    ViewData["Title"] = "Aile Öyküsü Güncelle";
+}
+
+<h2>Aile Öyküsü Güncelle</h2>
+
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="AileOykuID" />
+    <input type="hidden" asp-for="HastaTC" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Anne-Babanın Kişisel Öyküsü</label>
+            <textarea asp-for="AnneBabaninKisiselOykusu" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Anne-Babanın Evlilik Öyküsü</label>
+            <textarea asp-for="AnneBabaninEvlilikOykusu" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Aile Özellikleri</label>
+            <textarea asp-for="AileOzellikleri" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Anne-Baba Kardeşleri</label>
+            <textarea asp-for="AnneBabaKardesler" class="form-control" rows="4"></textarea>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Güncelle</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@Model.HastaTC" asp-route-tab="aileGelisim" class="btn btn-secondary mt-3">İptal</a>
+</form>

@@ -2,6 +2,7 @@
 using HastaTakip.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace HastaTakip.Web.Controllers
 {
@@ -9,10 +10,14 @@ namespace HastaTakip.Web.Controllers
     public class KullaniciController : Controller
     {
         private readonly KullaniciBusiness _kullaniciBusiness;
+        private readonly DoktorBusiness _doktorBusiness;
+        private readonly PsikologBusiness _psikologBusiness;
 
-        public KullaniciController(KullaniciBusiness kullaniciBusiness)
+        public KullaniciController(KullaniciBusiness kullaniciBusiness, DoktorBusiness doktorBusiness, PsikologBusiness psikologBusiness)
         {
             _kullaniciBusiness = kullaniciBusiness;
+            _doktorBusiness = doktorBusiness;
+            _psikologBusiness = psikologBusiness;
         }
 
         // GET: /Kullanici
@@ -25,6 +30,8 @@ namespace HastaTakip.Web.Controllers
         // GET: /Kullanici/Ekle
         public IActionResult Ekle()
         {
+            ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+            ViewBag.PsikologListesi = _psikologBusiness.PsikologAra(null, "AZ", "aktif");
             return View();
         }
 
@@ -35,6 +42,8 @@ namespace HastaTakip.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+                ViewBag.PsikologListesi = _psikologBusiness.PsikologAra(null, "AZ", "aktif");
                 return View(kullanici);
             }
 
@@ -47,6 +56,8 @@ namespace HastaTakip.Web.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
+                ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+                ViewBag.PsikologListesi = _psikologBusiness.PsikologAra(null, "AZ", "aktif");
                 return View(kullanici);
             }
         }
@@ -68,7 +79,28 @@ namespace HastaTakip.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult Guncelle(int kullaniciID)
+        {
+            var kullanicilar = _kullaniciBusiness.KullaniciListele();
+            var kullanici = kullanicilar.FirstOrDefault(k => k.KullaniciID == kullaniciID);
+            if (kullanici == null)
+            {
+                return NotFound();
+            }
 
+            ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+            ViewBag.PsikologListesi = _psikologBusiness.PsikologAra(null, "AZ", "aktif");
+            return View(kullanici);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Guncelle(Kullanici kullanici)
+        {
+            _kullaniciBusiness.KullaniciGuncelle(kullanici);
+            TempData["BasariMesaji"] = "Kullanıcı bilgileri güncellendi.";
+            return RedirectToAction(nameof(Index));
+        }
         // POST: /Kullanici/PasifeAl
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -137,6 +137,22 @@ namespace HastaTakip.DataAccess
             connection.Open();
             command.ExecuteNonQuery();
         }
+
+        public void KullaniciGuncelle(Kullanici kullanici)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_KullaniciGuncelle", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@kullaniciID", kullanici.KullaniciID);
+            command.Parameters.AddWithValue("@adSoyad", kullanici.AdSoyad);
+            command.Parameters.AddWithValue("@rolID", kullanici.RolID);
+            command.Parameters.AddWithValue("@doktorID",
+                kullanici.DoktorID.HasValue ? (object)kullanici.DoktorID.Value : DBNull.Value);
+            command.Parameters.AddWithValue("@psikologID",
+                kullanici.PsikologID.HasValue ? (object)kullanici.PsikologID.Value : DBNull.Value);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
         private Kullanici MapToKullanici(SqlDataReader reader)
         {
             return new Kullanici

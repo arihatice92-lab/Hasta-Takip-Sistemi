@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Aile Bilgileri Ekle";
+}
+
+<h2>Aile Bilgileri Ekle</h2>
+
+<form asp-action="Ekle" method="post">
+    <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
+
+    <h5>Anne</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Yaşıyor mu?</label>
+            <select name="AnneYasiyorMu" class="form-select">
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+        <div class="col-md-4"><label class="form-label">Ad</label><input name="AnneAd" class="form-control" /></div>
+        <div class="col-md-4"><label class="form-label">Soyad</label><input name="AnneSoyad" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Yaş</label><input name="AnneYas" type="number" class="form-control" /></div>
+
+        <div class="col-md-3"><label class="form-label">Eğitim</label><input name="AnneEgitim" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İş</label><input name="AnneIs" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Telefon</label><input name="AnneTel" class="form-control" maxlength="11" /></div>
+        <div class="col-md-3"><label class="form-label">Adres</label><input name="AnneAdres" class="form-control" /></div>
+    </div>
+
+    <hr />
+    <h5>Baba</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Yaşıyor mu?</label>
+            <select name="BabaYasiyorMu" class="form-select">
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+        <div class="col-md-4"><label class="form-label">Ad</label><input name="BabaAd" class="form-control" /></div>
+        <div class="col-md-4"><label class="form-label">Soyad</label><input name="BabaSoyad" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Yaş</label><input name="BabaYas" type="number" class="form-control" /></div>
+
+        <div class="col-md-3"><label class="form-label">Eğitim</label><input name="BabaEgitim" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İş</label><input name="BabaIs" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Telefon</label><input name="BabaTel" class="form-control" maxlength="11" /></div>
+        <div class="col-md-3"><label class="form-label">Adres</label><input name="BabaAdres" class="form-control" /></div>
+    </div>
+
+    <hr />
+    <h5>Üvey Ebeveyn / Koruyucu</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Var mı?</label>
+            <select name="UveyVeyaKoruyucuVarMi" class="form-select">
+                <option value="false">Hayır</option>
+                <option value="true">Evet</option>
+            </select>
+        </div>
+        <div class="col-md-3"><label class="form-label">Türü</label><input name="UveyEbeveynTuru" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Ad</label><input name="UveyAd" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Soyad</label><input name="UveySoyad" class="form-control" /></div>
+
+        <div class="col-md-2"><label class="form-label">Yaş</label><input name="UveyYas" type="number" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Eğitim</label><input name="UveyEgitim" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">İş</label><input name="UveyIs" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Telefon</label><input name="UveyTel" class="form-control" /></div>
+        <div class="col-md-2">
+            <label class="form-label">Yaşıyor mu?</label>
+            <select name="UveyYasiyorMu" class="form-select">
+                <option value="">-</option>
+                <option value="true">Evet</option>
+                <option value="false">Hayır</option>
+            </select>
+        </div>
+        <div class="col-md-6"><label class="form-label">Adres</label><input name="UveyAdres" class="form-control" /></div>
+    </div>
+
+    <hr />
+    <h5>Genel Aile Bilgileri</h5>
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Akraba Evliliği</label>
+            <select name="AkrabaEvliligi" class="form-select">
+                <option value="false">Hayır</option>
+                <option value="true">Evet</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Aile Tipi</label>
+            <select name="AileTipi" class="form-select">
+                <option value="">Seçiniz</option>
+                <option value="Çekirdek">Çekirdek</option>
+                <option value="Geniş">Geniş</option>
+                <option value="Parçalanmış">Parçalanmış</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Ebeveyn Durumu</label>
+            <select name="EbeveynDurumu" class="form-select">
+                <option value="">Seçiniz</option>
+                <option value="Evli">Evli</option>
+                <option value="Boşanmış">Boşanmış</option>
+                <option value="Ayrı">Ayrı</option>
+                <option value="Vefat">Vefat</option>
+            </select>
+        </div>
+        <div class="col-md-3"><label class="form-label">Kardeşler</label><input name="Kardesler" class="form-control" /></div>
+
+        <div class="col-md-6"><label class="form-label">Aile Psikiyatrik Öykü</label><textarea name="AilePsikiyatrikOyku" class="form-control"></textarea></div>
+        <div class="col-md-6"><label class="form-label">Aile Tıbbi Öykü</label><textarea name="AileTibbiOyku" class="form-control"></textarea></div>
+        <div class="col-md-12"><label class="form-label">Ek Notlar</label><textarea name="AileEkNotlar" class="form-control"></textarea></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" asp-route-tab="aileGelisim" class="btn btn-secondary mt-3">İptal</a>
+</form>

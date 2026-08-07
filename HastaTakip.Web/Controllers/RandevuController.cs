@@ -42,7 +42,7 @@ namespace HastaTakip.Web.Controllers
             string? durum = null,
             int sayfa = 1)
         {
-            const int sayfaBoyutu = 15;
+            const int sayfaBoyutu = 10;
 
             var (randevular, toplamKayit) = _randevuBusiness.RandevuListele(
                 ara, siralama, baslangicTarihi, bitisTarihi, doktorID, hastaTC, durum, sayfa, sayfaBoyutu);
@@ -219,31 +219,68 @@ namespace HastaTakip.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Geldi(int randevuTarihID)
+        public IActionResult Geldi(int randevuTarihID, string? donus, string? hastaTC)
         {
             _randevuBusiness.GelisZamaniGuncelle(randevuTarihID);
             TempData["BasariMesaji"] = "Hasta geldi olarak işaretlendi.";
-            return RedirectToAction(nameof(Index));
+            return YonlendirGeriDon(donus, hastaTC);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult MuayeneBaslat(int randevuTarihID)
+        public IActionResult MuayeneBaslat(int randevuTarihID, string? donus, string? hastaTC)
         {
             _randevuBusiness.MuayeneBaslangicGuncelle(randevuTarihID);
             TempData["BasariMesaji"] = "Muayene başlatıldı.";
 
+            if (donus == "doktorPaneli")
+            {
+                return RedirectToAction("Index", "DoktorPaneli", new { hastaTC });
+            }
+
             var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
             if (randevu != null)
             {
-                return RedirectToAction("Detay", "Hasta", new
-                {
-                    tc = randevu.HastaTC,
-                    tab = "randevuNotlari",
-                    aktifRandevuTarihID = randevuTarihID
-                });
+                return RedirectToAction("Detay", "Hasta", new { tc = randevu.HastaTC, tab = "randevuNotlari", aktifRandevuTarihID = randevuTarihID });
             }
+            return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Gelmedi(int randevuTarihID, string? donus, string? hastaTC)
+        {
+            try
+            {
+                _randevuBusiness.RandevuGelmediIsaretle(randevuTarihID);
+                TempData["BasariMesaji"] = "Randevu 'Gelmedi' olarak işaretlendi.";
+            }
+            catch (Exception ex)
+            {
+                TempData["HataMesaji"] = ex.Message;
+            }
+            return YonlendirGeriDon(donus, hastaTC);
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Iptal(int randevuTarihID, string? donus, string? hastaTC)
+        {
+            try
+            {
+                _randevuBusiness.RandevuIptalEt(randevuTarihID);
+                TempData["BasariMesaji"] = "Randevu iptal edildi.";
+            }
+            catch (Exception ex)
+            {
+                TempData["HataMesaji"] = ex.Message;
+            }
+            return YonlendirGeriDon(donus, hastaTC);
+        }
+
+        private IActionResult YonlendirGeriDon(string? donus, string? hastaTC)
+        {
+            if (donus == "doktorPaneli")
+            {
+                return RedirectToAction("Index", "DoktorPaneli", new { hastaTC });
+            }
             return RedirectToAction(nameof(Index));
         }
         private void YukleDropdownlar(string? seciliHastaTC)

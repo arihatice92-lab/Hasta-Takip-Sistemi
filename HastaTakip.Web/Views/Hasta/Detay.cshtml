@@ -312,7 +312,223 @@
 </div>
     
     <div class="tab-pane fade" id="aileGelisim">
-        <p class="text-muted">Yakında — Aile bilgileri ve gelişimsel öykü burada görüntülenecek.</p>
+        @{
+            var aileBilgileriListesi = (List<HastaTakip.Entities.AileBilgileri>)ViewBag.AileBilgileriListesi;
+            var aileOykusuListesi = (List<HastaTakip.Entities.AileOykusu>)ViewBag.AileOykusuListesi;
+            var gelisimselOykuListesi = (List<HastaTakip.Entities.GelisimselOyku>)ViewBag.GelisimselOykuListesi;
+            var kullanicilarSozluk = (Dictionary<int, HastaTakip.Entities.Kullanici>)ViewBag.Kullanicilar;
+
+            string GuncelleyenBilgisi(int? kullaniciID, DateTime? tarih)
+            {
+                var isim = kullaniciID.HasValue && kullanicilarSozluk.TryGetValue(kullaniciID.Value, out var k) ? k.AdSoyad : "-";
+                var tarihMetin = tarih?.ToString("dd.MM.yyyy HH:mm") ?? "-";
+                return $"Son güncelleyen: {isim}, {tarihMetin}";
+            }
+        }
+
+        <h5>Aile Bilgileri</h5>
+        <a asp-controller="AileBilgileri" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Bilgisi Ekle</a>
+
+        @if (aileBilgileriListesi.Count == 0)
+        {
+            <p class="text-muted">Kayıtlı aile bilgisi bulunmuyor.</p>
+        }
+        else
+        {
+            @foreach (var ab in aileBilgileriListesi)
+            {
+                var panelId = $"aileBilgi{ab.AileBilgileriID}";
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center" style="cursor:pointer;"
+                             data-bs-toggle="collapse" data-bs-target="#@panelId">
+                            <div>
+                                <strong>@ab.AnneAd @ab.AnneSoyad</strong> &amp; <strong>@ab.BabaAd @ab.BabaSoyad</strong>
+                                <span class="text-muted small ms-2">(@(ab.AileTipi ?? "-"))</span>
+                            </div>
+                            <span class="text-muted small">@GuncelleyenBilgisi(ab.SonGuncelleyenKullaniciID, ab.SonGuncellemeTarihi)</span>
+                        </div>
+
+                        <div class="collapse mt-3" id="@panelId">
+                            <dl class="row mb-2">
+                                <dt class="col-sm-3">Anne</dt>
+                                <dd class="col-sm-9">
+                                    @ab.AnneAd @ab.AnneSoyad (@(ab.AnneYasiyorMu ? "Hayatta" : "Vefat")),
+                                    Yaş: @(ab.AnneYas?.ToString() ?? "-"), Eğitim: @(ab.AnneEgitim ?? "-"),
+                                    İş: @(ab.AnneIs ?? "-"), Tel: @(ab.AnneTel ?? "-"), Adres: @(ab.AnneAdres ?? "-")
+                                </dd>
+
+                                <dt class="col-sm-3">Baba</dt>
+                                <dd class="col-sm-9">
+                                    @ab.BabaAd @ab.BabaSoyad (@(ab.BabaYasiyorMu ? "Hayatta" : "Vefat")),
+                                    Yaş: @(ab.BabaYas?.ToString() ?? "-"), Eğitim: @(ab.BabaEgitim ?? "-"),
+                                    İş: @(ab.BabaIs ?? "-"), Tel: @(ab.BabaTel ?? "-"), Adres: @(ab.BabaAdres ?? "-")
+                                </dd>
+
+                                @if (ab.UveyVeyaKoruyucuVarMi)
+                                {
+                                    <dt class="col-sm-3">Üvey Ebeveyn/Koruyucu</dt>
+                                    <dd class="col-sm-9">
+                                        @ab.UveyAd @ab.UveySoyad (@(ab.UveyEbeveynTuru ?? "-")),
+                                        Yaş: @(ab.UveyYas?.ToString() ?? "-"), Tel: @(ab.UveyTel ?? "-")
+                                    </dd>
+                                }
+
+                                <dt class="col-sm-3">Akraba Evliliği</dt>
+                                <dd class="col-sm-9">@(ab.AkrabaEvliligi ? "Var" : "Yok")</dd>
+
+                                <dt class="col-sm-3">Ebeveyn Durumu</dt>
+                                <dd class="col-sm-9">@(ab.EbeveynDurumu ?? "-")</dd>
+
+                                <dt class="col-sm-3">Kardeşler</dt>
+                                <dd class="col-sm-9">@(ab.Kardesler ?? "-")</dd>
+
+                                <dt class="col-sm-3">Aile Psikiyatrik Öykü</dt>
+                                <dd class="col-sm-9">@(ab.AilePsikiyatrikOyku ?? "-")</dd>
+
+                                <dt class="col-sm-3">Aile Tıbbi Öykü</dt>
+                                <dd class="col-sm-9">@(ab.AileTibbiOyku ?? "-")</dd>
+
+                                <dt class="col-sm-3">Ek Notlar</dt>
+                                <dd class="col-sm-9">@(ab.AileEkNotlar ?? "-")</dd>
+                            </dl>
+                            <a asp-controller="AileBilgileri" asp-action="Guncelle" asp-route-aileBilgileriID="@ab.AileBilgileriID" class="btn btn-sm btn-warning">Düzenle</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        <hr />
+
+        <h5>Aile Öyküsü</h5>
+        <a asp-controller="AileOykusu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Öyküsü Ekle</a>
+
+        @if (aileOykusuListesi.Count == 0)
+        {
+            <p class="text-muted">Kayıtlı aile öyküsü bulunmuyor.</p>
+        }
+        else
+        {
+            @foreach (var ao in aileOykusuListesi)
+            {
+                var panelId = $"aileOyku{ao.AileOykuID}";
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center" style="cursor:pointer;"
+                             data-bs-toggle="collapse" data-bs-target="#@panelId">
+                            <strong>Aile Öyküsü Kaydı</strong>
+                            <span class="text-muted small">@GuncelleyenBilgisi(ao.SonGuncelleyenKullaniciID, ao.SonGuncellemeTarihi)</span>
+                        </div>
+
+                        <div class="collapse mt-3" id="@panelId">
+                            <dl class="row mb-2">
+                                <dt class="col-sm-3">Anne-Babanın Kişisel Öyküsü</dt>
+                                <dd class="col-sm-9">@(ao.AnneBabaninKisiselOykusu ?? "-")</dd>
+
+                                <dt class="col-sm-3">Anne-Babanın Evlilik Öyküsü</dt>
+                                <dd class="col-sm-9">@(ao.AnneBabaninEvlilikOykusu ?? "-")</dd>
+
+                                <dt class="col-sm-3">Aile Özellikleri</dt>
+                                <dd class="col-sm-9">@(ao.AileOzellikleri ?? "-")</dd>
+
+                                <dt class="col-sm-3">Anne-Baba Kardeşleri</dt>
+                                <dd class="col-sm-9">@(ao.AnneBabaKardesler ?? "-")</dd>
+                            </dl>
+                            <a asp-controller="AileOykusu" asp-action="Guncelle" asp-route-aileOykuID="@ao.AileOykuID" class="btn btn-sm btn-warning">Düzenle</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        <hr />
+
+        <h5>Gelişimsel Öykü</h5>
+        <a asp-controller="GelisimselOyku" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Gelişimsel Öykü Ekle</a>
+
+        @if (gelisimselOykuListesi.Count == 0)
+        {
+            <p class="text-muted">Kayıtlı gelişimsel öykü bulunmuyor.</p>
+        }
+        else
+        {
+            @foreach (var go in gelisimselOykuListesi)
+            {
+                var panelId = $"gelisimOyku{go.GelisimOykuID}";
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center" style="cursor:pointer;"
+                             data-bs-toggle="collapse" data-bs-target="#@panelId">
+                            <div>
+                                <strong>Doğum Şekli:</strong> @(go.DogumSekli ?? "-")
+                                <span class="text-muted small ms-2">Doğum Haftası: @(go.DogumHaftasi?.ToString() ?? "-")</span>
+                            </div>
+                            <span class="text-muted small">@GuncelleyenBilgisi(go.SonGuncelleyenKullaniciID, go.SonGuncellemeTarihi)</span>
+                        </div>
+
+                        <div class="collapse mt-3" id="@panelId">
+                            <dl class="row mb-2">
+                                <dt class="col-sm-3">Doğumda Anne/Baba Yaşı</dt>
+                                <dd class="col-sm-9">Anne: @(go.DogumAnneYasi?.ToString() ?? "-"), Baba: @(go.DogumBabaYasi?.ToString() ?? "-")</dd>
+
+                                <dt class="col-sm-3">Doğum Ağırlığı</dt>
+                                <dd class="col-sm-9">@(go.DogumAgirligi?.ToString() ?? "-") gr</dd>
+
+                                <dt class="col-sm-3">Doğum Komplikasyonu</dt>
+                                <dd class="col-sm-9">@(go.DogumKomplikasyonu ?? "-")</dd>
+
+                                <dt class="col-sm-3">Planlı Gebelik mi?</dt>
+                                <dd class="col-sm-9">@(go.PlanliGebelikMi.HasValue ? (go.PlanliGebelikMi.Value ? "Evet" : "Hayır") : "-")</dd>
+
+                                <dt class="col-sm-3">Gebe Kalmada Güçlük</dt>
+                                <dd class="col-sm-9">@(go.GebeKalmadaGucluk ?? "-")</dd>
+
+                                <dt class="col-sm-3">Ailenin Cinsiyet Beklentisi</dt>
+                                <dd class="col-sm-9">@(go.AileCinsiyetBeklentisi ?? "-")</dd>
+
+                                <dt class="col-sm-3">Ailenin Doğuma Tepkisi</dt>
+                                <dd class="col-sm-9">@(go.AileDogumaTepki ?? "-")</dd>
+
+                                <dt class="col-sm-3">Motor/Dil Gelişimi</dt>
+                                <dd class="col-sm-9">
+                                    Oturma: @(go.OturmaYasi?.ToString() ?? "-") ay,
+                                    Emekleme: @(go.EmeklemeYasi?.ToString() ?? "-") ay,
+                                    Yürüme: @(go.YurumeYasi?.ToString() ?? "-") ay,
+                                    İlk Sözcük: @(go.IlkSozcukYasi?.ToString() ?? "-") ay,
+                                    İlk Cümle: @(go.IlkCumleYasi?.ToString() ?? "-") ay
+                                </dd>
+
+                                <dt class="col-sm-3">Tuvalet Eğitimi</dt>
+                                <dd class="col-sm-9">@(go.TuvaletEgitimi ?? "-")</dd>
+
+                                <dt class="col-sm-3">Geçirilen Kaza</dt>
+                                <dd class="col-sm-9">@(go.GecirilenKaza ?? "-")</dd>
+
+                                <dt class="col-sm-3">Bebeklik Dönemi</dt>
+                                <dd class="col-sm-9">@(go.BebeklikDonemi ?? "-")</dd>
+
+                                <dt class="col-sm-3">Çocukluk Dönemi</dt>
+                                <dd class="col-sm-9">@(go.CocuklukDonemi ?? "-")</dd>
+
+                                <dt class="col-sm-3">Okul Öyküsü</dt>
+                                <dd class="col-sm-9">@(go.OkulOykusu ?? "-")</dd>
+
+                                <dt class="col-sm-3">Sosyal İlişkileri</dt>
+                                <dd class="col-sm-9">@(go.SosyalIliskileri ?? "-")</dd>
+
+                                <dt class="col-sm-3">Kişilik Özellikleri</dt>
+                                <dd class="col-sm-9">@(go.KisilikOzellikleri ?? "-")</dd>
+
+                                <dt class="col-sm-3">Ek Notlar</dt>
+                                <dd class="col-sm-9">@(go.GelisimselOykuEkNot ?? "-")</dd>
+                            </dl>
+                            <a asp-controller="GelisimselOyku" asp-action="Guncelle" asp-route-gelisimOykuID="@go.GelisimOykuID" class="btn btn-sm btn-warning">Düzenle</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     </div>
     <div class="tab-pane fade" id="gecmisRandevular">
         @{
@@ -377,6 +593,16 @@
             var randevuSozlugu = (Dictionary<int, HastaTakip.Entities.RandevuTarihi>)ViewBag.RandevuSozlugu;
         }
 
+        @if (ViewBag.AktifRandevuTarihID != null)
+        {
+            <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                <span>Muayenesi başlatılan randevu için henüz not girilmedi.</span>
+                <a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@ViewBag.AktifRandevuTarihID" class="btn btn-sm btn-primary">
+                    Randevu Notu Ekle
+                </a>
+            </div>
+        }
+
         <a asp-controller="Randevu" asp-action="Index" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">
             Randevu Notu Ekle
         </a>
@@ -387,51 +613,51 @@
         }
         else
         {
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>Randevu Tarihi</th>
-                            <th>Doktor</th>
-                            <th>Görüşme Tipi</th>
-                            <th>Görüşme Notu</th>
-                            <th>Sonraki Randevu Tarihi</th>
-                            <th>İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var not in randevuNotlari)
-                        {
-                            <tr>
-                                <td>
-                                    @(randevuSozlugu.TryGetValue(not.RandevuTarihID, out var randevu)
-                                        ? randevu.RandevuTarih.ToString("dd.MM.yyyy")
-                                        : "-")
-                                </td>
-                                <td>@(doktorlarSozluk.TryGetValue(not.DoktorID, out var dNot) ? $"{dNot.DoktorAd} {dNot.DoktorSoyad}" : "-")</td>
-                                <td>@(not.GorusmeTipi ?? "-")</td>
-                                <td>@(not.GorusmeNotu ?? "-")</td>
-                                <td>@(not.SonrakiRandevuTarihi?.ToString("dd.MM.yyyy") ?? "-")</td>
-                                <td>
-                                    <a asp-controller="RandevuNotu" asp-action="Guncelle" asp-route-randevuNotID="@not.RandevuNotID" class="btn btn-sm btn-warning">Düzenle</a>
+            @foreach (var not in randevuNotlari)
+            {
+                var randevuVarMi = randevuSozlugu.TryGetValue(not.RandevuTarihID, out var randevu);
+                var doktorAdi = doktorlarSozluk.TryGetValue(not.DoktorID, out var dNot) ? $"{dNot.DoktorAd} {dNot.DoktorSoyad}" : "-";
+                var panelId = $"randevuNotu{not.RandevuNotID}";
 
-                                    @if (not.SonrakiRandevuTarihi.HasValue)
-                                    {
-                                        <a asp-controller="Randevu" asp-action="Ekle"
-                                           asp-route-hastaTC="@Model.HastaTC"
-                                           asp-route-doktorID="@not.DoktorID"
-                                           asp-route-tarih="@not.SonrakiRandevuTarihi.Value.ToString("yyyy-MM-dd")"
-                                           asp-route-kaynak="randevuNotu"
-                                           class="btn btn-sm btn-primary">
-                                            Randevu Al
-                                        </a>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center" style="cursor:pointer;"
+                             data-bs-toggle="collapse" data-bs-target="#@panelId">
+                            <div>
+                                <strong>@(randevuVarMi ? randevu!.RandevuTarih.ToString("dd.MM.yyyy") : "-")</strong>
+                                <span class="text-muted small ms-2">Doktor: @doktorAdi</span>
+                            </div>
+                            <span class="text-muted small">@(not.GorusmeTipi ?? "-")</span>
+                        </div>
+
+                        <div class="collapse mt-3" id="@panelId">
+                            <dl class="row mb-2">
+                                <dt class="col-sm-3">Görüşme Tipi</dt>
+                                <dd class="col-sm-9">@(not.GorusmeTipi ?? "-")</dd>
+
+                                <dt class="col-sm-3">Görüşme Notu</dt>
+                                <dd class="col-sm-9">@(not.GorusmeNotu ?? "-")</dd>
+
+                                <dt class="col-sm-3">Sonraki Randevu Tarihi</dt>
+                                <dd class="col-sm-9">@(not.SonrakiRandevuTarihi?.ToString("dd.MM.yyyy") ?? "-")</dd>
+                            </dl>
+
+                            <a asp-controller="RandevuNotu" asp-action="Guncelle" asp-route-randevuNotID="@not.RandevuNotID" class="btn btn-sm btn-warning">Düzenle</a>
+
+                            @if (not.SonrakiRandevuTarihi.HasValue)
+                            {
+                                <a asp-controller="Randevu" asp-action="Ekle"
+                                   asp-route-hastaTC="@Model.HastaTC"
+                                   asp-route-doktorID="@not.DoktorID"
+                                   asp-route-tarih="@not.SonrakiRandevuTarihi.Value.ToString("yyyy-MM-dd")"
+                                   class="btn btn-sm btn-primary">
+                                    Randevu Al
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
 </div>

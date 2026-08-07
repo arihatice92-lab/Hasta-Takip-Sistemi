@@ -65,6 +65,13 @@ builder.Services.AddScoped<AltKumeSonucBusiness>();
 builder.Services.AddScoped<RandevuNotuDal>();
 builder.Services.AddScoped<RandevuNotuBusiness>();
 
+builder.Services.AddScoped<AileBilgileriDal>();
+builder.Services.AddScoped<AileBilgileriBusiness>();
+builder.Services.AddScoped<AileOykusuDal>();
+builder.Services.AddScoped<AileOykusuBusiness>();
+builder.Services.AddScoped<GelisimselOykuDal>();
+builder.Services.AddScoped<GelisimselOykuBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

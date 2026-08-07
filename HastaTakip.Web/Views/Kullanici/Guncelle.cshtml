@@ -1,43 +1,43 @@
 ﻿@model HastaTakip.Entities.Kullanici
 
 @{
-    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+    ViewData["Title"] = "Kullanıcı Güncelle";
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    var psikologlar = (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi;
 }
 
-<h2>Yeni Kullanıcı Ekle</h2>
+<h2>Kullanıcı Güncelle</h2>
 
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="KullaniciID" />
+    <input type="hidden" asp-for="KullaniciAdi" />
+    <input type="hidden" asp-for="KullaniciAktif" />
 
-<form asp-action="Ekle" method="post">
     <div class="mb-3">
-        <label>Kullanıcı Adı</label>
-        <input asp-for="KullaniciAdi" class="form-control" required />
+        <label class="form-label">Kullanıcı Adı</label>
+        <input value="@Model.KullaniciAdi" class="form-control" disabled />
     </div>
 
     <div class="mb-3">
-        <label>Ad Soyad</label>
+        <label asp-for="AdSoyad" class="form-label">Ad Soyad</label>
         <input asp-for="AdSoyad" class="form-control" required />
     </div>
 
     <div class="mb-3">
-        <label>Başlangıç Şifresi</label>
-        <input type="password" name="sifre" class="form-control" required minlength="6" />
-    </div>
-
-    <div class="mb-3">
-        <label>Rol</label>
-        <select asp-for="RolID" class="form-control">
+        <label class="form-label">Rol</label>
+        <select asp-for="RolID" class="form-select">
             <option value="1">Yönetici</option>
             <option value="2">Doktor</option>
             <option value="3">Sekreter</option>
             <option value="4">Psikolog</option>
         </select>
     </div>
+
     <div class="mb-3">
         <label class="form-label">Bağlı Doktor <small class="text-muted">(sadece Doktor rolü için)</small></label>
-        <select name="DoktorID" class="form-select">
+        <select asp-for="DoktorID" class="form-select">
             <option value="">Yok</option>
-            @foreach (var doktor in (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi)
+            @foreach (var doktor in doktorlar)
             {
                 <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad</option>
             }
@@ -46,15 +46,15 @@
 
     <div class="mb-3">
         <label class="form-label">Bağlı Psikolog <small class="text-muted">(sadece Psikolog rolü için)</small></label>
-        <select name="PsikologID" class="form-select">
+        <select asp-for="PsikologID" class="form-select">
             <option value="">Yok</option>
-            @foreach (var psikolog in (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi)
+            @foreach (var psikolog in psikologlar)
             {
                 <option value="@psikolog.PsikologID">@psikolog.PsikologAd @psikolog.PsikologSoyad</option>
             }
         </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Oluştur</button>
+    <button type="submit" class="btn btn-primary">Güncelle</button>
     <a asp-action="Index" class="btn btn-secondary">İptal</a>
 </form>

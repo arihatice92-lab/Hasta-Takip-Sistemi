@@ -27,6 +27,11 @@ namespace HastaTakip.Web.Controllers
         private readonly AltKumeSonucBusiness _altKumeSonucBusiness;
 
         private readonly RandevuNotuBusiness _randevuNotuBusiness;
+
+        private readonly KullaniciBusiness _kullaniciBusiness;
+        private readonly AileBilgileriBusiness _aileBilgileriBusiness;
+        private readonly AileOykusuBusiness _aileOykusuBusiness;
+        private readonly GelisimselOykuBusiness _gelisimselOykuBusiness;
         public HastaController(
             HastaBusiness hastaBusiness, 
             RandevuBusiness randevuBusiness,
@@ -43,7 +48,11 @@ namespace HastaTakip.Web.Controllers
             PsikologBusiness psikologBusiness,
             TestAltKumeBusiness testAltKumeBusiness,
             AltKumeSonucBusiness altKumeSonucBusiness,
-            RandevuNotuBusiness randevuNotuBusiness)
+            RandevuNotuBusiness randevuNotuBusiness,
+            KullaniciBusiness kullaniciBusiness,
+            AileBilgileriBusiness aileBilgileriBusiness,
+            AileOykusuBusiness aileOykusuBusiness,
+            GelisimselOykuBusiness gelisimselOykuBusiness)
         {
             _hastaBusiness = hastaBusiness;
             _randevuBusiness = randevuBusiness;
@@ -61,6 +70,10 @@ namespace HastaTakip.Web.Controllers
             _testAltKumeBusiness = testAltKumeBusiness;
             _altKumeSonucBusiness = altKumeSonucBusiness;
             _randevuNotuBusiness = randevuNotuBusiness;
+            _kullaniciBusiness = kullaniciBusiness;
+            _aileBilgileriBusiness = aileBilgileriBusiness;
+            _aileOykusuBusiness = aileOykusuBusiness;
+            _gelisimselOykuBusiness = gelisimselOykuBusiness;
         }
         public IActionResult Index(
             string? ara,
@@ -130,6 +143,22 @@ namespace HastaTakip.Web.Controllers
             ViewBag.AltKumeAdSozlugu = _testAltKumeBusiness.TumAltKumeleriListele().ToDictionary(a => a.TestAltKumeID);
             ViewBag.RandevuNotlari = _randevuNotuBusiness.HastaRandevuNotlariListele(tc);
             ViewBag.RandevuSozlugu = randevular.ToDictionary(r => r.RandevuTarihID);
+            ViewBag.AileBilgileriListesi = _aileBilgileriBusiness.HastaAileBilgileriListele(tc);
+            ViewBag.AileOykusuListesi = _aileOykusuBusiness.HastaAileOykusuListele(tc);
+            ViewBag.GelisimselOykuListesi = _gelisimselOykuBusiness.HastaGelisimselOykuListele(tc);
+
+            var kullaniciIDler = ((List<HastaTakip.Entities.AileBilgileri>)ViewBag.AileBilgileriListesi).Select(a => a.SonGuncelleyenKullaniciID)
+                .Concat(((List<HastaTakip.Entities.AileOykusu>)ViewBag.AileOykusuListesi).Select(a => a.SonGuncelleyenKullaniciID))
+                .Concat(((List<HastaTakip.Entities.GelisimselOyku>)ViewBag.GelisimselOykuListesi).Select(a => a.SonGuncelleyenKullaniciID))
+                .Where(id => id.HasValue).Select(id => id!.Value).Distinct();
+
+            var kullanicilarSozluk = new Dictionary<int, HastaTakip.Entities.Kullanici>();
+            foreach (var id in kullaniciIDler)
+            {
+                var k = _kullaniciBusiness.KullaniciGetirById(id);
+                if (k != null) kullanicilarSozluk[id] = k;
+            }
+            ViewBag.Kullanicilar = kullanicilarSozluk;
             return View(hasta);
         }
 
