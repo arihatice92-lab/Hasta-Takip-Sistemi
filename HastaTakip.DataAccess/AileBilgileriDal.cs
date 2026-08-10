@@ -11,16 +11,6 @@ namespace HastaTakip.DataAccess
         private readonly DbHelper _dbHelper;
         public AileBilgileriDal(DbHelper dbHelper) { _dbHelper = dbHelper; }
 
-        public void AileBilgileriEkle(AileBilgileri bilgi, int kullaniciID)
-        {
-            using var connection = _dbHelper.GetConnection();
-            using var command = new SqlCommand("sp_AileBilgileriEkle", connection);
-            command.CommandType = CommandType.StoredProcedure;
-            EkleParametreler(command, bilgi);
-            command.Parameters.AddWithValue("@kullaniciID", kullaniciID);
-            connection.Open();
-            command.ExecuteNonQuery();
-        }
 
         public AileBilgileri? AileBilgileriGetir(int aileBilgileriID)
         {
@@ -37,16 +27,65 @@ namespace HastaTakip.DataAccess
             return null;
         }
 
+        public void AileBilgileriEkle(AileBilgileri bilgi, int kullaniciID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_AileBilgileriEkle", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@hastaTC", bilgi.HastaTC);   // ← sadece Ekle'de
+            OrtakParametreler(command, bilgi);
+            command.Parameters.AddWithValue("@kullaniciID", kullaniciID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
         public void AileBilgileriGuncelle(AileBilgileri bilgi, int kullaniciID)
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_AileBilgileriGuncelle", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@aileBilgileriID", bilgi.AileBilgileriID);
-            EkleParametreler(command, bilgi);
+            OrtakParametreler(command, bilgi);   // ← @hastaTC yok
             command.Parameters.AddWithValue("@kullaniciID", kullaniciID);
             connection.Open();
             command.ExecuteNonQuery();
+        }
+
+        private void OrtakParametreler(SqlCommand command, AileBilgileri b)
+        {
+            command.Parameters.AddWithValue("@anneYasiyorMu", b.AnneYasiyorMu);
+            command.Parameters.AddWithValue("@anneAd", (object?)b.AnneAd ?? DBNull.Value);
+            command.Parameters.AddWithValue("@anneSoyad", (object?)b.AnneSoyad ?? DBNull.Value);
+            command.Parameters.AddWithValue("@anneYas", (object?)b.AnneYas ?? DBNull.Value);
+            command.Parameters.AddWithValue("@anneEgitim", (object?)b.AnneEgitim ?? DBNull.Value);
+            command.Parameters.AddWithValue("@anneIs", (object?)b.AnneIs ?? DBNull.Value);
+            command.Parameters.AddWithValue("@anneTel", (object?)b.AnneTel ?? DBNull.Value);
+            command.Parameters.AddWithValue("@anneAdres", (object?)b.AnneAdres ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaYasiyorMu", b.BabaYasiyorMu);
+            command.Parameters.AddWithValue("@babaAd", (object?)b.BabaAd ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaSoyad", (object?)b.BabaSoyad ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaYas", (object?)b.BabaYas ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaEgitim", (object?)b.BabaEgitim ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaIs", (object?)b.BabaIs ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaTel", (object?)b.BabaTel ?? DBNull.Value);
+            command.Parameters.AddWithValue("@babaAdres", (object?)b.BabaAdres ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyVeyaKoruyucuVarMi", b.UveyVeyaKoruyucuVarMi);
+            command.Parameters.AddWithValue("@uveyEbeveynTuru", (object?)b.UveyEbeveynTuru ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyAd", (object?)b.UveyAd ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveySoyad", (object?)b.UveySoyad ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyYas", (object?)b.UveyYas ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyEgitim", (object?)b.UveyEgitim ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyIs", (object?)b.UveyIs ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyTel", (object?)b.UveyTel ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyAdres", (object?)b.UveyAdres ?? DBNull.Value);
+            command.Parameters.AddWithValue("@uveyYasiyorMu", (object?)b.UveyYasiyorMu ?? DBNull.Value);
+            command.Parameters.AddWithValue("@akrabaEvliligi", b.AkrabaEvliligi);
+            command.Parameters.AddWithValue("@aileTipi", (object?)b.AileTipi ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ebeveynDurumu", (object?)b.EbeveynDurumu ?? DBNull.Value);
+            command.Parameters.AddWithValue("@kardesler", (object?)b.Kardesler ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ailePsikiyatrikOyku", (object?)b.AilePsikiyatrikOyku ?? DBNull.Value);
+            command.Parameters.AddWithValue("@aileTibbiOyku", (object?)b.AileTibbiOyku ?? DBNull.Value);
+            command.Parameters.AddWithValue("@aileEkNotlar", (object?)b.AileEkNotlar ?? DBNull.Value);
         }
 
         public List<AileBilgileri> HastaAileBilgileriListele(string hastaTC)
