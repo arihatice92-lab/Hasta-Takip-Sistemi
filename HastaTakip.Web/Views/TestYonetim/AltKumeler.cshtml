@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Alt Küme Yönetimi";
+    var test = (HastaTakip.Entities.Test)ViewBag.Test;
+    var altKumeler = (List<HastaTakip.Entities.TestAltKume>)ViewBag.AltKumeler;
+}
+
+<h2>@test.TestAdi — Alt Kümeler</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
+
+<form asp-action="AltKumeEkle" method="post" class="row g-2 mb-4">
+    <input type="hidden" name="TestID" value="@test.TestID" />
+    <div class="col-md-4">
+        <input name="TestAltKumeAdi" class="form-control" placeholder="Alt küme adı" required />
+    </div>
+    <div class="col-md-5">
+        <input name="TestAltKumeAciklama" class="form-control" placeholder="Açıklama (opsiyonel)" />
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Ekle</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Alt Küme Adı</th><th>Açıklama</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var ak in altKumeler)
+        {
+            <tr>
+                <td>@ak.TestAltKumeAdi</td>
+                <td>@(ak.TestAltKumeAciklama ?? "-")</td>
+                <td>
+                    <form asp-action="AltKumeSil" method="post" class="d-inline">
+                        <input type="hidden" name="testAltKumeID" value="@ak.TestAltKumeID" />
+                        <input type="hidden" name="testID" value="@test.TestID" />
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Silmek istediğinize emin misiniz?');">
+                            Sil
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Test Listesine Dön</a>

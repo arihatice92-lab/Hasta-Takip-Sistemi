@@ -34,10 +34,17 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Randevu" asp-action="Index">Randevu Listesi</a>
                             </li>
+                           
                             @if (User.IsInRole("Yönetici"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Kullanici" asp-action="Index">Kullanıcı Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="TestYonetim" asp-action="Index">Test Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="OlcekYonetim" asp-action="Index">Ölçek Yönetimi</a>
                                 </li>
                             }
                             @if (User.IsInRole("Doktor"))
