@@ -174,7 +174,9 @@ namespace HastaTakip.DataAccess
                 KisilikOzellikleri = reader["kisilikOzellikleri"] == DBNull.Value ? null : reader["kisilikOzellikleri"].ToString(),
                 GelisimselOykuEkNot = reader["gelisimselOykuEkNot"] == DBNull.Value ? null : reader["gelisimselOykuEkNot"].ToString(),
                 SonGuncelleyenKullaniciID = reader["sonGuncelleyenKullaniciID"] == DBNull.Value ? null : (int?)reader["sonGuncelleyenKullaniciID"],
-                SonGuncellemeTarihi = reader["sonGuncellemeTarihi"] == DBNull.Value ? null : (DateTime?)reader["sonGuncellemeTarihi"]
+                SonGuncellemeTarihi = reader["sonGuncellemeTarihi"] == DBNull.Value ? null : (DateTime?)reader["sonGuncellemeTarihi"],
+                OlusturanKullaniciID = reader["olusturanKullaniciID"] == DBNull.Value ? null : (int?)reader["olusturanKullaniciID"],
+                OlusturmaTarihi = reader["olusturmaTarihi"] == DBNull.Value ? null : (DateTime?)reader["olusturmaTarihi"]
             };
         }
     }

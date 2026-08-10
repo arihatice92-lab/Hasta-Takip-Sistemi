@@ -45,6 +45,8 @@ namespace HastaTakip.Entities
         public string? AilePsikiyatrikOyku { get; set; }
         public string? AileTibbiOyku { get; set; } 
         public string? AileEkNotlar { get; set; }
+        public int? OlusturanKullaniciID { get; set; }
+        public DateTime? OlusturmaTarihi { get; set; }
         public int? SonGuncelleyenKullaniciID { get; set; }
         public DateTime? SonGuncellemeTarihi { get; set; }
     }

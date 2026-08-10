@@ -104,43 +104,43 @@ namespace HastaTakip.DataAccess
             return liste;
         }
 
-        private void EkleParametreler(SqlCommand command, AileBilgileri b)
-        {
-            command.Parameters.AddWithValue("@hastaTC", b.HastaTC);
-            command.Parameters.AddWithValue("@anneYasiyorMu", b.AnneYasiyorMu);
-            command.Parameters.AddWithValue("@anneAd", (object?)b.AnneAd ?? DBNull.Value);
-            command.Parameters.AddWithValue("@anneSoyad", (object?)b.AnneSoyad ?? DBNull.Value);
-            command.Parameters.AddWithValue("@anneYas", (object?)b.AnneYas ?? DBNull.Value);
-            command.Parameters.AddWithValue("@anneEgitim", (object?)b.AnneEgitim ?? DBNull.Value);
-            command.Parameters.AddWithValue("@anneIs", (object?)b.AnneIs ?? DBNull.Value);
-            command.Parameters.AddWithValue("@anneTel", (object?)b.AnneTel ?? DBNull.Value);
-            command.Parameters.AddWithValue("@anneAdres", (object?)b.AnneAdres ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaYasiyorMu", b.BabaYasiyorMu);
-            command.Parameters.AddWithValue("@babaAd", (object?)b.BabaAd ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaSoyad", (object?)b.BabaSoyad ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaYas", (object?)b.BabaYas ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaEgitim", (object?)b.BabaEgitim ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaIs", (object?)b.BabaIs ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaTel", (object?)b.BabaTel ?? DBNull.Value);
-            command.Parameters.AddWithValue("@babaAdres", (object?)b.BabaAdres ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyVeyaKoruyucuVarMi", b.UveyVeyaKoruyucuVarMi);
-            command.Parameters.AddWithValue("@uveyEbeveynTuru", (object?)b.UveyEbeveynTuru ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyAd", (object?)b.UveyAd ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveySoyad", (object?)b.UveySoyad ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyYas", (object?)b.UveyYas ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyEgitim", (object?)b.UveyEgitim ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyIs", (object?)b.UveyIs ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyTel", (object?)b.UveyTel ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyAdres", (object?)b.UveyAdres ?? DBNull.Value);
-            command.Parameters.AddWithValue("@uveyYasiyorMu", (object?)b.UveyYasiyorMu ?? DBNull.Value);
-            command.Parameters.AddWithValue("@akrabaEvliligi", b.AkrabaEvliligi);
-            command.Parameters.AddWithValue("@aileTipi", (object?)b.AileTipi ?? DBNull.Value);
-            command.Parameters.AddWithValue("@ebeveynDurumu", (object?)b.EbeveynDurumu ?? DBNull.Value);
-            command.Parameters.AddWithValue("@kardesler", (object?)b.Kardesler ?? DBNull.Value);
-            command.Parameters.AddWithValue("@ailePsikiyatrikOyku", (object?)b.AilePsikiyatrikOyku ?? DBNull.Value);
-            command.Parameters.AddWithValue("@aileTibbiOyku", (object?)b.AileTibbiOyku ?? DBNull.Value);
-            command.Parameters.AddWithValue("@aileEkNotlar", (object?)b.AileEkNotlar ?? DBNull.Value);
-        }
+        //private void EkleParametreler(SqlCommand command, AileBilgileri b)
+        //{
+        //    command.Parameters.AddWithValue("@hastaTC", b.HastaTC);
+        //    command.Parameters.AddWithValue("@anneYasiyorMu", b.AnneYasiyorMu);
+        //    command.Parameters.AddWithValue("@anneAd", (object?)b.AnneAd ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@anneSoyad", (object?)b.AnneSoyad ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@anneYas", (object?)b.AnneYas ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@anneEgitim", (object?)b.AnneEgitim ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@anneIs", (object?)b.AnneIs ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@anneTel", (object?)b.AnneTel ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@anneAdres", (object?)b.AnneAdres ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaYasiyorMu", b.BabaYasiyorMu);
+        //    command.Parameters.AddWithValue("@babaAd", (object?)b.BabaAd ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaSoyad", (object?)b.BabaSoyad ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaYas", (object?)b.BabaYas ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaEgitim", (object?)b.BabaEgitim ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaIs", (object?)b.BabaIs ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaTel", (object?)b.BabaTel ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@babaAdres", (object?)b.BabaAdres ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyVeyaKoruyucuVarMi", b.UveyVeyaKoruyucuVarMi);
+        //    command.Parameters.AddWithValue("@uveyEbeveynTuru", (object?)b.UveyEbeveynTuru ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyAd", (object?)b.UveyAd ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveySoyad", (object?)b.UveySoyad ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyYas", (object?)b.UveyYas ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyEgitim", (object?)b.UveyEgitim ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyIs", (object?)b.UveyIs ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyTel", (object?)b.UveyTel ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyAdres", (object?)b.UveyAdres ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@uveyYasiyorMu", (object?)b.UveyYasiyorMu ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@akrabaEvliligi", b.AkrabaEvliligi);
+        //    command.Parameters.AddWithValue("@aileTipi", (object?)b.AileTipi ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@ebeveynDurumu", (object?)b.EbeveynDurumu ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@kardesler", (object?)b.Kardesler ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@ailePsikiyatrikOyku", (object?)b.AilePsikiyatrikOyku ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@aileTibbiOyku", (object?)b.AileTibbiOyku ?? DBNull.Value);
+        //    command.Parameters.AddWithValue("@aileEkNotlar", (object?)b.AileEkNotlar ?? DBNull.Value);
+        //}
 
         private AileBilgileri MapToAileBilgileri(SqlDataReader reader)
         {
@@ -182,7 +182,9 @@ namespace HastaTakip.DataAccess
                 AileTibbiOyku = reader["aileTibbiOyku"] == DBNull.Value ? null : reader["aileTibbiOyku"].ToString(),
                 AileEkNotlar = reader["aileEkNotlar"] == DBNull.Value ? null : reader["aileEkNotlar"].ToString(),
                 SonGuncelleyenKullaniciID = reader["sonGuncelleyenKullaniciID"] == DBNull.Value ? null : (int?)reader["sonGuncelleyenKullaniciID"],
-                SonGuncellemeTarihi = reader["sonGuncellemeTarihi"] == DBNull.Value ? null : (DateTime?)reader["sonGuncellemeTarihi"]
+                SonGuncellemeTarihi = reader["sonGuncellemeTarihi"] == DBNull.Value ? null : (DateTime?)reader["sonGuncellemeTarihi"],
+                OlusturanKullaniciID = reader["olusturanKullaniciID"] == DBNull.Value ? null : (int?)reader["olusturanKullaniciID"],
+                OlusturmaTarihi = reader["olusturmaTarihi"] == DBNull.Value ? null : (DateTime?)reader["olusturmaTarihi"]
             };
         }
     }

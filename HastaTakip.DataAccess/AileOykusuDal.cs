@@ -11,7 +11,7 @@ namespace HastaTakip.DataAccess
         private readonly DbHelper _dbHelper;
         public AileOykusuDal(DbHelper dbHelper) { _dbHelper = dbHelper; }
 
-        public void AileOykusuEkle(AileOykusu oyku, int kullaniciID)
+        public int AileOykusuEkle(AileOykusu oyku, int kullaniciID)
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_AileOykusuEkle", connection);
@@ -26,8 +26,13 @@ namespace HastaTakip.DataAccess
                 string.IsNullOrWhiteSpace(oyku.AileOzellikleri) ? DBNull.Value : (object)oyku.AileOzellikleri);
             command.Parameters.AddWithValue("@anneBabaKardesler",
                 string.IsNullOrWhiteSpace(oyku.AnneBabaKardesler) ? DBNull.Value : (object)oyku.AnneBabaKardesler);
+
+            var yeniIDParam = new SqlParameter("@YeniID", SqlDbType.Int) { Direction = ParameterDirection.Output };
+            command.Parameters.Add(yeniIDParam);
+
             connection.Open();
             command.ExecuteNonQuery();
+            return (int)yeniIDParam.Value;
         }
 
         public AileOykusu? AileOykusuGetir(int aileOykuID)

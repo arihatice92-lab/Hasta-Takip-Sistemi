@@ -36,5 +36,7 @@ namespace HastaTakip.Entities
         public string? GelisimselOykuEkNot { get; set; } 
         public int? SonGuncelleyenKullaniciID { get; set; }
         public DateTime? SonGuncellemeTarihi { get; set; }
+        public int? OlusturanKullaniciID { get; set; }
+        public DateTime? OlusturmaTarihi { get; set; }
     }
 }

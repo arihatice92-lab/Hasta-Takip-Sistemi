@@ -72,6 +72,9 @@ builder.Services.AddScoped<AileOykusuBusiness>();
 builder.Services.AddScoped<GelisimselOykuDal>();
 builder.Services.AddScoped<GelisimselOykuBusiness>();
 
+builder.Services.AddScoped<KayitNotuDal>(); 
+builder.Services.AddScoped<KayitNotuBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

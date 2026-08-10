@@ -321,6 +321,7 @@
             var aileOykusuListesi = (List<HastaTakip.Entities.AileOykusu>)ViewBag.AileOykusuListesi;
             var gelisimselOykuListesi = (List<HastaTakip.Entities.GelisimselOyku>)ViewBag.GelisimselOykuListesi;
             var kullanicilarSozluk = (Dictionary<int, HastaTakip.Entities.Kullanici>)ViewBag.Kullanicilar;
+            var notlarSozlugu = (Dictionary<(string, int), List<HastaTakip.Entities.KayitNotu>>)ViewBag.NotlarSozlugu;
 
             string GuncelleyenBilgisi(int? kullaniciID, DateTime? tarih)
             {
@@ -396,6 +397,30 @@
                                 <dt class="col-sm-3">Ek Notlar</dt>
                                 <dd class="col-sm-9">@(ab.AileEkNotlar ?? "-")</dd>
                             </dl>
+                            @{
+                                var abNotlari = notlarSozlugu.TryGetValue(("AileBilgileri", ab.AileBilgileriID), out var abn) ? abn : new List<HastaTakip.Entities.KayitNotu>();
+                                var abOlusturan = ab.OlusturanKullaniciID.HasValue && kullanicilarSozluk.TryGetValue(ab.OlusturanKullaniciID.Value, out var abk) ? abk.AdSoyad : "-";
+                            }
+
+                            <p class="text-muted small mb-1">İlk kaydeden: @abOlusturan, @(ab.OlusturmaTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
+
+                            <strong class="small">Ek Notlar</strong>
+                            <ul class="small">
+                                @foreach (var not in abNotlari)
+                                {
+                                    var isim = kullanicilarSozluk.TryGetValue(not.KullaniciID, out var k) ? k.AdSoyad : "-";
+                                    <li>@not.NotMetni <span class="text-muted">(@isim, @not.NotTarihi.ToString("dd.MM.yyyy HH:mm"))</span></li>
+                                }
+                            </ul>
+
+                            <form asp-controller="KayitNotu" asp-action="Ekle" method="post" class="d-flex gap-2 mb-2">
+                                <input type="hidden" name="kayitTuru" value="AileBilgileri" />
+                                <input type="hidden" name="kayitID" value="@ab.AileBilgileriID" />
+                                <input type="hidden" name="hastaTC" value="@Model.HastaTC" />
+                                <input type="text" name="notMetni" class="form-control form-control-sm" placeholder="Yeni not..." required />
+                                <button type="submit" class="btn btn-sm btn-primary">Not Ekle</button>
+                            </form>
+                            <a asp-controller="AileBilgileri" asp-action="Guncelle" asp-route-aileBilgileriID="@ab.AileBilgileriID" class="btn btn-sm btn-warning">Düzenle</a>
                             <a asp-controller="AileBilgileri" asp-action="Guncelle" asp-route-aileBilgileriID="@ab.AileBilgileriID" class="btn btn-sm btn-warning">Düzenle</a>
                         </div>
                     </div>
@@ -527,6 +552,29 @@
                                 <dt class="col-sm-3">Ek Notlar</dt>
                                 <dd class="col-sm-9">@(go.GelisimselOykuEkNot ?? "-")</dd>
                             </dl>
+                            @{
+                                var goNotlari = notlarSozlugu.TryGetValue(("GelisimselOyku", go.GelisimOykuID), out var gon) ? gon : new List<HastaTakip.Entities.KayitNotu>();
+                                var goOlusturan = go.OlusturanKullaniciID.HasValue && kullanicilarSozluk.TryGetValue(go.OlusturanKullaniciID.Value, out var gok) ? gok.AdSoyad : "-";
+                            }
+
+                            <p class="text-muted small mb-1">İlk kaydeden: @goOlusturan, @(go.OlusturmaTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</p>
+
+                            <strong class="small">Ek Notlar</strong>
+                            <ul class="small">
+                                @foreach (var not in goNotlari)
+                                {
+                                    var isim = kullanicilarSozluk.TryGetValue(not.KullaniciID, out var k) ? k.AdSoyad : "-";
+                                    <li>@not.NotMetni <span class="text-muted">(@isim, @not.NotTarihi.ToString("dd.MM.yyyy HH:mm"))</span></li>
+                                }
+                            </ul>
+
+                            <form asp-controller="KayitNotu" asp-action="Ekle" method="post" class="d-flex gap-2 mb-2">
+                                <input type="hidden" name="kayitTuru" value="GelisimselOyku" />
+                                <input type="hidden" name="kayitID" value="@go.GelisimOykuID" />
+                                <input type="hidden" name="hastaTC" value="@Model.HastaTC" />
+                                <input type="text" name="notMetni" class="form-control form-control-sm" placeholder="Yeni not..." required />
+                                <button type="submit" class="btn btn-sm btn-primary">Not Ekle</button>
+                            </form>
                             <a asp-controller="GelisimselOyku" asp-action="Guncelle" asp-route-gelisimOykuID="@go.GelisimOykuID" class="btn btn-sm btn-warning">Düzenle</a>
                         </div>
                     </div>

@@ -32,6 +32,8 @@ namespace HastaTakip.Web.Controllers
         private readonly AileBilgileriBusiness _aileBilgileriBusiness;
         private readonly AileOykusuBusiness _aileOykusuBusiness;
         private readonly GelisimselOykuBusiness _gelisimselOykuBusiness;
+        private readonly KayitNotuBusiness _kayitNotuBusiness;
+
         public HastaController(
             HastaBusiness hastaBusiness, 
             RandevuBusiness randevuBusiness,
@@ -52,7 +54,9 @@ namespace HastaTakip.Web.Controllers
             KullaniciBusiness kullaniciBusiness,
             AileBilgileriBusiness aileBilgileriBusiness,
             AileOykusuBusiness aileOykusuBusiness,
-            GelisimselOykuBusiness gelisimselOykuBusiness)
+            GelisimselOykuBusiness gelisimselOykuBusiness,
+            KayitNotuBusiness kayitNotuBusiness
+            )
         {
             _hastaBusiness = hastaBusiness;
             _randevuBusiness = randevuBusiness;
@@ -74,6 +78,7 @@ namespace HastaTakip.Web.Controllers
             _aileBilgileriBusiness = aileBilgileriBusiness;
             _aileOykusuBusiness = aileOykusuBusiness;
             _gelisimselOykuBusiness = gelisimselOykuBusiness;
+            _kayitNotuBusiness = kayitNotuBusiness;
         }
         public IActionResult Index(
             string? ara,
@@ -159,7 +164,26 @@ namespace HastaTakip.Web.Controllers
                 if (k != null) kullanicilarSozluk[id] = k;
             }
             ViewBag.Kullanicilar = kullanicilarSozluk;
+
+
+            var notlarSozlugu = new Dictionary<(string, int), List<HastaTakip.Entities.KayitNotu>>();
+            foreach (var ab in (List<HastaTakip.Entities.AileBilgileri>)ViewBag.AileBilgileriListesi)
+            {
+                notlarSozlugu[("AileBilgileri", ab.AileBilgileriID)] = _kayitNotuBusiness.NotlariListele("AileBilgileri", ab.AileBilgileriID);
+            }
+            foreach (var go in (List<HastaTakip.Entities.GelisimselOyku>)ViewBag.GelisimselOykuListesi)
+            {
+                notlarSozlugu[("GelisimselOyku", go.GelisimOykuID)] = _kayitNotuBusiness.NotlariListele("GelisimselOyku", go.GelisimOykuID);
+            }
+            foreach (var ao in (List<HastaTakip.Entities.AileOykusu>)ViewBag.AileOykusuListesi)
+            {
+                notlarSozlugu[("AileOykusu", ao.AileOykuID)] = _kayitNotuBusiness.NotlariListele("AileOykusu", ao.AileOykuID);
+            }
+            ViewBag.NotlarSozlugu = notlarSozlugu;
+
+            ViewBag.Kullanicilar = kullanicilarSozluk;
             return View(hasta);
+            
         }
 
         // GET: /Hasta/Ekle
