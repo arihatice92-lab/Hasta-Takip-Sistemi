@@ -104,7 +104,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Hasta/Detay/12345678901
-        public IActionResult Detay(string tc)
+        public IActionResult Detay(string tc, int? aktifRandevuTarihID = null, string? tab = null)
         {
             var hasta = _hastaBusiness.HastaGetir(tc);
 

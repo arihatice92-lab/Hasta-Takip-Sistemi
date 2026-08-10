@@ -14,27 +14,52 @@ namespace HastaTakip.Web.Controllers
         private readonly HastaBusiness _hastaBusiness;
         private readonly DoktorBusiness _doktorBusiness;
         private readonly RandevuSaatBusiness _randevuSaatBusiness;
-
+        private readonly KullaniciBusiness _kullaniciBusiness;
         public RandevuNotuController(
             RandevuNotuBusiness randevuNotuBusiness,
             RandevuBusiness randevuBusiness,
             HastaBusiness hastaBusiness,
             DoktorBusiness doktorBusiness,
-            RandevuSaatBusiness randevuSaatBusiness)
+            RandevuSaatBusiness randevuSaatBusiness,
+            KullaniciBusiness kullaniciBusiness)
+            
         {
             _randevuNotuBusiness = randevuNotuBusiness;
             _randevuBusiness = randevuBusiness;
             _hastaBusiness = hastaBusiness;
             _doktorBusiness = doktorBusiness;
             _randevuSaatBusiness = randevuSaatBusiness;
+            _kullaniciBusiness = kullaniciBusiness;
         }
 
+
+        private bool BuRandevuyaIslemYapabilirMi(short doktorID)
+        {
+            if (User.IsInRole("Yönetici"))
+            {
+                return true;
+            }
+
+            var kullaniciAdi = User.Identity?.Name;
+            if (string.IsNullOrEmpty(kullaniciAdi))
+            {
+                return false;
+            }
+
+            var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+            return kullanici?.DoktorID == doktorID;
+        }
         public IActionResult Ekle(int randevuTarihID)
         {
             var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
             if (randevu == null)
             {
                 return NotFound();
+            }
+            if (!BuRandevuyaIslemYapabilirMi(randevu.DoktorID))
+            {
+                TempData["HataMesaji"] = "Bu randevu için not girme yetkiniz yok.";
+                return RedirectToAction("Detay", "Randevu", new { randevuTarihID });
             }
 
             var hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
@@ -52,10 +77,17 @@ namespace HastaTakip.Web.Controllers
             return View();
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Ekle(RandevuNotu notu, string? randevuDurumu)
         {
+            if (!BuRandevuyaIslemYapabilirMi(notu.DoktorID))
+            {
+                TempData["HataMesaji"] = "Bu randevu için not girme yetkiniz yok.";
+                return RedirectToAction("Detay", "Randevu", new { randevuTarihID = notu.RandevuTarihID });
+            }
+
             var kullaniciGirdiTarih = notu.SonrakiRandevuTarihi;
             notu.SonrakiRandevuTarihi = null;
 
@@ -115,6 +147,11 @@ namespace HastaTakip.Web.Controllers
             {
                 return NotFound();
             }
+            if (!BuRandevuyaIslemYapabilirMi(notu.DoktorID))
+            {
+                TempData["HataMesaji"] = "Bu notu düzenleme yetkiniz yok.";
+                return RedirectToAction("Detay", "Hasta", new { tc = notu.HastaTC, tab = "randevuNotlari" });
+            }
             return View(notu);
         }
 
@@ -123,6 +160,15 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Guncelle(RandevuNotu notu, string? randevuDurumu)
         {
             var mevcutNot = _randevuNotuBusiness.RandevuNotuGetir(notu.RandevuNotID);
+            if (mevcutNot == null)
+            {
+                return NotFound();
+            }
+            if(!BuRandevuyaIslemYapabilirMi(mevcutNot.DoktorID))
+            {
+                TempData["HataMesaji"] = "Bu notu düzenleme yetkiniz yok.";
+                return RedirectToAction("Detay", "Hasta", new { tc = mevcutNot.HastaTC, tab = "randevuNotlari" });
+            }
             var eskiSonrakiTarih = mevcutNot?.SonrakiRandevuTarihi;
             var kullaniciGirdiTarih = notu.SonrakiRandevuTarihi;
 
@@ -176,5 +222,7 @@ namespace HastaTakip.Web.Controllers
                 TempData["HataMesaji"] = ex.Message;
             }
         }
+
+        
     }
 }

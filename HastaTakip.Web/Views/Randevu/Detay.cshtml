@@ -9,6 +9,15 @@
 
 <h2>Randevu Detayı</h2>
 
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
+
 <dl class="row">
     <dt class="col-sm-3">Tarih</dt>
     <dd class="col-sm-9">@Model.RandevuTarih.ToString("dd.MM.yyyy")</dd>

@@ -32,6 +32,10 @@
 {
     <div class="alert alert-success">@TempData["BasariMesaji"]</div>
 }
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
 
 <ul class="nav nav-tabs mb-3" role="tablist">
     <li class="nav-item">

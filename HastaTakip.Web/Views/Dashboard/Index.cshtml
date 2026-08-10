@@ -51,9 +51,15 @@
     <div class="col-md-4 mb-3">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title">Hasta Öyküleri</h5>
-                <p class="card-text">Aile bilgileri, gelişimsel öykü ve tanı/tedavi kayıtları.</p>
-                <a class="btn btn-secondary disabled">Yakında</a>
+                <h5 class="card-title">Aile / Gelişim Öyküsü</h5>
+                <p class="card-text">TC girip doğrudan hastanın Aile/Gelişim sekmesine gidin.</p>
+                <form asp-controller="Hasta" asp-action="Detay" method="get">
+                    <input type="hidden" name="tab" value="aileGelisim" />
+                    <div class="input-group">
+                        <input type="text" name="tc" maxlength="11" class="form-control" placeholder="TC Kimlik No" required />
+                        <button type="submit" class="btn btn-primary">Git</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

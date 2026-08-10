@@ -166,21 +166,21 @@ namespace HastaTakip.Web.Controllers
         }
 
         // POST: /Randevu/Iptal
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Iptal(int randevuTarihID)
-        {
-            try
-            {
-                _randevuBusiness.RandevuIptalEt(randevuTarihID);
-                TempData["BasariMesaji"] = "Randevu iptal edildi.";
-            }
-            catch (Exception ex)
-            {
-                TempData["HataMesaji"] = ex.Message;
-            }
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Iptal(int randevuTarihID)
+        //{
+        //    try
+        //    {
+        //        _randevuBusiness.RandevuIptalEt(randevuTarihID);
+        //        TempData["BasariMesaji"] = "Randevu iptal edildi.";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["HataMesaji"] = ex.Message;
+        //    }
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         // POST: /Randevu/Tamamlandi
         [HttpPost]
@@ -200,21 +200,21 @@ namespace HastaTakip.Web.Controllers
         }
 
         // POST: /Randevu/Gelmedi
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Gelmedi(int randevuTarihID)
-        {
-            try
-            {
-                _randevuBusiness.RandevuGelmediIsaretle(randevuTarihID);
-                TempData["BasariMesaji"] = "Randevu 'Gelmedi' olarak işaretlendi.";
-            }
-            catch (Exception ex)
-            {
-                TempData["HataMesaji"] = ex.Message;
-            }
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Gelmedi(int randevuTarihID)
+        //{
+        //    try
+        //    {
+        //        _randevuBusiness.RandevuGelmediIsaretle(randevuTarihID);
+        //        TempData["BasariMesaji"] = "Randevu 'Gelmedi' olarak işaretlendi.";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["HataMesaji"] = ex.Message;
+        //    }
+        //    return RedirectToAction(nameof(Index));
+        //}
 
 
         [HttpPost]
