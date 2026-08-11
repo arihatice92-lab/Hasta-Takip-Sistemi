@@ -24,6 +24,14 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Index()
         {
             var kullanicilar = _kullaniciBusiness.KullaniciListele();
+            var rolSozlugu = new Dictionary<byte, string>
+            {
+                { 1, "Yönetici" },
+                { 2, "Doktor" },
+                { 3, "Sekreter" },
+                { 4, "Psikolog" }
+            };
+            ViewBag.RolSozlugu = rolSozlugu;
             return View(kullanicilar);
         }
 

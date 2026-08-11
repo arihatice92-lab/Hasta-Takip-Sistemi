@@ -24,8 +24,10 @@
         <tr>
             <th>Kullanıcı Adı</th>
             <th>Ad Soyad</th>
+            <th>Rol</th>
             <th>Durum</th>
             <th>Son Giriş</th>
+            
             <th></th>
         </tr>
     </thead>
@@ -35,6 +37,7 @@
             <tr>
                 <td>@k.KullaniciAdi</td>
                 <td>@k.AdSoyad</td>
+                <td>@(((Dictionary<byte, string>)ViewBag.RolSozlugu).TryGetValue(k.RolID, out var rolAdi) ? rolAdi : "-")</td>
                 <td>
                     @if (k.KullaniciAktif)
                     {
