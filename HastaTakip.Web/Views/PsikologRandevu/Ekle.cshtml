@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Psikolog Randevusu Oluştur";
+    var psikologlar = (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi;
+    var saatler = (List<HastaTakip.Entities.PsikologRandevuSaat>)ViewBag.SaatListesi;
+    var seciliHasta = (HastaTakip.Entities.Hasta?)ViewBag.SeciliHasta;
+}
+
+<h2>Psikolog Randevusu Oluştur</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+@if (ViewBag.HataMesaji != null)
+{
+    <div class="alert alert-danger">@ViewBag.HataMesaji</div>
+}
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Ekle" method="get" class="row g-3 mb-4">
+    <input type="hidden" name="psikologID" value="@ViewBag.OnSeciliPsikologID" />
+    <input type="hidden" name="tarih" value="@(((DateTime?)ViewBag.OnSeciliTarih)?.ToString("yyyy-MM-dd"))" />
+    <input type="hidden" name="saatID" value="@ViewBag.OnSeciliSaatID" />
+
+    <div class="col-md-4">
+        <label class="form-label">Hasta TC Kimlik No</label>
+        <input type="text" name="hastaTC" maxlength="11" class="form-control" value="@seciliHasta?.HastaTC" required />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Hastayı Bul</button>
+    </div>
+</form>
+
+@if (seciliHasta != null)
+{
+    <div class="alert alert-info">
+        <strong>Hasta:</strong> @seciliHasta.HastaAd @seciliHasta.HastaSoyad (@seciliHasta.HastaDosyaNo)
+    </div>
+
+    <form asp-action="Ekle" method="post">
+        <input type="hidden" name="hastaTC" value="@seciliHasta.HastaTC" />
+
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label">Psikolog <span style="color:red">*</span></label>
+                <select name="psikologID" class="form-select" required>
+                    <option value="">Seçiniz</option>
+                    @foreach (var psikolog in psikologlar)
+                    {
+                        <option value="@psikolog.PsikologID"
+                                selected="@(ViewBag.OnSeciliPsikologID != null && (byte)ViewBag.OnSeciliPsikologID == psikolog.PsikologID)">
+                            @psikolog.PsikologAd @psikolog.PsikologSoyad
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Randevu Tarihi <span style="color:red">*</span></label>
+                <input type="date" name="randevuTarih" class="form-control" required
+                       value="@(((DateTime?)ViewBag.OnSeciliTarih)?.ToString("yyyy-MM-dd"))" />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Saat <span style="color:red">*</span></label>
+                <select name="saatID" class="form-select" required>
+                    <option value="">Seçiniz</option>
+                    @foreach (var saat in saatler)
+                    {
+                        <option value="@saat.SaatID"
+                                selected="@(ViewBag.OnSeciliSaatID != null && (byte)ViewBag.OnSeciliSaatID == saat.SaatID)">
+                            @saat.RandevuBaslangicSaat.ToString(@"hh\:mm") - @saat.RandevuBitisSaat.ToString(@"hh\:mm")
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <a asp-action="Takvim" asp-route-hastaTC="@seciliHasta?.HastaTC" class="btn btn-outline-primary w-100">
+                    Takvimi Görüntüle
+                </a>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Randevu Oluştur</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">İptal</a>
+    </form>
+}

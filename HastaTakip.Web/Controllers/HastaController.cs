@@ -33,6 +33,8 @@ namespace HastaTakip.Web.Controllers
         private readonly AileOykusuBusiness _aileOykusuBusiness;
         private readonly GelisimselOykuBusiness _gelisimselOykuBusiness;
         private readonly KayitNotuBusiness _kayitNotuBusiness;
+        private readonly PsikologRandevuBusiness _psikologRandevuBusiness;
+        private readonly PsikologRandevuSaatBusiness _psikologRandevuSaatBusiness;
 
         public HastaController(
             HastaBusiness hastaBusiness, 
@@ -55,7 +57,9 @@ namespace HastaTakip.Web.Controllers
             AileBilgileriBusiness aileBilgileriBusiness,
             AileOykusuBusiness aileOykusuBusiness,
             GelisimselOykuBusiness gelisimselOykuBusiness,
-            KayitNotuBusiness kayitNotuBusiness
+            KayitNotuBusiness kayitNotuBusiness,
+            PsikologRandevuBusiness psikologRandevuBusiness,
+            PsikologRandevuSaatBusiness psikologRandevuSaatBusiness
             )
         {
             _hastaBusiness = hastaBusiness;
@@ -79,6 +83,8 @@ namespace HastaTakip.Web.Controllers
             _aileOykusuBusiness = aileOykusuBusiness;
             _gelisimselOykuBusiness = gelisimselOykuBusiness;
             _kayitNotuBusiness = kayitNotuBusiness;
+            _psikologRandevuBusiness = psikologRandevuBusiness;
+            _psikologRandevuSaatBusiness = psikologRandevuSaatBusiness;
         }
         public IActionResult Index(
             string? ara,
@@ -151,6 +157,12 @@ namespace HastaTakip.Web.Controllers
             ViewBag.AileBilgileriListesi = _aileBilgileriBusiness.HastaAileBilgileriListele(tc);
             ViewBag.AileOykusuListesi = _aileOykusuBusiness.HastaAileOykusuListele(tc);
             ViewBag.GelisimselOykuListesi = _gelisimselOykuBusiness.HastaGelisimselOykuListele(tc);
+
+            var (psikologRandevular, _) = _psikologRandevuBusiness.RandevuListele(
+                null, "TarihYeni", null, null, null, tc, null, 1, 100);
+            ViewBag.PsikologRandevular = psikologRandevular;
+            ViewBag.PsikologSozlugu = _psikologBusiness.PsikologAra(null, "AZ", "hepsi").ToDictionary(p => p.PsikologID);
+            ViewBag.PsikologSaatSozlugu = _psikologRandevuSaatBusiness.SaatleriListele().ToDictionary(s => s.SaatID);
 
             var kullaniciIDler = ((List<HastaTakip.Entities.AileBilgileri>)ViewBag.AileBilgileriListesi).Select(a => a.SonGuncelleyenKullaniciID)
                 .Concat(((List<HastaTakip.Entities.AileOykusu>)ViewBag.AileOykusuListesi).Select(a => a.SonGuncelleyenKullaniciID))

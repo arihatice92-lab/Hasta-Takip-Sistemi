@@ -75,6 +75,11 @@ builder.Services.AddScoped<GelisimselOykuBusiness>();
 builder.Services.AddScoped<KayitNotuDal>(); 
 builder.Services.AddScoped<KayitNotuBusiness>();
 
+builder.Services.AddScoped<PsikologRandevuSaatDal>();
+builder.Services.AddScoped<PsikologRandevuSaatBusiness>();
+builder.Services.AddScoped<PsikologRandevuDal>();
+builder.Services.AddScoped<PsikologRandevuBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

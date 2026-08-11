@@ -1,0 +1,34 @@
+﻿@model HastaTakip.Entities.PsikologRandevuTarihi
+
+@{
+    ViewData["Title"] = "Randevu Detayı";
+    var hasta = (HastaTakip.Entities.Hasta?)ViewBag.Hasta;
+    var psikolog = (HastaTakip.Entities.Psikolog?)ViewBag.Psikolog;
+    var saat = (HastaTakip.Entities.PsikologRandevuSaat?)ViewBag.Saat;
+}
+
+<h2>Randevu Detayı</h2>
+
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Tarih</dt>
+    <dd class="col-sm-9">@Model.RandevuTarih.ToString("dd.MM.yyyy")</dd>
+
+    <dt class="col-sm-3">Saat</dt>
+    <dd class="col-sm-9">@(saat != null ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") + " - " + saat.RandevuBitisSaat.ToString(@"hh\:mm") : "-")</dd>
+
+    <dt class="col-sm-3">Hasta</dt>
+    <dd class="col-sm-9">@(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : "-")</dd>
+
+    <dt class="col-sm-3">Psikolog</dt>
+    <dd class="col-sm-9">@(psikolog != null ? $"{psikolog.PsikologAd} {psikolog.PsikologSoyad}" : "-")</dd>
+
+    <dt class="col-sm-3">Durum</dt>
+    <dd class="col-sm-9">@Model.RandevuDurum</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

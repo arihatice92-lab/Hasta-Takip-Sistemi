@@ -638,6 +638,44 @@
                 </tbody>
             </table>
         }
+        <hr />
+        <h5>Psikolog Randevuları</h5>
+        @{
+            var psikologRandevular = (List<HastaTakip.Entities.PsikologRandevuTarihi>)ViewBag.PsikologRandevular;
+            
+            var psikologSaatSozlugu = (Dictionary<byte, HastaTakip.Entities.PsikologRandevuSaat>)ViewBag.PsikologSaatSozlugu;
+        }
+
+        @if (psikologRandevular.Count == 0)
+        {
+            <p class="text-muted">Bu hastaya ait psikolog randevusu bulunmuyor.</p>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead><tr><th>Tarih</th><th>Saat</th><th>Psikolog</th><th>Durum</th></tr></thead>
+                <tbody>
+                    @foreach (var pr in psikologRandevular)
+                    {
+                        <tr>
+                            <td>@pr.RandevuTarih.ToString("dd.MM.yyyy")</td>
+                            <td>@(psikologSaatSozlugu.TryGetValue(pr.SaatID, out var s) ? s.RandevuBaslangicSaat.ToString(@"hh\:mm") : "-")</td>
+                            <td>@(psikologSozlugu.TryGetValue(pr.PsikologID, out var p) ? $"{p.PsikologAd} {p.PsikologSoyad}" : "-")</td>
+                            @{
+                                var prRenk = pr.RandevuDurum switch
+                                {
+                                    "Tamamlandı" => "bg-success",
+                                    "İptal" => "bg-secondary",
+                                    "Gelmedi" => "bg-danger",
+                                    _ => "bg-primary"
+                                };
+                            }
+                            <td><span class="badge @prRenk">@pr.RandevuDurum</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
     <div class="tab-pane fade" id="randevuNotlari">
         @{

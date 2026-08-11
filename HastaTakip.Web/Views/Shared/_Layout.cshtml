@@ -37,7 +37,10 @@
                             }
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Randevu" asp-action="Index">Randevu Listesi</a>
+                                <a class="nav-link text-dark" asp-controller="Randevu" asp-action="Index">Doktor Randevuları</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="PsikologRandevu" asp-action="Index">Psikolog Randevuları</a>
                             </li>
                            
                             @if (User.IsInRole("Yönetici"))
