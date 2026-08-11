@@ -70,22 +70,40 @@ namespace HastaTakip.Web.Controllers
 
             return View(randevular);
         }
-        public IActionResult Takvim(short? doktorID, DateTime? tarih, string? hastaTC)
+        public IActionResult Takvim(short? doktorID, DateTime? tarih, string? hastaTC, DateTime? secilenGun)
         {
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             ViewBag.SeciliDoktorID = doktorID;
             ViewBag.HastaTC = hastaTC;
 
-            var seciliTarih = tarih ?? DateTime.Today;
-            ViewBag.SeciliTarih = seciliTarih;
+            var baslangicTarih = tarih ?? DateTime.Today;
+            ViewBag.BaslangicTarih = baslangicTarih;
 
             if (doktorID.HasValue)
             {
-                var slotlar = _randevuBusiness.DoktorGunlukTakvimGetir(doktorID.Value, seciliTarih);
-                return View(slotlar);
+                const int gunSayisi = 14;
+
+                // Takvimi tam haftalar halinde (Pazartesi başlangıçlı) hizala
+                int farkPazartesi = ((int)baslangicTarih.DayOfWeek + 6) % 7;
+                var haftaBasi = baslangicTarih.AddDays(-farkPazartesi);
+                var aralikBitis = baslangicTarih.AddDays(gunSayisi - 1);
+                int toplamGun = (int)(aralikBitis - haftaBasi).TotalDays + 1;
+                toplamGun = ((toplamGun + 6) / 7) * 7;
+
+                ViewBag.HaftaBasi = haftaBasi;
+                ViewBag.ToplamGun = toplamGun;
+                ViewBag.AralikBaslangic = baslangicTarih;
+                ViewBag.AralikBitis = aralikBitis;
+                ViewBag.GunlukDurumlar = _randevuBusiness.DoktorTakvimAraligiGetir(doktorID.Value, haftaBasi, toplamGun);
+
+                if (secilenGun.HasValue)
+                {
+                    ViewBag.SecilenGun = secilenGun.Value;
+                    ViewBag.SecilenGunSlotlari = _randevuBusiness.DoktorGunlukTakvimGetir(doktorID.Value, secilenGun.Value);
+                }
             }
 
-            return View(new List<HastaTakip.Entities.DoktorTakvimSlotu>());
+            return View();
         }
         // GET: /Randevu/Detay/5
         public IActionResult Detay(int randevuTarihID)

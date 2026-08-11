@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HastaTakip.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Yönetici, Sekreter")]
     public class PsikologController : Controller
     {
         private readonly PsikologBusiness _psikologBusiness;

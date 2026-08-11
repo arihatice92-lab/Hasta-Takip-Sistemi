@@ -105,6 +105,29 @@ namespace HastaTakip.DataAccess
 
             return (randevular, toplamKayit);
         }
+
+        public List<DoktorTakvimGunu> DoktorTakvimAraligiGetir(short doktorID, DateTime baslangicTarih, int gunSayisi)
+        {
+            var liste = new List<DoktorTakvimGunu>();
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_DoktorTakvimAraligi", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@DoktorID", doktorID);
+            command.Parameters.AddWithValue("@BaslangicTarih", baslangicTarih);
+            command.Parameters.AddWithValue("@GunSayisi", gunSayisi);
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                liste.Add(new DoktorTakvimGunu
+                {
+                    Tarih = (DateTime)reader["Tarih"],
+                    ToplamSaat = (int)reader["ToplamSaat"],
+                    DoluSaat = (int)reader["DoluSaat"]
+                });
+            }
+            return liste;
+        }
         public List<DoktorTakvimSlotu> DoktorGunlukTakvimGetir(short doktorID, DateTime tarih)
         {
             var slotlar = new List<DoktorTakvimSlotu>();
