@@ -117,7 +117,10 @@
         </dl>
 
         <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
-        <a asp-action="Guncelle" asp-route-tc="@Model.HastaTC" class="btn btn-warning">Düzenle</a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter") || User.IsInRole("Doktor"))
+        {
+            <a asp-action="Guncelle" asp-route-tc="@Model.HastaTC" class="btn btn-warning">Düzenle</a>
+        }
         <a asp-controller="Randevu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-primary">Randevu Oluştur</a>
     </div>
 

@@ -13,7 +13,10 @@
 <h2>Hasta Listesi</h2>
 
 <p>
-    <a asp-action="Ekle" class="btn btn-primary">Yeni Hasta Ekle</a>
+    @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter") || User.IsInRole("Doktor"))
+    {
+        <a asp-action="Ekle" class="btn btn-primary">Yeni Hasta Ekle</a>
+    }
 </p>
 
 <!-- Arama ve Filtreleme -->

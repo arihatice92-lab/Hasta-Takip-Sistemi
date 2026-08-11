@@ -199,6 +199,8 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Hasta/Ekle
+
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
         public IActionResult Ekle()
         {
             return View();
@@ -206,6 +208,7 @@ namespace HastaTakip.Web.Controllers
 
         // POST: /Hasta/Ekle
         [HttpPost]
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
         public IActionResult Ekle(Hasta hasta)
         {
             if (!ModelState.IsValid)
@@ -229,6 +232,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Hasta/Guncelle/12345678901
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
         public IActionResult Guncelle(string tc)
         {
             var hasta = _hastaBusiness.HastaGetir(tc);
@@ -242,6 +246,7 @@ namespace HastaTakip.Web.Controllers
         // POST: /Hasta/Guncelle
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
         public IActionResult Guncelle(Hasta hasta)
         {
             if (!ModelState.IsValid)
