@@ -14,21 +14,39 @@ namespace HastaTakip.Web.Controllers
         private readonly PsikologBusiness _psikologBusiness;
         private readonly TestAltKumeBusiness _testAltKumeBusiness;
         private readonly AltKumeSonucBusiness _altKumeSonucBusiness;
+        private readonly KullaniciBusiness _kullaniciBusiness;
 
         public TestSonucController(
             HastaTestSonucBusiness testSonucBusiness,
             TestBusiness testBusiness,
             PsikologBusiness psikologBusiness,
             TestAltKumeBusiness testAltKumeBusiness,
-            AltKumeSonucBusiness altKumeSonucBusiness)
+            AltKumeSonucBusiness altKumeSonucBusiness,
+            KullaniciBusiness kullaniciBusiness)
         {
             _testSonucBusiness = testSonucBusiness;
             _testBusiness = testBusiness;
             _psikologBusiness = psikologBusiness;
             _testAltKumeBusiness = testAltKumeBusiness;
             _altKumeSonucBusiness = altKumeSonucBusiness;
+            _kullaniciBusiness = kullaniciBusiness;
         }
+        private bool BuKayitIcinIslemYapabilirMi(byte psikologID)
+        {
+            if (User.IsInRole("Yönetici"))
+            {
+                return true;
+            }
 
+            var kullaniciAdi = User.Identity?.Name;
+            if (string.IsNullOrEmpty(kullaniciAdi))
+            {
+                return false;
+            }
+
+            var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+            return kullanici?.PsikologID == psikologID;
+        }
         public IActionResult Ekle(string hastaTC)
         {
             ViewBag.HastaTC = hastaTC;
@@ -43,6 +61,11 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Ekle(TestSonuc testSonuc, int[]? altKumeID, string[]? altKumeSonuc, string[]? altKumeYorum)
         {
             var yeniTestSonucID = _testSonucBusiness.TestSonucEkle(testSonuc);
+            if (!BuKayitIcinIslemYapabilirMi(testSonuc.PsikologID))
+            {
+                TempData["HataMesaji"] = "Bu işlem için yetkiniz yok.";
+                return RedirectToAction("Detay", "Hasta", new { tc = testSonuc.HastaTC, tab = "testOlcek" });
+            }
 
             if (altKumeID != null)
             {
@@ -67,7 +90,11 @@ namespace HastaTakip.Web.Controllers
         {
             var testSonuc = _testSonucBusiness.TestSonucGetir(testSonucID);
             if (testSonuc == null) return NotFound();
-
+            if (!BuKayitIcinIslemYapabilirMi(testSonuc.PsikologID))
+            {
+                TempData["HataMesaji"] = "Bu işlem için yetkiniz yok.";
+                return RedirectToAction("Detay", "Hasta", new { tc = testSonuc.HastaTC, tab = "testOlcek" });
+            }
             ViewBag.TestListesi = _testBusiness.TestleriListele();
             ViewBag.PsikologListesi = _psikologBusiness.PsikologlariListele();
             ViewBag.TumAltKumeler = _testAltKumeBusiness.TumAltKumeleriListele();
@@ -83,7 +110,13 @@ namespace HastaTakip.Web.Controllers
             _testSonucBusiness.TestSonucGuncelle(testSonuc);
 
             _altKumeSonucBusiness.AltKumeSonuclariSil(testSonuc.TestSonucID);
-
+            var mevcutKayit = _testSonucBusiness.TestSonucGetir(testSonuc.TestSonucID);
+            if (mevcutKayit == null) return NotFound();
+            if (!BuKayitIcinIslemYapabilirMi(mevcutKayit.PsikologID))
+            {
+                TempData["HataMesaji"] = "Bu işlem için yetkiniz yok.";
+                return RedirectToAction("Detay", "Hasta", new { tc = testSonuc.HastaTC, tab = "testOlcek" });
+            }
             if (altKumeID != null)
             {
                 for (int i = 0; i < altKumeID.Length; i++)

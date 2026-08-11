@@ -12,7 +12,10 @@
                 <h5 class="card-title">Hasta Yönetimi</h5>
                 <p class="card-text">Hasta kaydı oluşturun, listeleyin ve detaylarını görüntüleyin.</p>
                 <a asp-controller="Hasta" asp-action="Index" class="btn btn-primary">Hasta Listesi</a>
-                <a asp-controller="Hasta" asp-action="Ekle" class="btn btn-outline-primary">Yeni Hasta</a>
+                @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter") || User.IsInRole("Doktor"))
+                {
+                    <a asp-controller="Hasta" asp-action="Ekle" class="btn btn-outline-primary">Yeni Hasta</a>            
+                }
             </div>
         </div>
     </div>
