@@ -1,0 +1,22 @@
+﻿@model HastaTakip.Entities.Tani
+
+@{
+    ViewData["Title"] = "Yeni Tanı Ekle";
+}
+
+<h2>Yeni Tanı Ekle</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Ekle" method="post">
+    <div class="mb-3">
+        <label asp-for="TaniAdi" class="form-label">Tanı Adı <span style="color:red">*</span></label>
+        <input asp-for="TaniAdi" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label asp-for="TaniKodu" class="form-label">Tanı Kodu (ICD)</label>
+        <input asp-for="TaniKodu" class="form-control" placeholder="Örn: F90.0" />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

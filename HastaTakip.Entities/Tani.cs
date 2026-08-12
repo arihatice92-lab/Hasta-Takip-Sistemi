@@ -8,6 +8,6 @@ namespace HastaTakip.Entities
     {
         public short TaniID { get; set; }
         public string TaniAdi { get; set; } = string.Empty;
-        public string TaniKodu { get; set; } = string.Empty;
+        public string? TaniKodu { get; set; }
     }
 }

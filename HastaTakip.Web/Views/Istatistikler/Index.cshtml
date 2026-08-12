@@ -1,0 +1,107 @@
+﻿@using System.Linq
+@using System.Text.Json
+@{
+    ViewData["Title"] = "İstatistikler";
+    var veri = (List<HastaTakip.Entities.TaniCinsiyetIstatistigi>)ViewBag.TaniCinsiyetVerisi;
+
+    var taniAdlari = veri.Select(v => v.TaniAdi).Distinct().OrderBy(t => t).ToList();
+    var erkekSayilari = taniAdlari.Select(tani =>
+        veri.FirstOrDefault(v => v.TaniAdi == tani && v.Cinsiyet == "Erkek")?.HastaSayisi ?? 0).ToList();
+    var kadinSayilari = taniAdlari.Select(tani =>
+        veri.FirstOrDefault(v => v.TaniAdi == tani && v.Cinsiyet == "Kadın")?.HastaSayisi ?? 0).ToList();
+
+    var taniAdlariJson = JsonSerializer.Serialize(taniAdlari);
+    var erkekJson = JsonSerializer.Serialize(erkekSayilari);
+    var kadinJson = JsonSerializer.Serialize(kadinSayilari);
+}
+
+<h2>İstatistikler</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Tanı Bazında Hasta Sayısı ve Cinsiyet Dağılımı</h5>
+        @if (veri.Count == 0)
+        {
+            <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
+        }
+        else
+        {
+            <canvas id="taniCinsiyetGrafik" style="max-height: 450px;"></canvas>
+
+            <hr class="my-4" />
+
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Tanı</th>
+                            <th class="text-center">Toplam</th>
+                            <th class="text-center">Erkek</th>
+                            <th class="text-center">Kadın</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < taniAdlari.Count; i++)
+                        {
+                            var toplam = erkekSayilari[i] + kadinSayilari[i];
+                            <tr>
+                                <td>@taniAdlari[i]</td>
+                                <td class="text-center"><strong>@toplam</strong></td>
+                                <td class="text-center">@erkekSayilari[i]</td>
+                                <td class="text-center">@kadinSayilari[i]</td>
+                            </tr>
+                        }
+                        <tr class="table-secondary">
+                            <td><strong>Toplam</strong></td>
+                            <td class="text-center"><strong>@(erkekSayilari.Sum() + kadinSayilari.Sum())</strong></td>
+                            <td class="text-center"><strong>@erkekSayilari.Sum()</strong></td>
+                            <td class="text-center"><strong>@kadinSayilari.Sum()</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+@* Sonraki istatistikler için buraya yeni kart/grafik ekleyeceğiz *@
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        var taniAdlari = @Html.Raw(taniAdlariJson);
+        var erkekSayilari = @Html.Raw(erkekJson);
+        var kadinSayilari = @Html.Raw(kadinJson);
+
+        if (taniAdlari.length > 0) {
+            var ctx = document.getElementById('taniCinsiyetGrafik').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: taniAdlari,
+                    datasets: [
+                        {
+                            label: 'Erkek',
+                            data: erkekSayilari,
+                            backgroundColor: '#0d6efd'
+                        },
+                        {
+                            label: 'Kadın',
+                            data: kadinSayilari,
+                            backgroundColor: '#d63384'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { stacked: false },
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    },
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+        }
+    </script>
+}

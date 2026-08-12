@@ -189,7 +189,10 @@
                             <td>@(doktorlarSozluk.TryGetValue(t.DoktorID, out var d1) ? $"{d1.DoktorAd} {d1.DoktorSoyad}" : "-")</td>
                             <td>@(t.MentalDurumMuayenesi ?? "-")</td>
                             <td>
-                                <a asp-controller="Tani" asp-action="Guncelle" asp-route-hastaTaniID="@t.HastaTaniID" class="btn btn-sm btn-warning">Düzenle</a>
+                                @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                                {
+                                    <a asp-controller="Tani" asp-action="Guncelle" asp-route-hastaTaniID="@t.HastaTaniID" class="btn btn-sm btn-warning">Düzenle</a>
+                                }
                             </td>
                         </tr>
                     }

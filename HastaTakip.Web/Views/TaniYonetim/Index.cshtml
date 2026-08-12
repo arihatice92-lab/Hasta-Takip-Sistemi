@@ -1,0 +1,43 @@
+﻿@model List<HastaTakip.Entities.Tani>
+
+@{
+    ViewData["Title"] = "Tanı Yönetimi";
+}
+
+<h2>Tanı Yönetimi</h2>
+
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="alert alert-danger">@TempData["HataMesaji"]</div>
+}
+
+<a asp-action="Ekle" class="btn btn-primary mb-3">Yeni Tanı Ekle</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Tanı Adı</th><th>Tanı Kodu</th><th>İşlemler</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var tani in Model)
+        {
+            <tr>
+                <td>@tani.TaniAdi</td>
+                <td>@(tani.TaniKodu ?? "-")</td>
+                <td>
+                    <a asp-action="Guncelle" asp-route-taniID="@tani.TaniID" class="btn btn-sm btn-warning">Düzenle</a>
+                    <form asp-action="Sil" method="post" class="d-inline">
+                        <input type="hidden" name="taniID" value="@tani.TaniID" />
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Bu tanıyı silmek istediğinize emin misiniz?');">
+                            Sil
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

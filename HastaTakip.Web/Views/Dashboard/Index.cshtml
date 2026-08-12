@@ -66,6 +66,45 @@
             </div>
         </div>
     </div>
+    @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Test Yönetimi</h5>
+                    <p class="card-text">Test kaydı oluşturun, listeleyin ve bilgilerini güncelleyin.</p>
+                    <a asp-controller="TestYonetim" asp-action="Index" class="btn btn-primary">Test Listesi</a>
+                    <a asp-controller="TestYonetim" asp-action="Ekle" class="btn btn-outline-primary">Yeni Test</a>
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Ölçek Yönetimi</h5>
+                    <p class="card-text">Ölçek kaydı oluşturun, listeleyin ve bilgilerini güncelleyin.</p>
+                    <a asp-controller="OlcekYonetim" asp-action="Index" class="btn btn-primary">Ölçek Listesi</a>
+                    <a asp-controller="OlcekYonetim" asp-action="Ekle" class="btn btn-outline-primary">Yeni Ölçek</a>
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.IsInRole("Yönetici"))
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Tanı Yönetimi</h5>
+                    <p class="card-text">Tanı kaydı oluşturun, listeleyin ve bilgilerini güncelleyin.</p>
+                    <a asp-controller="TaniYonetim" asp-action="Index" class="btn btn-primary">Tanı Listesi</a>
+                    <a asp-controller="TaniYonetim" asp-action="Ekle" class="btn btn-outline-primary">Yeni Tanı</a>
+                </div>
+            </div>
+        </div>
+    }
     <div class="col-md-4 mb-3">
         <div class="card h-100">
             <div class="card-body">
