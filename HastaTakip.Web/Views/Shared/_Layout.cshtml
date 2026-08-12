@@ -130,6 +130,29 @@
                 });
             });
     </script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.alert').forEach(function(alertEl) {
+                    // Kapatma (X) butonu yoksa ekle
+                    if (!alertEl.querySelector('.btn-close')) {
+                        alertEl.classList.add('alert-dismissible', 'fade', 'show');
+
+                        var kapatButonu = document.createElement('button');
+                        kapatButonu.type = 'button';
+                        kapatButonu.className = 'btn-close';
+                        kapatButonu.setAttribute('data-bs-dismiss', 'alert');
+                        kapatButonu.setAttribute('aria-label', 'Kapat');
+                        alertEl.appendChild(kapatButonu);
+                    }
+
+                    // Birkaç saniye sonra otomatik kapat
+                    setTimeout(function() {
+                        var bsAlert = bootstrap.Alert.getOrCreateInstance(alertEl);
+                        bsAlert.close();
+                    }, 5000);
+                });
+            });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

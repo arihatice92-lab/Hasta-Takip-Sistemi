@@ -134,7 +134,10 @@
         }
 
         <h5>Tanılar</h5>
-        <a asp-controller="Tani" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tanı Ekle</a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+        {
+            <a asp-controller="Tani" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tanı Ekle</a>
+        }
 
         @if (tanilar.Count == 0)
         {
@@ -165,7 +168,10 @@
         <hr />
 
         <h5>Tedaviler</h5>
-        <a asp-controller="Tedavi" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tedavi Ekle</a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+        {
+            <a asp-controller="Tedavi" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tedavi Ekle</a>
+        }
         @if (tedaviler.Count == 0)
         {
             <p class="text-muted">Kayıtlı tedavi bulunmuyor.</p>
@@ -186,7 +192,10 @@
                             <td>@t.IlacYanEtkiler</td>
                             <td>@t.TedaviNotlari</td>
                             <td>
-                                <a asp-controller="Tedavi" asp-action="Guncelle" asp-route-tedaviID="@t.TedaviID" class="btn btn-sm btn-warning">Düzenle</a>
+                                @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                                {
+                                    <a asp-controller="Tedavi" asp-action="Guncelle" asp-route-tedaviID="@t.TedaviID" class="btn btn-sm btn-warning">Düzenle</a>
+                                }
                             </td>
                         </tr>
                     }
@@ -207,9 +216,11 @@
     }
 
     <h5>Test Sonuçları</h5>
-    <a asp-controller="TestSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Test Sonucu Ekle</a>
-
-    @if (testSonuclari.Count == 0)
+    @if (User.IsInRole("Yönetici") || User.IsInRole("Psikolog"))
+        {
+            <a asp-controller="TestSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Test Sonucu Ekle</a>
+        }
+        @if (testSonuclari.Count == 0)
     {
         <p class="text-muted">Kayıtlı test sonucu bulunmuyor.</p>
     }
@@ -237,7 +248,10 @@
                             <td>@(ts.SonucDegeri ?? "-")</td>
                             <td>@(ts.TestDegerlendirme ?? "-")</td>
                             <td>
-                                <a asp-controller="TestSonuc" asp-action="Guncelle" asp-route-testSonucID="@ts.TestSonucID" class="btn btn-sm btn-warning">Düzenle</a>
+                                    @if (User.IsInRole("Yönetici") || User.IsInRole("Psikolog"))
+                                    {
+                                        <a asp-controller="TestSonuc" asp-action="Guncelle" asp-route-testSonucID="@ts.TestSonucID" class="btn btn-sm btn-warning">Düzenle</a>
+                                    }
                             </td>
                         </tr>
 
@@ -277,8 +291,13 @@
     <hr />
 
     <h5>Ölçek Sonuçları</h5>
-    <a asp-controller="OlcekSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Ölçek Sonucu Ekle</a>
-    @if (olcekSonuclari.Count == 0)
+   
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+        {
+            <a asp-controller="OlcekSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Ölçek Sonucu Ekle</a>
+        }
+
+        @if (olcekSonuclari.Count == 0)
     {
         <p class="text-muted">Kayıtlı ölçek sonucu bulunmuyor.</p>
     }
@@ -308,7 +327,11 @@
                             <td>@(os.OlcekYorum ?? "-")</td>
                             <td>@(os.OlcekUygulanan ?? "-")</td>
                             <td>
-                                <a asp-controller="OlcekSonuc" asp-action="Guncelle" asp-route-olcekSonucID="@os.OlcekSonucID" class="btn btn-sm btn-warning">Düzenle</a>
+                                          @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                                    {
+                                        <a asp-controller="OlcekSonuc" asp-action="Guncelle" asp-route-olcekSonucID="@os.OlcekSonucID" class="btn btn-sm btn-warning">Düzenle</a>
+                                    }
+                                    
                             </td>
                         </tr>
                     }
@@ -335,7 +358,10 @@
         }
 
         <h5>Aile Bilgileri</h5>
-        <a asp-controller="AileBilgileri" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Bilgisi Ekle</a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor")c)
+        {
+            <a asp-controller="AileBilgileri" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Bilgisi Ekle</a>
+        }
 
         @if (aileBilgileriListesi.Count == 0)
         {
@@ -416,14 +442,20 @@
                                 }
                             </ul>
 
-                            <form asp-controller="KayitNotu" asp-action="Ekle" method="post" class="d-flex gap-2 mb-2">
-                                <input type="hidden" name="kayitTuru" value="AileBilgileri" />
-                                <input type="hidden" name="kayitID" value="@ab.AileBilgileriID" />
-                                <input type="hidden" name="hastaTC" value="@Model.HastaTC" />
-                                <input type="text" name="notMetni" class="form-control form-control-sm" placeholder="Yeni not..." required />
-                                <button type="submit" class="btn btn-sm btn-primary">Not Ekle</button>
-                            </form>
-                            <a asp-controller="AileBilgileri" asp-action="Guncelle" asp-route-aileBilgileriID="@ab.AileBilgileriID" class="btn btn-sm btn-warning">Düzenle</a>
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                            {
+                                <form asp-controller="KayitNotu" asp-action="Ekle" method="post" class="d-flex gap-2 mb-2">
+                                    <input type="hidden" name="kayitTuru" value="AileBilgileri" />
+                                    <input type="hidden" name="kayitID" value="@ab.AileBilgileriID" />
+                                    <input type="hidden" name="hastaTC" value="@Model.HastaTC" />
+                                    <input type="text" name="notMetni" class="form-control form-control-sm" placeholder="Yeni not..." required />
+                                    <button type="submit" class="btn btn-sm btn-primary">Not Ekle</button>
+                                </form>
+                            }
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor") || User.IsInRole("Sekreter"))
+                            {
+                                <a asp-controller="AileBilgileri" asp-action="Guncelle" asp-route-aileBilgileriID="@ab.AileBilgileriID" class="btn btn-sm btn-warning">Düzenle</a>
+                            }
                             
                         </div>
                     </div>
@@ -434,7 +466,10 @@
         <hr />
 
         <h5>Aile Öyküsü</h5>
-        <a asp-controller="AileOykusu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Öyküsü Ekle</a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+        {
+            <a asp-controller="AileOykusu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Öyküsü Ekle</a>
+        }
 
         @if (aileOykusuListesi.Count == 0)
         {
@@ -467,7 +502,10 @@
                                 <dt class="col-sm-3">Anne-Baba Kardeşleri</dt>
                                 <dd class="col-sm-9">@(ao.AnneBabaKardesler ?? "-")</dd>
                             </dl>
-                            <a asp-controller="AileOykusu" asp-action="Guncelle" asp-route-aileOykuID="@ao.AileOykuID" class="btn btn-sm btn-warning">Düzenle</a>
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                            {
+                                <a asp-controller="AileOykusu" asp-action="Guncelle" asp-route-aileOykuID="@ao.AileOykuID" class="btn btn-sm btn-warning">Düzenle</a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -477,7 +515,10 @@
         <hr />
 
         <h5>Gelişimsel Öykü</h5>
-        <a asp-controller="GelisimselOyku" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Gelişimsel Öykü Ekle</a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+        {
+            <a asp-controller="GelisimselOyku" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Gelişimsel Öykü Ekle</a>
+        }
 
         @if (gelisimselOykuListesi.Count == 0)
         {
@@ -571,14 +612,20 @@
                                 }
                             </ul>
 
-                            <form asp-controller="KayitNotu" asp-action="Ekle" method="post" class="d-flex gap-2 mb-2">
-                                <input type="hidden" name="kayitTuru" value="GelisimselOyku" />
-                                <input type="hidden" name="kayitID" value="@go.GelisimOykuID" />
-                                <input type="hidden" name="hastaTC" value="@Model.HastaTC" />
-                                <input type="text" name="notMetni" class="form-control form-control-sm" placeholder="Yeni not..." required />
-                                <button type="submit" class="btn btn-sm btn-primary">Not Ekle</button>
-                            </form>
-                            <a asp-controller="GelisimselOyku" asp-action="Guncelle" asp-route-gelisimOykuID="@go.GelisimOykuID" class="btn btn-sm btn-warning">Düzenle</a>
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                            {
+                                <form asp-controller="KayitNotu" asp-action="Ekle" method="post" class="d-flex gap-2 mb-2">
+                                    <input type="hidden" name="kayitTuru" value="GelisimselOyku" />
+                                    <input type="hidden" name="kayitID" value="@go.GelisimOykuID" />
+                                    <input type="hidden" name="hastaTC" value="@Model.HastaTC" />
+                                    <input type="text" name="notMetni" class="form-control form-control-sm" placeholder="Yeni not..." required />
+                                    <button type="submit" class="btn btn-sm btn-primary">Not Ekle</button>
+                                </form>
+                            }
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                            {
+                                <a asp-controller="GelisimselOyku" asp-action="Guncelle" asp-route-gelisimOykuID="@go.GelisimOykuID" class="btn btn-sm btn-warning">Düzenle</a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -690,15 +737,21 @@
         {
             <div class="alert alert-warning d-flex justify-content-between align-items-center">
                 <span>Muayenesi başlatılan randevu için henüz not girilmedi.</span>
-                <a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@ViewBag.AktifRandevuTarihID" class="btn btn-sm btn-primary">
+                @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                {
+                    <a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@ViewBag.AktifRandevuTarihID" class="btn btn-sm btn-primary">
                     Randevu Notu Ekle
                 </a>
+                }
             </div>
         }
 
-        <a asp-controller="Randevu" asp-action="Index" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">
-            Randevu Notu Ekle
-        </a>
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+        {
+            <a asp-controller="Randevu" asp-action="Index" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">
+                Randevu Notu Ekle
+            </a>
+        }
 
         @if (randevuNotlari.Count == 0)
         {
@@ -735,7 +788,10 @@
                                 <dd class="col-sm-9">@(not.SonrakiRandevuTarihi?.ToString("dd.MM.yyyy") ?? "-")</dd>
                             </dl>
 
-                            <a asp-controller="RandevuNotu" asp-action="Guncelle" asp-route-randevuNotID="@not.RandevuNotID" class="btn btn-sm btn-warning">Düzenle</a>
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                            {
+                                <a asp-controller="RandevuNotu" asp-action="Guncelle" asp-route-randevuNotID="@not.RandevuNotID" class="btn btn-sm btn-warning">Düzenle</a>
+                            }
 
                             @if (not.SonrakiRandevuTarihi.HasValue)
                             {

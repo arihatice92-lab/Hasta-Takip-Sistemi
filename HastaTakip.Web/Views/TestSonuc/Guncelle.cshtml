@@ -19,8 +19,9 @@
 
     var buTestinAltKumeleri = tumAltKumeler.Where(a => a.TestID == Model.TestID).ToList();
 }
-
-<h2>Test Sonucu Güncelle</h2>
+    
+    <h2>Test Sonucu Güncelle</h2>
+    
 
 <form asp-action="Guncelle" method="post">
     <input type="hidden" asp-for="TestSonucID" />

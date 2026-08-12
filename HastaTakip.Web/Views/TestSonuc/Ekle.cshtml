@@ -14,8 +14,9 @@
             g => g.Select(a => new { id = a.TestAltKumeID, ad = a.TestAltKumeAdi }).ToList());
     var altKumeJson = JsonSerializer.Serialize(altKumeGruplari);
 }
-
-<h2>Test Sonucu Ekle</h2>
+    
+    <h2>Test Sonucu Ekle</h2>
+        
 
 <form asp-action="Ekle" method="post">
     <input type="hidden" name="HastaTC" value="@ViewBag.HastaTC" />
