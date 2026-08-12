@@ -89,16 +89,24 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Index(
             string? ara,
             string siralama = "AdAZ",
-            bool? aktif = null,
+            string aktif = "hepsi",
             string? cinsiyet = null,
             DateTime? baslangicTarihi = null,
             DateTime? bitisTarihi = null,
             int sayfa = 1)
         {
+
+            bool? aktifFiltre = aktif switch
+            {
+                "aktif" => true,
+                "pasif" => false,
+                "hepsi" => (bool?)null,
+                _ => null
+            };
             const int sayfaBoyutu = 10;
 
             var (hastalar, toplamKayit) = _hastaBusiness.HastaAra(
-                ara, siralama, aktif, cinsiyet, baslangicTarihi, bitisTarihi, sayfa, sayfaBoyutu);
+                ara, siralama, aktifFiltre, cinsiyet, baslangicTarihi, bitisTarihi, sayfa, sayfaBoyutu);
 
             int toplamSayfa = (int)Math.Ceiling(toplamKayit / (double)sayfaBoyutu);
 
@@ -266,7 +274,36 @@ namespace HastaTakip.Web.Controllers
                 return View(hasta);
             }
         }
+
+        [Authorize(Roles = "Yönetici")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Sil(string tc)
+        {
+            _hastaBusiness.HastaSil(tc);
+            TempData["BasariMesaji"] = "Hasta ve tüm ilişkili kayıtları kalıcı olarak silindi.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasifeAl(string tc)
+        {
+            _hastaBusiness.HastaPasifeAl(tc);
+            TempData["BasariMesaji"] = "Hasta pasife alındı.";
+            return RedirectToAction(nameof(Detay), new { tc });
+        }
+
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AktifEt(string tc)
+        {
+            _hastaBusiness.HastaAktifEt(tc);
+            TempData["BasariMesaji"] = "Hasta aktife alındı.";
+            return RedirectToAction(nameof(Detay), new { tc });
+        }
     }
 
-    
 }

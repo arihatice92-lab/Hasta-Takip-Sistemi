@@ -122,6 +122,38 @@
             <a asp-action="Guncelle" asp-route-tc="@Model.HastaTC" class="btn btn-warning">Düzenle</a>
         }
         <a asp-controller="Randevu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-primary">Randevu Oluştur</a>
+        
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter") || User.IsInRole("Doktor"))
+        {
+            @if (Model.HastaAktif)
+            {
+                <form asp-action="PasifeAl" method="post" class="d-inline">
+                    <input type="hidden" name="tc" value="@Model.HastaTC" />
+                    <button type="submit" class="btn btn-secondary"
+                            onclick="return confirm('Bu hastayı pasife almak istediğinize emin misiniz? Hasta listede görünmeye devam etmez, kayıtları korunur.');">
+                        Pasife Al
+                    </button>
+                </form>
+            }
+            else
+            {
+                <form asp-action="AktifEt" method="post" class="d-inline">
+                    <input type="hidden" name="tc" value="@Model.HastaTC" />
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Bu hastayı aktife almak istediğinize emin misiniz?');">Aktife Al</button>
+                </form>
+            }
+        }
+        @if (User.IsInRole("Yönetici"))
+        {
+            <hr class="my-4" />
+            <form asp-action="Sil" method="post"
+                  onsubmit="return confirm('DİKKAT: Bu hasta ve TÜM ilişkili kayıtları (randevular, tanılar, tedaviler, test/ölçek sonuçları, aile bilgileri, gelişimsel öykü vb.) kalıcı olarak silinecektir. Bu işlem GERİ ALINAMAZ. Devam etmek istediğinize emin misiniz?');">
+                <input type="hidden" name="tc" value="@Model.HastaTC" />
+                <button type="submit" class="btn btn-link btn-sm text-danger p-0">
+                    Bu hastayı tüm kayıtlarıyla kalıcı olarak sil
+                </button>
+            </form>
+        }
     </div>
 
     <div class="tab-pane fade" id="taniTedavi">

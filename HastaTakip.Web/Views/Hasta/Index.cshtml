@@ -32,15 +32,7 @@
                placeholder="Dosya No, TC, Ad, Soyad..." />
     </div>
 
-    <!-- Durum -->
-    <div class="col-md-2">
-        <label class="form-label">Durum (Hepsi)</label>
-        <select name="aktif" class="form-select">
-            @* <option value="">Durum (Hepsi)</option> *@
-            <option value="true" selected="@(ViewBag.Aktif?.ToString() == "True")">Aktif</option>
-            <option value="false" selected="@(ViewBag.Aktif?.ToString() == "False")">Pasif</option>
-        </select>
-    </div>
+
 
     <!-- Cinsiyet -->
     <div class="col-md-2">
@@ -69,7 +61,15 @@
                value="@(ViewBag.Bitis?.ToString("yyyy-MM-dd"))"
                class="form-control" />
     </div>
-
+    <!-- Durum -->
+    <div class="col-md-2">
+        <label class="form-label">Durum</label>
+        <select name="aktif" class="form-select">
+            <option value="hepsi" selected="@(ViewBag.Aktif == "hepsi")">Tümü</option>
+            <option value="aktif" selected="@(ViewBag.Aktif == "aktif")">Aktif</option>
+            <option value="pasif" selected="@(ViewBag.Aktif == "pasif")">Pasif</option>
+        </select>
+    </div>
     <!-- Sıralama -->
     <div class="col-md-3">
         <select name="siralama" class="form-select">
@@ -103,10 +103,11 @@
             <th>Dosya No</th>
             <th>TC</th>
             <th>Ad Soyad</th>
+            <th>Cinsiyet</th>
             <th>Doğum Tarihi</th>
             <th>Telefon</th>
             <th>Başvuru Tarihi</th>
-            
+            <th>Durum</th>
             <th></th>
         </tr>
     </thead>
@@ -119,9 +120,20 @@
                 <td>@hasta.HastaDosyaNo</td>
                 <td>@hasta.HastaTC</td>
                 <td>@hasta.HastaAd @hasta.HastaSoyad</td>
+                <td>@hasta.HastaCinsiyet</td>
                 <td>@hasta.HastaDogumTarihi.ToString("dd.MM.yyyy")</td>
                 <td>@hasta.HastaTel</td>
                 <td>@hasta.HastaBasvuruTarihi.ToString("dd.MM.yyyy")</td>
+                <td>
+                    @if (hasta.HastaAktif)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Pasif</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Detay" asp-route-tc="@hasta.HastaTC" class="btn btn-sm btn-info">Detay</a>
                 </td>
