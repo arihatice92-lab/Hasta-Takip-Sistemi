@@ -29,6 +29,10 @@
         <input type="text" name="ara" value="@ViewBag.Ara" class="form-control" placeholder="Hasta ara..." />
     </div>
     <div class="col-md-2">
+        <label class="form-label">Hasta TC</label>
+        <input type="text" name="hastaTC" value="@ViewBag.SeciliHastaTC" maxlength="11" class="form-control" placeholder="TC ile ara" />
+    </div>
+    <div class="col-md-2">
         <label class="form-label">Başlangıç Tarihi</label>
         <input type="date" name="baslangicTarihi" value="@(ViewBag.Baslangic?.ToString("yyyy-MM-dd"))" class="form-control" />
     </div>
@@ -58,6 +62,13 @@
             <option value="Gelmedi" selected="@(ViewBag.SeciliDurum == "Gelmedi")">Gelmedi</option>
         </select>
     </div>
+    <div class="col-md-2">
+        <label class="form-label">Sıralama</label>
+        <select name="siralama" class="form-select">
+            <option value="TarihYeni" selected="@(ViewBag.Siralama == "TarihYeni")">Yeni → Eski</option>
+            <option value="TarihEski" selected="@(ViewBag.Siralama == "TarihEski")">Eski → Yeni</option>
+        </select>
+    </div>
     <div class="col-md-2 d-flex gap-2">
         <button type="submit" class="btn btn-primary">Ara</button>
         <a asp-action="Index" class="btn btn-outline-secondary">Temizle</a>
@@ -66,7 +77,7 @@
 
 <table class="table table-striped">
     <thead>
-        <tr><th>Tarih</th><th>Saat</th><th>Hasta</th><th>Psikolog</th><th>Durum</th><th>İşlemler</th></tr>
+		<tr><th>TC</th><th>Hasta</th><th>Tarih</th><th>Saat</th><th>Psikolog</th><th>Durum</th><th>Kayıt Durumu</th><th>İşlemler</th></tr>
     </thead>
     <tbody>
         @foreach (var randevu in Model)
@@ -75,9 +86,11 @@
             var detayUrl = Url.Action("Detay", "PsikologRandevu", new { randevuTarihID = randevu.RandevuTarihID });
 
             <tr class="randevu-satiri" data-href="@detayUrl" style="cursor:pointer;">
-                <td>@randevu.RandevuTarih.ToString("dd.MM.yyyy")</td>
+                <td>@randevu.HastaTC</td>
+				<td>@(hastaVarMi ? $"{hasta!.HastaAd} {hasta.HastaSoyad}" : "-")</td>
+				<td>@randevu.RandevuTarih.ToString("dd.MM.yyyy")</td>
                 <td>@(saatler.TryGetValue(randevu.SaatID, out var saat) ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") : "-")</td>
-                <td>@(hastaVarMi ? $"{hasta!.HastaAd} {hasta.HastaSoyad}" : "-")</td>
+                
                 <td>@(psikologlar.TryGetValue(randevu.PsikologID, out var psikolog) ? $"{psikolog.PsikologAd} {psikolog.PsikologSoyad}" : "-")</td>
                 <td>
                     @{
@@ -92,33 +105,51 @@
                     <span class="badge @renk">@randevu.RandevuDurum</span>
                 </td>
                 <td>
-                    <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-sm btn-info">Detay</a>
                     @if (randevu.RandevuDurum == "Planlandı")
                     {
                         @if (randevu.TestBaslangicZamani.HasValue)
                         {
-                            <form asp-action="Tamamlandi" method="post" class="d-inline">
+                           
+                          <span class="badge bg-primary">Testte (@randevu.TestBaslangicZamani.Value.ToString("HH:mm"))</span>
+                             <form asp-action="Tamamlandi" method="post" class="d-inline ms-2">
                                 <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                                <button type="submit" class="btn btn-sm btn-success">Tamamlandı</button>
+                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Bu randevuyu tamamlamak istediğinize emin misiniz? Bu işlem geri alınamaz.');">Tamamla</button>
                             </form>
+                               
+                            
                         }
                         else if (randevu.HastaGelisZamani.HasValue)
                         {
-                            <form asp-action="TestBaslat" method="post" class="d-inline">
-                                <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                                <button type="submit" class="btn btn-sm btn-primary">Testi Başlat</button>
-                            </form>
+                            <span class="badge bg-info">Kayıt (@randevu.HastaGelisZamani.Value.ToString("HH:mm"))</span>
+                                <form asp-action="TestBaslat" method="post" class="d-inline ms-2">
+                                    <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+                                    <button type="submit" class="btn btn-sm btn-primary">Testi Başlat</button>
+                                </form>
+                           
                         }
                         else
                         {
                             <form asp-action="Geldi" method="post" class="d-inline">
                                 <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                                <button type="submit" class="btn btn-sm btn-outline-info" >Kayıt Aç</button>
+                                <button type="submit" class="btn btn-sm btn-outline-info" onclick="return confirm('Bu randevuya kayıt açmak istediğinize emin misiniz? Bu işlem geri alınamaz.');">Kayıt Aç</button>
                             </form>
                         }
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-sm btn-info">Detay</a>
+                    @if (randevu.RandevuDurum == "Planlandı")
+                    {
                         <form asp-action="Gelmedi" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                            <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Bu randevuyu \'Gelmedi\' olarak işaretlemek istediğinize emin misiniz? Bu işlem geri alınamaz.');">Gelmedi</button>
+                            <button type="submit" class="btn btn-sm btn-warning"
+                                    onclick="return confirm('Bu randevuyu \'Gelmedi\' olarak işaretlemek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                                Gelmedi
+                            </button>
                         </form>
                         <form asp-action="Iptal" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
@@ -147,7 +178,9 @@
                        asp-route-bitisTarihi="@(ViewBag.Bitis?.ToString("yyyy-MM-dd") ?? "")"
                        asp-route-psikologID="@(ViewBag.SeciliPsikologID?.ToString() ?? "")"
                        asp-route-durum="@(ViewBag.SeciliDurum ?? "")"
-                       asp-route-sayfa="@i">@i</a>
+                       asp-route-sayfa="@i"
+                       asp-route-hastaTC="@(ViewBag.SeciliHastaTC ?? "")"
+                       asp-route-siralama="@(ViewBag.Siralama ?? "TarihYeni")">@i</a>
                 </li>
             }
         </ul>

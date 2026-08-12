@@ -229,5 +229,7 @@ namespace HastaTakip.Web.Controllers
             TempData["BasariMesaji"] = "Test başlatıldı.";
             return RedirectToAction(nameof(Index));
         }
+
+
     }
 }
