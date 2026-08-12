@@ -69,7 +69,7 @@
                                         <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
                                         <input type="hidden" name="donus" value="doktorPaneli" />
                                         <input type="hidden" name="hastaTC" value="@randevu.HastaTC" />
-                                        <button type="submit" class="btn btn-sm btn-primary">Muayeneyi Başlat</button>
+                                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Muayeneyi başlatmak istediğinize emin misiniz? Bu işlem geri alınamaz.');">Muayeneyi Başlat</button>
                                     </form>
                                 }
                                 else

@@ -358,7 +358,7 @@
         }
 
         <h5>Aile Bilgileri</h5>
-        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor")c)
+        @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
             <a asp-controller="AileBilgileri" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Bilgisi Ekle</a>
         }

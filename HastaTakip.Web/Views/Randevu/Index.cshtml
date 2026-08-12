@@ -151,7 +151,7 @@
                         {
                             <form asp-action="geldi" method="post" class="d-inline">
                                 <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                                <button type="submit" class="btn btn-sm btn-outline-info">Kayıt Aç</button>
+                                <button type="submit" class="btn btn-sm btn-outline-info" onclick="return confirm('Bu randevuya kayıt açmak istediğinize emin misiniz? Bu işlem geri alınamaz.');">Kayıt Aç</button>
                             </form>
                         }
                     }
@@ -166,12 +166,12 @@
                     {
                         <form asp-action="Gelmedi" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                            <button type="submit" class="btn btn-sm btn-warning">Gelmedi</button>
+                            <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Bu randevuyu \'Gelmedi\' olarak işaretlemek istediğinize emin misiniz? Bu işlem geri alınamaz.');">Gelmedi</button>
                         </form>
                         <form asp-action="Iptal" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
                             <button type="submit" class="btn btn-sm btn-secondary"
-                                    onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?');">
+                                    onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
                                 İptal
                             </button>
                         </form>
