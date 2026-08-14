@@ -114,7 +114,7 @@
     <tbody>
         @foreach (var hasta in Model)
         {
-            var detayUrl = Url.Action("Detay", "Hasta", new { tc = hasta.HastaTC });
+            var detayUrl = Url.Action("Detay", "Hasta", new { hastaGuid = hasta.HastaGuid });
 
             <tr class="hasta-satiri", data-href="@detayUrl" >
                 <td>@hasta.HastaDosyaNo</td>
@@ -135,7 +135,7 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="Detay" asp-route-tc="@hasta.HastaTC" class="btn btn-sm btn-info">Detay</a>
+                    <a asp-action="Detay" asp-route-hastaGuid="@hasta.HastaGuid" class="btn btn-sm btn-info">Detay</a>
                 </td>
             </tr>
         }

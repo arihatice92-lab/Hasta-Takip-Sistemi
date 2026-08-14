@@ -123,10 +123,26 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Hasta/Detay/12345678901
-        public IActionResult Detay(string tc, int? aktifRandevuTarihID = null, string? tab = null)
+        public IActionResult Detay(Guid? hastaGuid, string? tc, int? aktifRandevuTarihID = null, string? tab = null)
         {
-            var hasta = _hastaBusiness.HastaGetir(tc);
+            string? hastaTC = tc;
 
+            if (hastaGuid.HasValue)
+            {
+                var hastaBulunan = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+                if (hastaBulunan == null)
+                {
+                    return NotFound();
+                }
+                hastaTC = hastaBulunan.HastaTC;
+            }
+
+            if (string.IsNullOrWhiteSpace(hastaTC))
+            {
+                return NotFound();
+            }
+
+            var hasta = _hastaBusiness.HastaGetir(hastaTC);
             if (hasta == null)
             {
                 return NotFound();
@@ -145,26 +161,26 @@ namespace HastaTakip.Web.Controllers
             ViewBag.GecmisRandevular = randevular;
             ViewBag.Doktorlar = _doktorBusiness.DoktorListele(sadeceAktif: false).ToDictionary(d => d.DoktorID);
             ViewBag.Saatler = _randevuSaatBusiness.SaatleriListele().ToDictionary(s => s.SaatID);
-            ViewBag.Tanilar = _hastaTaniBusiness.HastaTanilariListele(tc);
-            ViewBag.Tedaviler = _hastaTedaviBusiness.HastaTedavileriListele(tc);
+            ViewBag.Tanilar = _hastaTaniBusiness.HastaTanilariListele(hastaTC);
+            ViewBag.Tedaviler = _hastaTedaviBusiness.HastaTedavileriListele(hastaTC);
             ViewBag.TaniSozlugu = _taniBusiness.TanilariListele().ToDictionary(t => t.TaniID);
             ViewBag.IlacSozlugu = _ilacBusiness.IlaclariListele().ToDictionary(i => i.IlacID);
-            ViewBag.TestSonuclari = _hastaTestSonucBusiness.HastaTestSonuclariListele(tc);
-            ViewBag.OlcekSonuclari = _hastaOlcekSonucBusiness.HastaOlcekSonuclariListele(tc);
+            ViewBag.TestSonuclari = _hastaTestSonucBusiness.HastaTestSonuclariListele(hastaTC);
+            ViewBag.OlcekSonuclari = _hastaOlcekSonucBusiness.HastaOlcekSonuclariListele(hastaTC);
             ViewBag.TestSozlugu = _testBusiness.TestleriListele().ToDictionary(t => t.TestID);
             ViewBag.OlcekSozlugu = _olcekBusiness.OlcekleriListele().ToDictionary(o => o.OlcekID);
             ViewBag.PsikologSozlugu = _psikologBusiness.PsikologlariListele().ToDictionary(p => p.PsikologID);
-            var testSonuclari = _hastaTestSonucBusiness.HastaTestSonuclariListele(tc);
+            var testSonuclari = _hastaTestSonucBusiness.HastaTestSonuclariListele(hastaTC);
             ViewBag.TestSonuclari = testSonuclari;
             ViewBag.AltKumeSonuclariSozluk = testSonuclari.ToDictionary(
                 ts => ts.TestSonucID,
                 ts => _altKumeSonucBusiness.AltKumeSonuclariListele(ts.TestSonucID));
             ViewBag.AltKumeAdSozlugu = _testAltKumeBusiness.TumAltKumeleriListele().ToDictionary(a => a.TestAltKumeID);
-            ViewBag.RandevuNotlari = _randevuNotuBusiness.HastaRandevuNotlariListele(tc);
+            ViewBag.RandevuNotlari = _randevuNotuBusiness.HastaRandevuNotlariListele(hastaTC);
             ViewBag.RandevuSozlugu = randevular.ToDictionary(r => r.RandevuTarihID);
-            ViewBag.AileBilgileriListesi = _aileBilgileriBusiness.HastaAileBilgileriListele(tc);
-            ViewBag.AileOykusuListesi = _aileOykusuBusiness.HastaAileOykusuListele(tc);
-            ViewBag.GelisimselOykuListesi = _gelisimselOykuBusiness.HastaGelisimselOykuListele(tc);
+            ViewBag.AileBilgileriListesi = _aileBilgileriBusiness.HastaAileBilgileriListele(hastaTC);
+            ViewBag.AileOykusuListesi = _aileOykusuBusiness.HastaAileOykusuListele(hastaTC);
+            ViewBag.GelisimselOykuListesi = _gelisimselOykuBusiness.HastaGelisimselOykuListele(hastaTC);
 
             var (psikologRandevular, _) = _psikologRandevuBusiness.RandevuListele(
                 null, "TarihYeni", null, null, null, tc, null, 1, 100);
@@ -178,10 +194,10 @@ namespace HastaTakip.Web.Controllers
                 .Where(id => id.HasValue).Select(id => id!.Value).Distinct();
 
             var kullanicilarSozluk = new Dictionary<int, HastaTakip.Entities.Kullanici>();
-            foreach (var id in kullaniciIDler)
+            foreach (var kullaniciID in kullaniciIDler)
             {
-                var k = _kullaniciBusiness.KullaniciGetirById(id);
-                if (k != null) kullanicilarSozluk[id] = k;
+                var k = _kullaniciBusiness.KullaniciGetirById(kullaniciID);
+                if (k != null) kullanicilarSozluk[kullaniciID] = k;
             }
             ViewBag.Kullanicilar = kullanicilarSozluk;
 

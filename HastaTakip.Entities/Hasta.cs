@@ -48,5 +48,6 @@ namespace HastaTakip.Entities
         public string HastaBasvuruNedeni { get; set; } = string.Empty;
         public DateTime HastaBasvuruTarihi { get; set; }
         public bool HastaAktif { get; set; }
+        public Guid HastaGuid { get; set; }
     }
 }

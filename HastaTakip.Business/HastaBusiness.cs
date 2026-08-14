@@ -30,6 +30,7 @@ namespace HastaTakip.Business
         {
             return _hastaDal.HastaGetir(tc);
         }
+        public Hasta? HastaGetirById(Guid hastaGuid) => _hastaDal.HastaGetirById(hastaGuid);
 
         public List<Hasta> HastaListele(bool sadeceAktif = true)
         {

@@ -16,6 +16,9 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Index()
         {
             ViewBag.TaniCinsiyetVerisi = _istatistikBusiness.TaniCinsiyetIstatistigiGetir();
+            ViewBag.YasDagilimiVerisi = _istatistikBusiness.YasDagilimiIstatistigiGetir();
+            ViewBag.TaniOkulBasariVerisi = _istatistikBusiness.TaniOkulBasarisiCinsiyetIstatistigi();
+            ViewBag.BMIVerisi = _istatistikBusiness.TaniCinsiyetBMIIstatistigiGetir();
             return View();
         }
     }

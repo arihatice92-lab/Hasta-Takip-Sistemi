@@ -63,6 +63,21 @@ namespace HastaTakip.DataAccess
             }
         }
 
+        public Hasta? HastaGetirById(Guid hastaGuid)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_HastaGetirById", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@hastaGuid", hastaGuid);
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return MapToHasta(reader);
+            }
+            return null;
+        }
+
         public List<Hasta> HastaListele(bool sadeceAktif = true)
         {
             var hastalar = new List<Hasta>();
@@ -233,7 +248,8 @@ namespace HastaTakip.DataAccess
                 HastaYonlendiren = reader["hastaYonlendiren"].ToString()!,
                 HastaBasvuruNedeni = reader["hastaBasvuruNedeni"].ToString()!,
                 HastaBasvuruTarihi = (DateTime)reader["hastaBasvuruTarihi"],
-                HastaAktif = (bool)reader["hastaAktif"]
+                HastaAktif = (bool)reader["hastaAktif"],
+                HastaGuid = (Guid)reader["hastaGuid"]
             };
         }
     }

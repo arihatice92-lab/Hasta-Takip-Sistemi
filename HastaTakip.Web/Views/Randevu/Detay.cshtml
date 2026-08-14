@@ -44,7 +44,25 @@
 <hr />
 <h5>Randevu Notu</h5>
 
-<a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-sm btn-primary">
+@* <a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-sm btn-primary">
     Randevu Notu Ekle
-</a>
+</a> *@
+@if (User.IsInRole("Yönetici") ||
+    ViewBag.GirisYapanDoktorID == Model.DoktorID)
+{
+    <a asp-controller="RandevuNotu"
+       asp-action="Ekle"
+       asp-route-randevuTarihID="@Model.RandevuTarihID"
+       class="btn btn-sm btn-primary">
+        Randevu Notu Ekle
+    </a>
+}
+else
+{
+    <button type="button"
+            class="btn btn-sm btn-secondary"
+            disabled>
+        Randevu Notu Ekle
+    </button>
+}
 <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
