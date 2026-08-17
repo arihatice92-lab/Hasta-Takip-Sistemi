@@ -83,6 +83,9 @@ builder.Services.AddScoped<PsikologRandevuBusiness>();
 builder.Services.AddScoped<IstatistikDal>();
 builder.Services.AddScoped<IstatistikBusiness>();
 
+builder.Services.AddScoped<DoktorIzniDal>();
+builder.Services.AddScoped<DoktorIzniBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

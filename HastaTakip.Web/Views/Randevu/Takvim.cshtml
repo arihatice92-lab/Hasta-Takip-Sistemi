@@ -62,10 +62,18 @@
                             var gunTarih = haftaBasi.AddDays(hafta * 7 + gun);
                             var araligaDahilMi = gunTarih >= aralikBaslangic && gunTarih <= aralikBitis;
                             gunlukDurumlar.TryGetValue(gunTarih, out var durum);
-                            bool musait = araligaDahilMi && durum != null && durum.TamamenMusait;
+                            bool izinliMi = araligaDahilMi && durum != null && durum.IzinliMi;
+                            bool musait = araligaDahilMi && durum != null && !durum.IzinliMi && durum.TamamenMusait;
 
                             <td class="p-0 @(!araligaDahilMi ? "bg-light" : "")" style="height:70px;">
-                                @if (musait)
+                                @if (izinliMi)
+                                {
+                                    <div class="p-2 h-100 text-white bg-secondary" style="opacity: 0.7;">
+                                        <div><strong>@gunTarih.Day</strong></div>
+                                        <small>Kapalı</small>
+                                    </div>
+                                }
+                                else if (musait)
                                 {
                                     <a asp-action="Takvim"
                                        asp-route-doktorID="@seciliDoktorID"
@@ -86,9 +94,7 @@
                                 }
                                 else
                                 {
-                                    <div class="p-2 h-100 text-muted">
-                                        <div>@gunTarih.Day</div>
-                                    </div>
+                                    <div class="p-2 h-100 text-muted">@gunTarih.Day</div>
                                 }
                             </td>
                         }

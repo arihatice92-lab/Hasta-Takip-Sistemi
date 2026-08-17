@@ -123,7 +123,8 @@ namespace HastaTakip.DataAccess
                 {
                     Tarih = (DateTime)reader["Tarih"],
                     ToplamSaat = (int)reader["ToplamSaat"],
-                    DoluSaat = (int)reader["DoluSaat"]
+                    DoluSaat = (int)reader["DoluSaat"],
+                    IzinliMi = (bool)reader["IzinliMi"]
                 });
             }
             return liste;

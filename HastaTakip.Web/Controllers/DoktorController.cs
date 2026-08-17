@@ -2,17 +2,18 @@
 using HastaTakip.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Linq;
 namespace HastaTakip.Web.Controllers
 {
     [Authorize(Roles = "Yönetici, Sekreter")]
     public class DoktorController : Controller
     {
         private readonly DoktorBusiness _doktorBusiness;
-
-        public DoktorController(DoktorBusiness doktorBusiness)
+        private readonly DoktorIzniBusiness _doktorIzniBusiness;
+        public DoktorController(DoktorBusiness doktorBusiness, DoktorIzniBusiness doktorIzniBusiness)
         {
             _doktorBusiness = doktorBusiness;
+            _doktorIzniBusiness = doktorIzniBusiness;
         }
 
         // GET: /Doktor
@@ -64,10 +65,9 @@ namespace HastaTakip.Web.Controllers
         public IActionResult Detay(short doktorID)
         {
             var doktor = _doktorBusiness.DoktorGetir(doktorID);
-            if (doktor == null)
-            {
-                return NotFound();
-            }
+            if (doktor == null) return NotFound();
+
+            ViewBag.Izinler = _doktorIzniBusiness.IzinleriListele(doktorID);
             return View(doktor);
         }
 
@@ -137,5 +137,45 @@ namespace HastaTakip.Web.Controllers
             TempData["BasariMesaji"] = "Doktorun ayrılış tarihi işaretlendi.";
             return RedirectToAction(nameof(Index));
         }
+        //Doktor izin  ekle
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult IzinEkle(DoktorIzni izin)
+        {
+
+            var cakismalar = _doktorIzniBusiness.RandevuCakismalariGetir(izin.DoktorID, izin.BaslangicTarihi, izin.BitisTarihi);
+
+            if (cakismalar.Count > 0)
+            {
+                var mesaj = "Bu tarih aralığında çakışan randevular var, önce bunları çözmelisiniz: " +
+                    string.Join("; ", cakismalar.Select(c => $"{c.RandevuTarih:dd.MM.yyyy} {c.Saat:hh\\:mm} - {c.HastaAdSoyad}"));
+                TempData["HataMesaji"] = mesaj;
+                return RedirectToAction(nameof(Detay), new { doktorID = izin.DoktorID });
+            }
+
+            var kullaniciID = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+            izin.EkleyenKullaniciID = kullaniciID;
+
+            try
+            {
+                _doktorIzniBusiness.IzinEkle(izin);
+                TempData["BasariMesaji"] = "İzin kaydı eklendi.";
+            }
+            catch (Exception ex)
+            {
+                TempData["HataMesaji"] = ex.Message;
+            }
+            return RedirectToAction(nameof(Detay), new { doktorID = izin.DoktorID });
+        }
+        //Doktor izin sil
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult IzinSil(int izinID, short doktorID)
+        {
+            _doktorIzniBusiness.IzinSil(izinID);
+            TempData["BasariMesaji"] = "İzin kaydı silindi.";
+            return RedirectToAction(nameof(Detay), new { doktorID });
+        }
     }
+
 }
