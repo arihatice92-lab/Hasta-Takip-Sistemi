@@ -17,237 +17,276 @@
 
 <h2>İstatistikler</h2>
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="card-title">Tanı Bazında Hasta Sayısı ve Cinsiyet Dağılımı</h5>
-        @if (veri.Count == 0)
-        {
-            <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
-        }
-        else
-        {
-            <canvas id="taniCinsiyetGrafik" style="max-height: 450px;"></canvas>
-
-            <hr class="my-4" />
-
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Tanı</th>
-                            <th class="text-center">Toplam</th>
-                            <th class="text-center">Erkek</th>
-                            <th class="text-center">Kadın</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < taniAdlari.Count; i++)
-                        {
-                            var toplam = erkekSayilari[i] + kadinSayilari[i];
-                            <tr>
-                                <td>@taniAdlari[i]</td>
-                                <td class="text-center"><strong>@toplam</strong></td>
-                                <td class="text-center">@erkekSayilari[i]</td>
-                                <td class="text-center">@kadinSayilari[i]</td>
-                            </tr>
-                        }
-                        <tr class="table-secondary">
-                            <td><strong>Toplam</strong></td>
-                            <td class="text-center"><strong>@(erkekSayilari.Sum() + kadinSayilari.Sum())</strong></td>
-                            <td class="text-center"><strong>@erkekSayilari.Sum()</strong></td>
-                            <td class="text-center"><strong>@kadinSayilari.Sum()</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+<div class="accordion" id="istatistikAccordion">
+    <!-- 1. Tanı × Cinsiyet -->
+    <div class="accordion-item mb-2">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#raporTaniCinsiyet">
+                Tanı Bazında Hasta Sayısı ve Cinsiyet Dağılımı
+            </button>
+        </h2>
+        <div id="raporTaniCinsiyet" class="accordion-collapse collapse" data-bs-parent="#istatistikAccordion">
+            <div class="accordion-body">
+                @if (veri.Count == 0)
+                {
+                    <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
+                }
+                else
+                {
+                    <div style="height: 400px;">
+                        <canvas id="taniCinsiyetGrafik"></canvas>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Tanı</th>
+                                    <th class="text-center">Toplam</th>
+                                    <th class="text-center">Erkek</th>
+                                    <th class="text-center">Kadın</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < taniAdlari.Count; i++)
+                                {
+                                    var toplam = erkekSayilari[i] + kadinSayilari[i];
+                                    <tr>
+                                        <td>@taniAdlari[i]</td>
+                                        <td class="text-center"><strong>@toplam</strong></td>
+                                        <td class="text-center">@erkekSayilari[i]</td>
+                                        <td class="text-center">@kadinSayilari[i]</td>
+                                    </tr>
+                                }
+                                <tr class="table-secondary">
+                                    <td><strong>Toplam</strong></td>
+                                    <td class="text-center"><strong>@(erkekSayilari.Sum() + kadinSayilari.Sum())</strong></td>
+                                    <td class="text-center"><strong>@erkekSayilari.Sum()</strong></td>
+                                    <td class="text-center"><strong>@kadinSayilari.Sum()</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
-        }
+        </div>
     </div>
-</div>
-@{
-    var yasVerisi = (List<HastaTakip.Entities.YasDagilimiIstatistigi>)ViewBag.YasDagilimiVerisi;
-    var yasGruplari = yasVerisi.Select(v => v.YasGrubu).ToList();
-    var yasSayilari = yasVerisi.Select(v => v.HastaSayisi).ToList();
-    var yasGruplariJson = JsonSerializer.Serialize(yasGruplari);
-    var yasSayilariJson = JsonSerializer.Serialize(yasSayilari);
-}
+    @{
+        var yasVerisi = (List<HastaTakip.Entities.YasDagilimiIstatistigi>)ViewBag.YasDagilimiVerisi;
+        var yasGruplari = yasVerisi.Select(v => v.YasGrubu).ToList();
+        var yasSayilari = yasVerisi.Select(v => v.HastaSayisi).ToList();
+        var yasGruplariJson = JsonSerializer.Serialize(yasGruplari);
+        var yasSayilariJson = JsonSerializer.Serialize(yasSayilari);
+    }
 
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="card-title">Yaş Dağılımı</h5>
-        @if (yasVerisi.Count == 0)
-        {
-            <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
-        }
-        else
-        {
-            <div style="height: 350px;">
-                <canvas id="yasDagilimGrafik"></canvas>
+    <!-- 2. Yaş Dağılımı -->
+    <div class="accordion-item mb-2">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#raporYas">
+                Yaş Dağılımı
+            </button>
+        </h2>
+        <div id="raporYas" class="accordion-collapse collapse" data-bs-parent="#istatistikAccordion">
+            <div class="accordion-body">
+                @if (yasVerisi.Count == 0)
+                {
+                    <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
+                }
+                else
+                {
+                    <div style="height: 350px;">
+                        <canvas id="yasDagilimGrafik"></canvas>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Tanı</th>
+                                    <th class="text-center">Toplam</th>
+                                    <th class="text-center">Erkek</th>
+                                    <th class="text-center">Kadın</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < taniAdlari.Count; i++)
+                                {
+                                    var toplam = erkekSayilari[i] + kadinSayilari[i];
+                                    <tr>
+                                        <td>@taniAdlari[i]</td>
+                                        <td class="text-center"><strong>@toplam</strong></td>
+                                        <td class="text-center">@erkekSayilari[i]</td>
+                                        <td class="text-center">@kadinSayilari[i]</td>
+                                    </tr>
+                                }
+                                <tr class="table-secondary">
+                                    <td><strong>Toplam</strong></td>
+                                    <td class="text-center"><strong>@(erkekSayilari.Sum() + kadinSayilari.Sum())</strong></td>
+                                    <td class="text-center"><strong>@erkekSayilari.Sum()</strong></td>
+                                    <td class="text-center"><strong>@kadinSayilari.Sum()</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
-
-            <hr class="my-4" />
-
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr><th>Yaş Grubu</th><th class="text-center">Hasta Sayısı</th></tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var y in yasVerisi)
-                        {
-                            <tr>
-                                <td>@y.YasGrubu</td>
-                                <td class="text-center"><strong>@y.HastaSayisi</strong></td>
-                            </tr>
-                        }
-                        <tr class="table-secondary">
-                            <td><strong>Toplam</strong></td>
-                            <td class="text-center"><strong>@yasVerisi.Sum(v => v.HastaSayisi)</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        }
+        </div>
     </div>
+
+        <!-- 3. Tanı × Cinsiyet × Okul Başarısı -->
+        @{
+            var okulBasariVerisi = (List<HastaTakip.Entities.TaniOkulBasarisiCinsiyetIstatistigi>)ViewBag.TaniOkulBasariVerisi;
+
+            var gruplar = okulBasariVerisi
+                .Select(v => $"{v.TaniAdi} - {v.Cinsiyet}")
+                .Distinct()
+                .OrderBy(g => g)
+                .ToList();
+
+            var dusukSayilari = gruplar.Select(g =>
+            {
+                var parcalar = g.Split(" - ");
+                return okulBasariVerisi.FirstOrDefault(v => v.TaniAdi == parcalar[0] && v.Cinsiyet == parcalar[1] && v.OkulBasarisi == "Düşük")?.HastaSayisi ?? 0;
+            }).ToList();
+
+            var ortaSayilari = gruplar.Select(g =>
+            {
+                var parcalar = g.Split(" - ");
+                return okulBasariVerisi.FirstOrDefault(v => v.TaniAdi == parcalar[0] && v.Cinsiyet == parcalar[1] && v.OkulBasarisi == "Orta")?.HastaSayisi ?? 0;
+            }).ToList();
+
+            var yuksekSayilari = gruplar.Select(g =>
+            {
+                var parcalar = g.Split(" - ");
+                return okulBasariVerisi.FirstOrDefault(v => v.TaniAdi == parcalar[0] && v.Cinsiyet == parcalar[1] && v.OkulBasarisi == "Yüksek")?.HastaSayisi ?? 0;
+            }).ToList();
+
+            var gruplarJson = JsonSerializer.Serialize(gruplar);
+            var dusukJson = JsonSerializer.Serialize(dusukSayilari);
+            var ortaJson = JsonSerializer.Serialize(ortaSayilari);
+            var yuksekJson = JsonSerializer.Serialize(yuksekSayilari);
+            var grafikYuksekligi = Math.Max(300, gruplar.Count * 35);
+        }
+    <div class="accordion-item mb-2">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#raporOkulBasari">
+                Tanı, Cinsiyet ve Okul Başarısı Dağılımı
+            </button>
+        </h2>
+        <div id="raporOkulBasari" class="accordion-collapse collapse" data-bs-parent="#istatistikAccordion">
+            <div class="accordion-body">
+                @if (gruplar.Count == 0)
+                {
+                    <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
+                }
+                else
+                {
+                    <div style="height: @(grafikYuksekligi)px;">
+                        <canvas id="taniOkulBasariGrafik"></canvas>
+                    </div>
+                    <hr class="my-4" />
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Tanı</th>
+                                        <th>Cinsiyet</th>
+                                        <th class="text-center">Düşük</th>
+                                        <th class="text-center">Orta</th>
+                                        <th class="text-center">Yüksek</th>
+                                        <th class="text-center">Toplam</th>
+                                        <th class="text-center">Yüksek Oranı</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < gruplar.Count; i++)
+                                    {
+                                        var parcalar = gruplar[i].Split(" - ");
+                                        var toplam = dusukSayilari[i] + ortaSayilari[i] + yuksekSayilari[i];
+                                        var yuksekOrani = toplam > 0 ? Math.Round(yuksekSayilari[i] * 100.0 / toplam, 1) : 0;
+                                        <tr>
+                                            <td>@parcalar[0]</td>
+                                            <td>@parcalar[1]</td>
+                                            <td class="text-center">@dusukSayilari[i]</td>
+                                            <td class="text-center">@ortaSayilari[i]</td>
+                                            <td class="text-center">@yuksekSayilari[i]</td>
+                                            <td class="text-center"><strong>@toplam</strong></td>
+                                            <td class="text-center">%@yuksekOrani</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+         </div>
+
+
+        <!-- 4. BMI -->
+        @{
+            var bmiVerisi = (List<HastaTakip.Entities.TaniCinsiyetBMIIstatistigi>)ViewBag.BMIVerisi;
+            var bmiGruplari = bmiVerisi.Select(v => $"{v.TaniAdi} - {v.Cinsiyet}").ToList();
+            var bmiOrtalamalari = bmiVerisi.Select(v => v.OrtalamaBMI).ToList();
+        var bmiRenkleri = bmiVerisi.Select(v => v.Cinsiyet == "Erkek" ? "#0d6efd" : "#fd0d49").ToList();
+            var bmiGruplariJson = JsonSerializer.Serialize(bmiGruplari);
+            var bmiOrtalamalariJson = JsonSerializer.Serialize(bmiOrtalamalari);
+            var bmiRenkleriJson = JsonSerializer.Serialize(bmiRenkleri);
+            var bmiGrafikYuksekligi = Math.Max(300, bmiGruplari.Count * 35);
+        }
+        <div class="accordion-item mb-2">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#raporBMI">
+                Tanı ve Cinsiyete Göre Ortalama BMI
+            </button>
+        </h2>
+        <div id="raporBMI" class="accordion-collapse collapse" data-bs-parent="#istatistikAccordion">
+            <div class="accordion-body">
+                @if (bmiVerisi.Count == 0)
+                {
+                    <p class="text-muted">Boy/kilo bilgisi girilmiş yeterli veri bulunmuyor.</p>
+                }
+                else
+                {
+                    <div style="height: @(bmiGrafikYuksekligi)px;">
+                        <canvas id="bmiGrafik"></canvas>
+                    </div>
+                    <hr class="my-4" />
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Tanı</th>
+                                        <th>Cinsiyet</th>
+                                        <th class="text-center">Hasta Sayısı</th>
+                                        <th class="text-center">Ortalama BMI</th>
+                                        <th class="text-center">Min</th>
+                                        <th class="text-center">Maks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var b in bmiVerisi)
+                                    {
+                                        <tr>
+                                            <td>@b.TaniAdi</td>
+                                            <td>@b.Cinsiyet</td>
+                                            <td class="text-center">@b.HastaSayisi</td>
+                                            <td class="text-center"><strong>@b.OrtalamaBMI</strong></td>
+                                            <td class="text-center">@b.MinBMI</td>
+                                            <td class="text-center">@b.MaxBMI</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
 </div>
 
-@{
-    var okulBasariVerisi = (List<HastaTakip.Entities.TaniOkulBasarisiCinsiyetIstatistigi>)ViewBag.TaniOkulBasariVerisi;
 
-    var gruplar = okulBasariVerisi
-        .Select(v => $"{v.TaniAdi} - {v.Cinsiyet}")
-        .Distinct()
-        .OrderBy(g => g)
-        .ToList();
-
-    var dusukSayilari = gruplar.Select(g =>
-    {
-        var parcalar = g.Split(" - ");
-        return okulBasariVerisi.FirstOrDefault(v => v.TaniAdi == parcalar[0] && v.Cinsiyet == parcalar[1] && v.OkulBasarisi == "Düşük")?.HastaSayisi ?? 0;
-    }).ToList();
-
-    var ortaSayilari = gruplar.Select(g =>
-    {
-        var parcalar = g.Split(" - ");
-        return okulBasariVerisi.FirstOrDefault(v => v.TaniAdi == parcalar[0] && v.Cinsiyet == parcalar[1] && v.OkulBasarisi == "Orta")?.HastaSayisi ?? 0;
-    }).ToList();
-
-    var yuksekSayilari = gruplar.Select(g =>
-    {
-        var parcalar = g.Split(" - ");
-        return okulBasariVerisi.FirstOrDefault(v => v.TaniAdi == parcalar[0] && v.Cinsiyet == parcalar[1] && v.OkulBasarisi == "Yüksek")?.HastaSayisi ?? 0;
-    }).ToList();
-
-    var gruplarJson = JsonSerializer.Serialize(gruplar);
-    var dusukJson = JsonSerializer.Serialize(dusukSayilari);
-    var ortaJson = JsonSerializer.Serialize(ortaSayilari);
-    var yuksekJson = JsonSerializer.Serialize(yuksekSayilari);
-}
-
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="card-title">Tanı, Cinsiyet ve Okul Başarısı Dağılımı</h5>
-        @if (gruplar.Count == 0)
-        {
-            <p class="text-muted">Henüz yeterli veri bulunmuyor.</p>
-        }
-        else
-        {
-            <div style="height: 400px;">
-                <canvas id="taniOkulBasariGrafik"></canvas>
-            </div>
-
-            <hr class="my-4" />
-
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Tanı</th>
-                            <th>Cinsiyet</th>
-                            <th class="text-center">Düşük</th>
-                            <th class="text-center">Orta</th>
-                            <th class="text-center">Yüksek</th>
-                            <th class="text-center">Toplam</th>
-                            <th class="text-center">Yüksek Oranı</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < gruplar.Count; i++)
-                        {
-                            var parcalar = gruplar[i].Split(" - ");
-                            var toplam = dusukSayilari[i] + ortaSayilari[i] + yuksekSayilari[i];
-                            var yuksekOrani = toplam > 0 ? Math.Round(yuksekSayilari[i] * 100.0 / toplam, 1) : 0;
-                            <tr>
-                                <td>@parcalar[0]</td>
-                                <td>@parcalar[1]</td>
-                                <td class="text-center">@dusukSayilari[i]</td>
-                                <td class="text-center">@ortaSayilari[i]</td>
-                                <td class="text-center">@yuksekSayilari[i]</td>
-                                <td class="text-center"><strong>@toplam</strong></td>
-                                <td class="text-center">%@yuksekOrani</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </div>
-</div>
-
-@{
-    var bmiVerisi = (List<HastaTakip.Entities.TaniCinsiyetBMIIstatistigi>)ViewBag.BMIVerisi;
-    var bmiGruplari = bmiVerisi.Select(v => $"{v.TaniAdi} - {v.Cinsiyet}").ToList();
-    var bmiOrtalamalari = bmiVerisi.Select(v => v.OrtalamaBMI).ToList();
-    var bmiGruplariJson = JsonSerializer.Serialize(bmiGruplari);
-    var bmiOrtalamalariJson = JsonSerializer.Serialize(bmiOrtalamalari);
-    var bmiGrafikYuksekligi = Math.Max(300, bmiGruplari.Count * 35);
-}
-
-<div class="card mb-4">
-    <div class="card-body">
-        <h5 class="card-title">Tanı ve Cinsiyete Göre Ortalama BMI</h5>
-        @if (bmiVerisi.Count == 0)
-        {
-            <p class="text-muted">Boy/kilo bilgisi girilmiş yeterli veri bulunmuyor.</p>
-        }
-        else
-        {
-            <div style="height: @(bmiGrafikYuksekligi)px;">
-                <canvas id="bmiGrafik"></canvas>
-            </div>
-
-            <hr class="my-4" />
-
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Tanı</th>
-                            <th>Cinsiyet</th>
-                            <th class="text-center">Hasta Sayısı</th>
-                            <th class="text-center">Ortalama BMI</th>
-                            <th class="text-center">Min</th>
-                            <th class="text-center">Maks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var b in bmiVerisi)
-                        {
-                            <tr>
-                                <td>@b.TaniAdi</td>
-                                <td>@b.Cinsiyet</td>
-                                <td class="text-center">@b.HastaSayisi</td>
-                                <td class="text-center"><strong>@b.OrtalamaBMI</strong></td>
-                                <td class="text-center">@b.MinBMI</td>
-                                <td class="text-center">@b.MaxBMI</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </div>
-</div>
 @* Sonraki istatistikler için buraya yeni kart/grafik ekleyeceğiz *@
 
 @section Scripts {
@@ -272,11 +311,12 @@
                         {
                             label: 'Kadın',
                             data: kadinSayilari,
-                            backgroundColor: '#d63384'
+                            backgroundColor: '#fd0d49'
                         }
                     ]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     scales: {
                         x: { stacked: false },
@@ -301,7 +341,7 @@
                     datasets: [{
                         label: 'Hasta Sayısı',
                         data: yasSayilari,
-                        backgroundColor: '#20c997'
+                        backgroundColor: '#20c966'
                     }]
                 },
                 options: {
@@ -351,6 +391,7 @@
 
                 var bmiGruplari = @Html.Raw(bmiGruplariJson);
         var bmiOrtalamalari = @Html.Raw(bmiOrtalamalariJson);
+        var bmiRenkleri = @Html.Raw(bmiRenkleriJson);
 
         if (bmiGruplari.length > 0) {
             var ctxBMI = document.getElementById('bmiGrafik').getContext('2d');
@@ -361,7 +402,7 @@
                     datasets: [{
                         label: 'Ortalama BMI',
                         data: bmiOrtalamalari,
-                        backgroundColor: '#6f42c1'
+                        backgroundColor: bmiRenkleri
                     }]
                 },
                 options: {
