@@ -23,6 +23,7 @@
         padding: 0;
     }
 </style>
+
 <h2>Şifre Değiştir</h2>
 
 @if (ViewBag.Hata != null)
@@ -35,6 +36,9 @@
 }
 
 <form asp-action="SifreDegistir" asp-controller="Account" method="post">
+    <div class="p-2 mb-3 bg-info-subtle border border-info-subtle rounded small">
+        Şifreniz en az 8 karakter olmalı; en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter (!@@#$% gibi) içermelidir.
+    </div>
     <div class="mb-3">
         <label>Mevcut Şifre</label>
         <div class="sifre-wrapper">
@@ -52,7 +56,7 @@
     <div class="mb-3">
         <label>Yeni Şifre (Tekrar)</label>
         <div class="sifre-wrapper">
-            <input type="password" name="yeniSifreTekrar" id="yeniSifreTekrarInput" class="form-control" required />
+            <input type="password" name="yeniSifreTekrar" id="yeniSifreTekrarInput" class="form-control" required onpaste="return false;" oncopy="return false;" oncut="return false;" autocomplete="new-password" />
             <button type="button" class="sifre-goz" onclick="sifreGosterGizle('yeniSifreTekrarInput', this)">👁</button>
         </div>
     </div>

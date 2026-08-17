@@ -1,5 +1,6 @@
 ﻿using HastaTakip.DataAccess;
 using HastaTakip.Entities;
+using System.Text.RegularExpressions;
 
 namespace HastaTakip.Business
 {
@@ -27,6 +28,24 @@ namespace HastaTakip.Business
 
             return kullanici;
         }
+
+        private void SifreKurallariniKontrolEt(string sifre)
+        {
+            if (string.IsNullOrWhiteSpace(sifre) || sifre.Length < 8)
+                throw new Exception("Şifre en az 8 karakter olmalıdır.");
+
+            if (!Regex.IsMatch(sifre, @"[A-ZÇĞİÖŞÜ]"))
+                throw new Exception("Şifre en az bir büyük harf içermelidir.");
+
+            if (!Regex.IsMatch(sifre, @"[a-zçğıöşü]"))
+                throw new Exception("Şifre en az bir küçük harf içermelidir.");
+
+            if (!Regex.IsMatch(sifre, @"[0-9]"))
+                throw new Exception("Şifre en az bir rakam içermelidir.");
+
+            if (!Regex.IsMatch(sifre, @"[!@#$%^&*()_\-+=\[\]{};:'"",.<>/?\\|`~]"))
+                throw new Exception("Şifre en az bir özel karakter içermelidir (!@#$% gibi).");
+        }
         public void SifreDegistir(int kullaniciID, string eskiSifre, string yeniSifre)
         {
             var kullanici = _kullaniciDal.KullaniciGetirById(kullaniciID);
@@ -38,16 +57,23 @@ namespace HastaTakip.Business
             if (!eskiSifreDogruMu)
                 throw new Exception("Mevcut şifreniz hatalı.");
 
-            if (yeniSifre.Length < 6)
-                throw new Exception("Yeni şifre en az 6 karakter olmalıdır.");
+            SifreKurallariniKontrolEt(yeniSifre);
+
+            bool yeniSifreEskisiyleAyniMi = BCrypt.Net.BCrypt.Verify(yeniSifre, kullanici.SifreHash);
+            if (yeniSifreEskisiyleAyniMi)
+                throw new Exception("Yeni şifreniz mevcut şifrenizle aynı olamaz.");
 
             string yeniHash = BCrypt.Net.BCrypt.HashPassword(yeniSifre);
             _kullaniciDal.SifreGuncelle(kullaniciID, yeniHash);
         }
+
+
         public void KullaniciEkle(Kullanici kullanici, string sifre)
         {
+            SifreKurallariniKontrolEt(sifre);
             kullanici.SifreHash = BCrypt.Net.BCrypt.HashPassword(sifre);
             _kullaniciDal.KullaniciEkle(kullanici);
+            
         }
 
         public Kullanici? KullaniciGetir(string kullaniciAdi)

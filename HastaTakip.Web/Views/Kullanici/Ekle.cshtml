@@ -9,6 +9,9 @@
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 <form asp-action="Ekle" method="post">
+    <div class="p-2 mb-3 bg-info-subtle border border-info-subtle rounded small">
+        Şifreniz en az 8 karakter olmalı; en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter (!@@#$% gibi) içermelidir.
+    </div>
     <div class="mb-3">
         <label>Kullanıcı Adı</label>
         <input asp-for="KullaniciAdi" class="form-control" required />
