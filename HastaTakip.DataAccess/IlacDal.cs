@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using HastaTakip.Entities;
 using Microsoft.Data.SqlClient;
@@ -30,11 +31,11 @@ namespace HastaTakip.DataAccess
             return ilaclar;
         }
 
-        public void IlacEkle (Ilac ilac)
+        public void IlacEkle(Ilac ilac)
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_IlacEkle", connection);
-            command.CommandType=CommandType.StoredProcedure;
+            command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ilacAdi", ilac.IlacAdi);
             command.Parameters.AddWithValue("@ilacEtkenMadde", ilac.IlacEtkenMadde);
             connection.Open();
@@ -49,7 +50,45 @@ namespace HastaTakip.DataAccess
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@ilacID", ilacID);
             connection.Open();
-            command.ExecuteNonQuery ();
+            command.ExecuteNonQuery();
+
+        }
+
+        public List<Ilac> IlacAra(string? ara)
+        {
+            var ilaclar = new List<Ilac>();
+            
+            using (var connection = _dbHelper.GetConnection())
+            using (var command = new SqlCommand("sp_IlacAra", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@Ara",
+                    string.IsNullOrWhiteSpace(ara) ? DBNull.Value : (object)ara);
+               
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ilaclar.Add(MapToIlac(reader));
+                    }
+                }
+
+            }
+            return ilaclar;
+        }
+
+        private Ilac MapToIlac(SqlDataReader reader)
+        {
+            return new Ilac
+            {
+                IlacID = (short)reader["ilacID"],
+                IlacAdi = reader["ilacAdi"].ToString()!,
+                IlacEtkenMadde = reader["ilacEtkenMadde"].ToString()!
+            };
+
 
         }
     }

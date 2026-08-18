@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HastaTakip.DataAccess;
+using HastaTakip.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,5 +20,8 @@ namespace HastaTakip.Business
         {
             _ilacDal.IlacSil(ilacID);
         }
+
+        public List<Ilac> IlacAra (string? ara){ return _ilacDal.IlacAra(ara); }
+        
     }
 }

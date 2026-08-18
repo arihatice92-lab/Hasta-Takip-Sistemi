@@ -5,13 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HastaTakip.Web.Controllers
 {
-    [Authorize(Roles = "Yönetici")]
+    [Authorize(Roles = "Yönetici, Sekreter")]
     public class IlacYonetimController : Controller
     {
         private readonly IlacBusiness _ilacBusiness;
         public IlacYonetimController(IlacBusiness ilacBusiness) { _ilacBusiness = ilacBusiness; }
 
-        public IActionResult Index() => View(_ilacBusiness.IlaclariListele());
+        public IActionResult Index(string? ara)
+        {
+            ViewBag.Ara = ara;
+            var ilaclar = _ilacBusiness.IlacAra(ara);
+            return View(ilaclar);
+        }
+        
 
         public IActionResult Ekle() => View();
 

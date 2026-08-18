@@ -177,14 +177,21 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var aramaKutusu = document.querySelector('input[name="ara"]');
             var form = aramaKutusu.closest('form');
             var zamanlayici;
 
-            aramaKutusu.addEventListener('input', function() {
+            if (aramaKutusu.value) {
+                aramaKutusu.focus();
+                var deger = aramaKutusu.value;
+                aramaKutusu.value = '';
+                aramaKutusu.value = deger;
+            }
+
+            aramaKutusu.addEventListener('input', function () {
                 clearTimeout(zamanlayici);
-                zamanlayici = setTimeout(function() {
+                zamanlayici = setTimeout(function () {
                     form.submit();
                 }, 400);
             });

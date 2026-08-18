@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HastaTakip.Web.Controllers
 {
-    [Authorize(Roles = "Yönetici")]
+    [Authorize(Roles = "Yönetici, Sekreter")]
     public class TestYonetimController : Controller
     {
         private readonly TestBusiness _testBusiness;

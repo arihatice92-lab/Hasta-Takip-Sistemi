@@ -128,12 +128,21 @@
             var form = aramaKutusu.closest('form');
             var zamanlayici;
 
+            if (aramaKutusu.value) {
+                aramaKutusu.focus();
+                var deger = aramaKutusu.value;
+                aramaKutusu.value = '';
+                aramaKutusu.value = deger;
+            }
+
             aramaKutusu.addEventListener('input', function() {
                 clearTimeout(zamanlayici);
                 zamanlayici = setTimeout(function() {
                     form.submit();
                 }, 400);
             });
+
+            // Sayfanızda satır tıklama script'i varsa, onu buraya (aynı DOMContentLoaded içine) ekleyin, dokunmayın
         });
     </script>
 }

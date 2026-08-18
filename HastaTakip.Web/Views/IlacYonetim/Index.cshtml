@@ -17,6 +17,32 @@
 
 <a asp-action="Ekle" class="btn btn-primary mb-3">Yeni İlaç Ekle</a>
 
+<!-- Arama ve Filtreleme -->
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <!-- Arama -->
+    <div class="col-md-3">
+        <label class="form-label">Arama Kutusu</label>
+        <input type="text"
+               name="ara"
+               value="@ViewBag.Ara"
+               class="form-control"
+               placeholder="İlaç adi veya etken madde" />
+    </div>
+    <!-- Butonlar -->
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">
+            Filtrele
+        </button>
+    </div>
+
+    <div class="col-md-2 d-grid">
+        <a asp-action="Index" class="btn btn-secondary">
+            Temizle
+        </a>
+    </div>
+</form>
+
+
 <table class="table table-striped">
     <thead>
         <tr><th>İlaç Adı</th><th>İlaç Etken Madde</th><th>İşlemler</th></tr>
@@ -40,3 +66,29 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var aramaKutusu = document.querySelector('input[name="ara"]');
+            var form = aramaKutusu.closest('form');
+            var zamanlayici;
+
+            // Sayfa yeniden yüklendiğinde, daha önce arama yapılıyorduysa kutuya odaklan
+            if (aramaKutusu.value) {
+                aramaKutusu.focus();
+                // İmleci metnin sonuna koy (başına değil)
+                var deger = aramaKutusu.value;
+                aramaKutusu.value = '';
+                aramaKutusu.value = deger;
+            }
+
+            aramaKutusu.addEventListener('input', function () {
+                clearTimeout(zamanlayici);
+                zamanlayici = setTimeout(function () {
+                    form.submit();
+                }, 400);
+            });
+        });
+    </script>
+}
