@@ -105,6 +105,19 @@
             </div>
         </div>
     }
+    @if (User.IsInRole("Yönetici"))
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">İlaç Yönetimi</h5>
+                    <p class="card-text">İlaç kaydı oluşturun ve listeleyin.</p>
+                    <a asp-controller="IlacYonetim" asp-action="Index" class="btn btn-primary">İlaç Listesi</a>
+                    <a asp-controller="IlacYonetim" asp-action="Ekle" class="btn btn-outline-primary">Yeni İlaç</a>
+                </div>
+            </div>
+        </div>
+    }
     <div class="col-md-4 mb-3">
         <div class="card h-100">
             <div class="card-body">

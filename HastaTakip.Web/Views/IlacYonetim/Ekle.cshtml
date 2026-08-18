@@ -1,0 +1,21 @@
+﻿@model HastaTakip.Entities.Ilac
+@{
+    ViewData["Title"] = "Yeni İlaç Ekle";
+}
+
+<h2>Yeni İlaç Ekle</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Ekle" method="post">
+    <div class="mb-3">
+        <label asp-for="IlacAdi" class="form-label">İlaç Adı <span style="color:red">*</span></label>
+        <input asp-for="IlacAdi" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label asp-for="IlacEtkenMadde" class="form-label">İlaç Etken Madde <span style="color:red">*</span></label>
+        <input asp-for="IlacEtkenMadde" class="form-control" required/>
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
