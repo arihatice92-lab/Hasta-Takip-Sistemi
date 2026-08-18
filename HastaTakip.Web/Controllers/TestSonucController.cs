@@ -53,6 +53,16 @@ namespace HastaTakip.Web.Controllers
             ViewBag.TestListesi = _testBusiness.TestleriListele();
             ViewBag.PsikologListesi = _psikologBusiness.PsikologlariListele();
             ViewBag.TumAltKumeler = _testAltKumeBusiness.TumAltKumeleriListele();
+
+            if (User.IsInRole("Psikolog"))
+            {
+                var kullaniciAdi = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(kullaniciAdi))
+                {
+                    var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+                    ViewBag.OnSeciliPsikologID = kullanici?.PsikologID;
+                }
+            }
             return View();
         }
 

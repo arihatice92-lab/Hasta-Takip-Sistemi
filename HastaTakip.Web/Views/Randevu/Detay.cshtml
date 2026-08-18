@@ -44,9 +44,7 @@
 <hr />
 <h5>Randevu Notu</h5>
 
-@* <a asp-controller="RandevuNotu" asp-action="Ekle" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-sm btn-primary">
-    Randevu Notu Ekle
-</a> *@
+
 @if (User.IsInRole("Yönetici") ||
     ViewBag.GirisYapanDoktorID == Model.DoktorID)
 {

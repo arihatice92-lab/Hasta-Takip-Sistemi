@@ -15,17 +15,20 @@ namespace HastaTakip.Web.Controllers
         private readonly HastaBusiness _hastaBusiness;
         private readonly PsikologBusiness _psikologBusiness;
         private readonly PsikologRandevuSaatBusiness _psikologRandevuSaatBusiness;
+        private readonly KullaniciBusiness _kullaniciBusiness;
 
         public PsikologRandevuController(
             PsikologRandevuBusiness psikologRandevuBusiness,
             HastaBusiness hastaBusiness,
             PsikologBusiness psikologBusiness,
-            PsikologRandevuSaatBusiness psikologRandevuSaatBusiness)
+            PsikologRandevuSaatBusiness psikologRandevuSaatBusiness,
+            KullaniciBusiness kullaniciBusiness)
         {
             _psikologRandevuBusiness = psikologRandevuBusiness;
             _hastaBusiness = hastaBusiness;
             _psikologBusiness = psikologBusiness;
             _psikologRandevuSaatBusiness = psikologRandevuSaatBusiness;
+            _kullaniciBusiness = kullaniciBusiness;
         }
 
         // GET: /PsikologRandevu
@@ -115,7 +118,16 @@ namespace HastaTakip.Web.Controllers
             ViewBag.Hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
             ViewBag.Psikolog = _psikologBusiness.PsikologGetir(randevu.PsikologID);
             ViewBag.Saat = _psikologRandevuSaatBusiness.SaatleriListele().FirstOrDefault(s => s.SaatID == randevu.SaatID);
-
+            var kullaniciAdi = User.Identity?.Name;
+            if (!string.IsNullOrEmpty(kullaniciAdi))
+            {
+                var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+                ViewBag.GirisYapanPsikologID = kullanici?.PsikologID;
+            }
+            else
+            {
+                ViewBag.GirisYapanPsikologID = null;
+            }
             return View(randevu);
         }
 

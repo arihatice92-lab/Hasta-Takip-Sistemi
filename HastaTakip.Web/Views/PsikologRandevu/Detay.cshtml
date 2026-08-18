@@ -7,7 +7,8 @@
     var saat = (HastaTakip.Entities.PsikologRandevuSaat?)ViewBag.Saat;
 }
 
-<h2>Randevu Detayı</h2>
+
+
 
 @if (TempData["HataMesaji"] != null)
 {
@@ -30,5 +31,25 @@
     <dt class="col-sm-3">Durum</dt>
     <dd class="col-sm-9">@Model.RandevuDurum</dd>
 </dl>
+
+
+@if (User.IsInRole("Yönetici") ||
+ViewBag.GirisYapanPsikologID == Model.PsikologID)
+{
+    <a asp-controller="TestSonuc"
+       asp-action="Ekle"
+       asp-route-hastaTC="@Model.HastaTC"
+       class="btn btn-sm btn-primary">
+        Test Sonucu Ekle
+    </a>
+}
+else
+{
+    <button type="button"
+            class="btn btn-sm btn-secondary"
+            disabled>
+        Test Sonucu Ekle
+    </button>
+}
 
 <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

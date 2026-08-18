@@ -95,6 +95,7 @@
         {
             var hastaVarMi = hastalar.TryGetValue(randevu.HastaTC, out var hasta);
             var detayUrl = Url.Action("Detay", "PsikologRandevu", new { randevuTarihID = randevu.RandevuTarihID });
+            var hastaDetayUrl = hastaVarMi ? Url.Action("Detay", "Hasta", new { tc = hasta!.HastaTC }) : null;
 
             <tr class="randevu-satiri" data-href="@detayUrl" style="cursor:pointer;">
                 <td>@randevu.HastaTC</td>
@@ -152,7 +153,12 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-sm btn-info">Detay</a>
+                    @if (hastaDetayUrl != null)
+                    {
+                        <a href="@hastaDetayUrl" class="btn btn-sm btn-info">
+                            Detay
+                        </a>
+                    }
                     @if (randevu.RandevuDurum == "Planlandı")
                     {
                         <form asp-action="Gelmedi" method="post" class="d-inline">

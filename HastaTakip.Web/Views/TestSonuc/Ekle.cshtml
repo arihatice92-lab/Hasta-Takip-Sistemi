@@ -25,9 +25,9 @@
         <label class="form-label">Psikolog <span style="color:red">*</span></label>
         <select name="PsikologID" class="form-select" required>
             <option value="">Seçiniz</option>
-            @foreach (var p in psikologlar)
+            @foreach (var p in (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi)
             {
-                <option value="@p.PsikologID">@p.PsikologAd @p.PsikologSoyad</option>
+                <option value="@p.PsikologID" selected="@(ViewBag.OnSeciliPsikologID !=null && (short)ViewBag.OnSeciliPsikologID == p.PsikologID)">@p.PsikologAd @p.PsikologSoyad</option>
             }
         </select>
     </div>
