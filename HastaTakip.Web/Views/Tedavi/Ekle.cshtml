@@ -13,9 +13,12 @@
         <label class="form-label">Doktor <span style="color:red">*</span></label>
         <select name="DoktorID" class="form-select" required>
             <option value="">Seçiniz</option>
-            @foreach (var doktor in doktorlar)
+            @foreach (var doktor in (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi)
             {
-                <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad</option>
+                <option value="@doktor.DoktorID"
+                        selected="@(ViewBag.OnSeciliDoktorID != null && (short)ViewBag.OnSeciliDoktorID == doktor.DoktorID)">
+                    @doktor.DoktorAd @doktor.DoktorSoyad
+                </option>
             }
         </select>
     </div>

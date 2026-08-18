@@ -46,6 +46,16 @@ namespace HastaTakip.Web.Controllers
             ViewBag.HastaTC = hastaTC;
             ViewBag.IlacListesi = _ilacBusiness.IlaclariListele();
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+
+            if (User.IsInRole("Doktor"))
+            {
+                var kullaniciAdi = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(kullaniciAdi))
+                {
+                    var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+                    ViewBag.OnSeciliDoktorID = kullanici?.DoktorID;
+                }
+            }
             return View();
         }
 

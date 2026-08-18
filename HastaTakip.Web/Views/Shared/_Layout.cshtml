@@ -25,38 +25,23 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">Ana Sayfa</a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                    Randevular
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Index">Randevu Listesi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Takvim">Doktor Takvimi</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-controller="PsikologRandevu" asp-action="Index">Psikolog Randevuları</a></li>
+                                    <li><a class="dropdown-item" asp-controller="PsikologRandevu" asp-action="Takvim">Psikolog Takvimi</a></li>
+                                </ul>
+                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Hasta" asp-action="Index">Hasta Listesi</a>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Randevu" asp-action="Index">Doktor Randevuları</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="PsikologRandevu" asp-action="Index">Psikolog Randevuları</a>
-                            </li>
-                           
-                            @if (User.IsInRole("Yönetici"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Kullanici" asp-action="Index">Kullanıcı Yönetimi</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Doktor" asp-action="Index">Doktor Yönetimi</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Psikolog" asp-action="Index">Psikolog Yönetimi</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="TestYonetim" asp-action="Index">Test Yönetimi</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="OlcekYonetim" asp-action="Index">Ölçek Yönetimi</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="TaniYonetim" asp-action="Index">Tanı Yönetimi</a>
-                                </li>
-                            }
                             @if (User.IsInRole("Doktor"))
                             {
                                 <li class="nav-item">
@@ -69,6 +54,30 @@
                                     <a class="nav-link text-dark" asp-controller="PsikologPaneli" asp-action="Index">Psikolog Panelim</a>
                                 </li>
                             }
+
+                            @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                        Yönetim
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Doktor" asp-action="Index">Doktor Listesi</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Psikolog" asp-action="Index">Psikolog Listesi</a></li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li><a class="dropdown-item" asp-controller="TaniYonetim" asp-action="Index">Tanı Yönetimi</a></li>
+                                        <li><a class="dropdown-item" asp-controller="TestYonetim" asp-action="Index">Test Yönetimi</a></li>
+                                        <li><a class="dropdown-item" asp-controller="OlcekYonetim" asp-action="Index">Ölçek Yönetimi</a></li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        
+                                        @if (User.IsInRole("Yönetici"))
+                                        {
+                                            <li><a class="dropdown-item" asp-controller="Kullanici" asp-action="Index">Kullanıcı Yönetimi</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            
                         }
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {

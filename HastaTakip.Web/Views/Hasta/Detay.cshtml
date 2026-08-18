@@ -169,6 +169,7 @@
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
             <a asp-controller="Tani" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tanı Ekle</a>
+            
         }
 
         @if (tanilar.Count == 0)
