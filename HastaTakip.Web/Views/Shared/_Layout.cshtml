@@ -42,10 +42,19 @@
                                     <a class="nav-link text-dark" asp-controller="Kullanici" asp-action="Index">Kullanıcı Yönetimi</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Doktor" asp-action="Index">Doktor Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Psikolog" asp-action="Index">Psikolog Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="TestYonetim" asp-action="Index">Test Yönetimi</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="OlcekYonetim" asp-action="Index">Ölçek Yönetimi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="TaniYonetim" asp-action="Index">Tanı Yönetimi</a>
                                 </li>
                             }
                             @if (User.IsInRole("Doktor"))
@@ -54,9 +63,14 @@
                                     <a class="nav-link text-dark" asp-controller="DoktorPaneli" asp-action="Index">Doktor Panelim</a>
                                 </li>
                             }
-
+                            @if (User.IsInRole("Psikolog"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="PsikologPaneli" asp-action="Index">Psikolog Panelim</a>
+                                </li>
+                            }
                         }
-                        @if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter") || User.IsInRole("Doktor"))
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Istatistikler" asp-action="Index">İstatistikler</a>

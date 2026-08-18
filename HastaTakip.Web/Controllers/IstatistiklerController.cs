@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HastaTakip.Web.Controllers
 {
-    [Authorize(Roles = "Yönetici,Sekreter")]
+    [Authorize]
     public class IstatistiklerController : Controller
     {
         private readonly IstatistikBusiness _istatistikBusiness;
