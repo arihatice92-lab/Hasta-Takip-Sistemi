@@ -160,6 +160,27 @@ namespace HastaTakip.DataAccess
             return liste;
         }
 
+        public bool HastaGelecekRandevusuVarMi(string hastaTC)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_HastaPsikologGelecekRandevuKontrol", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@hastaTC", hastaTC);
+            connection.Open();
+            var sonuc = command.ExecuteScalar();
+            return sonuc != null && (int)sonuc > 0;
+        }
+
+        public DateTime? HastaSonGelmediTarihi(string hastaTC)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_HastaPsikologSonGelmediTarihi", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@hastaTC", hastaTC);
+            connection.Open();
+            var sonuc = command.ExecuteScalar();
+            return sonuc == null || sonuc == DBNull.Value ? null : (DateTime)sonuc;
+        }
         private PsikologRandevuTarihi MapToRandevu(SqlDataReader reader)
         {
             return new PsikologRandevuTarihi

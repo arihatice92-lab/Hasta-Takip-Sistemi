@@ -186,6 +186,28 @@ namespace HastaTakip.DataAccess
             connection.Open();
             command.ExecuteNonQuery();
         }
+
+        public bool HastaGelecekRandevusuVarMi(string hastaTC)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_HastaGelecekRandevuKontrol", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@hastaTC", hastaTC);
+            connection.Open();
+            var sonuc = command.ExecuteScalar();
+            return sonuc != null && (int)sonuc > 0;
+        }
+
+        public DateTime? HastaSonGelmediTarihi(string hastaTC)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_HastaSonGelmediTarihi", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@hastaTC", hastaTC);
+            connection.Open();
+            var sonuc = command.ExecuteScalar();
+            return sonuc == null || sonuc == DBNull.Value ? null : (DateTime)sonuc;
+        }
         private RandevuTarihi MapToRandevu(SqlDataReader reader)
         {
             return new RandevuTarihi

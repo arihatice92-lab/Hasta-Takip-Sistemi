@@ -19,6 +19,21 @@ namespace HastaTakip.Business
                 throw new Exception("Geçmiş bir tarihe randevu oluşturulamaz.");
             }
 
+            if (_dal.HastaGelecekRandevusuVarMi(hastaTC))
+            {
+                throw new Exception("Bu hastanın zaten planlanmış, gelecek tarihli bir psikolog randevusu bulunuyor. Yeni randevu almadan önce mevcut randevunun tamamlanması, iptal edilmesi ya da gerçekleşmiş olması gerekir.");
+            }
+
+            var sonGelmediTarihi = _dal.HastaSonGelmediTarihi(hastaTC);
+            if (sonGelmediTarihi.HasValue)
+            {
+                var yasakBitisTarihi = sonGelmediTarihi.Value.AddDays(14);
+                if (tarih.Date < yasakBitisTarihi.Date)
+                {
+                    throw new Exception($"Bu hasta {sonGelmediTarihi.Value:dd.MM.yyyy} tarihli psikolog randevusuna gelmediği için {yasakBitisTarihi:dd.MM.yyyy} tarihine kadar yeni randevu alamaz.");
+                }
+            }
+
             try
             {
                 return _dal.RandevuOlustur(hastaTC, psikologID, saatID, tarih);

@@ -22,6 +22,21 @@ namespace HastaTakip.Business
                 throw new Exception("Geçmiş bir tarihe randevu oluşturulamaz.");
             }
 
+            if (_randevuDal.HastaGelecekRandevusuVarMi(hastaTC))
+            {
+                throw new Exception("Bu hastanın zaten planlanmış, gelecek tarihli bir randevusu bulunuyor. Yeni randevu almadan önce mevcut randevunun tamamlanması, iptal edilmesi ya da gerçekleşmiş olması gerekir.");
+            }
+
+            var sonGelmediTarihi = _randevuDal.HastaSonGelmediTarihi(hastaTC);
+            if (sonGelmediTarihi.HasValue)
+            {
+                var yasakBitisTarihi = sonGelmediTarihi.Value.AddDays(14);
+                if (tarih.Date < yasakBitisTarihi.Date)
+                {
+                    throw new Exception($"Bu hasta {sonGelmediTarihi.Value:dd.MM.yyyy} tarihli randevusuna gelmediği için {yasakBitisTarihi:dd.MM.yyyy} tarihine kadar yeni randevu alamaz.");
+                }
+            }
+
             try
             {
                 return _randevuDal.RandevuOlustur(hastaTC, doktorID, saatID, tarih);
