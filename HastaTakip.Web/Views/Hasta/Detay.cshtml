@@ -716,7 +716,7 @@
                                         _ => "bg-primary"
                                     };
                                 }
-                                <span class="badge @renk">@randevu.RandevuDurum</span>
+                                <span class="badge @renk text-center" style="width: 100px;">@randevu.RandevuDurum</span>
                             </td>
                         </tr>
                     }
@@ -746,16 +746,18 @@
                             <td>@pr.RandevuTarih.ToString("dd.MM.yyyy")</td>
                             <td>@(psikologSaatSozlugu.TryGetValue(pr.SaatID, out var s) ? s.RandevuBaslangicSaat.ToString(@"hh\:mm") : "-")</td>
                             <td>@(psikologSozlugu.TryGetValue(pr.PsikologID, out var p) ? $"{p.PsikologAd} {p.PsikologSoyad}" : "-")</td>
-                            @{
+                            <td>
+                                
+                                @{
                                 var prRenk = pr.RandevuDurum switch
                                 {
                                     "Tamamlandı" => "bg-success",
                                     "İptal" => "bg-secondary",
                                     "Gelmedi" => "bg-danger",
                                     _ => "bg-primary"
-                                };
-                            }
-                            <td><span class="badge @prRenk">@pr.RandevuDurum</span></td>
+                                };                            
+                                }
+                            <span class="badge @prRenk" style="width: 80px;">@pr.RandevuDurum</span></td>
                         </tr>
                     }
                 </tbody>

@@ -44,6 +44,7 @@
                         "Gelmedi" => "bg-danger",
                         _ => "bg-primary"
                     };
+                    
 
                     <div class="list-group-item @(aktifMi ? "active" : "")">
                         <a asp-action="Index" asp-route-hastaTC="@randevu.HastaTC" class="d-block text-decoration-none @(aktifMi ? "text-white" : "text-dark")">

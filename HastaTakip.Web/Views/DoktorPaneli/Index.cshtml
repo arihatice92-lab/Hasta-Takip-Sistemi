@@ -44,7 +44,7 @@
                         "Gelmedi" => "bg-danger",
                         _ => "bg-primary"
                     };
-
+                    <span class="badge @renk text-center" style="width: 100px;">@randevu.RandevuDurum</span>
                     <div class="list-group-item @(aktifMi ? "active" : "")">
                         <a asp-action="Index" asp-route-hastaTC="@randevu.HastaTC" class="d-block text-decoration-none @(aktifMi ? "text-white" : "text-dark")">
                             <div class="d-flex justify-content-between align-items-center">
