@@ -36,6 +36,8 @@ namespace HastaTakip.Web.Controllers
         private readonly PsikologRandevuBusiness _psikologRandevuBusiness;
         private readonly PsikologRandevuSaatBusiness _psikologRandevuSaatBusiness;
 
+        private readonly KayitDosyasiBusiness _kayitDosyasiBusiness;
+
         public HastaController(
             HastaBusiness hastaBusiness, 
             RandevuBusiness randevuBusiness,
@@ -59,7 +61,8 @@ namespace HastaTakip.Web.Controllers
             GelisimselOykuBusiness gelisimselOykuBusiness,
             KayitNotuBusiness kayitNotuBusiness,
             PsikologRandevuBusiness psikologRandevuBusiness,
-            PsikologRandevuSaatBusiness psikologRandevuSaatBusiness
+            PsikologRandevuSaatBusiness psikologRandevuSaatBusiness,
+            KayitDosyasiBusiness kayitDosyasiBusiness
             )
         {
             _hastaBusiness = hastaBusiness;
@@ -85,6 +88,7 @@ namespace HastaTakip.Web.Controllers
             _kayitNotuBusiness = kayitNotuBusiness;
             _psikologRandevuBusiness = psikologRandevuBusiness;
             _psikologRandevuSaatBusiness = psikologRandevuSaatBusiness;
+            _kayitDosyasiBusiness = kayitDosyasiBusiness;
         }
         public IActionResult Index(
             string? ara,
@@ -125,6 +129,24 @@ namespace HastaTakip.Web.Controllers
         // GET: /Hasta/Detay/12345678901
         public IActionResult Detay(Guid? hastaGuid, string? tc, int? aktifRandevuTarihID = null, string? tab = null)
         {
+
+            // Eğer TC ile geldiyse (eski link/form), GUID'e çevirip adres çubuğunu güncelle
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(tc))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(tc);
+                if (hastaGecici == null)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(Detay), new
+                {
+                    hastaGuid = hastaGecici.HastaGuid,
+                    aktifRandevuTarihID,
+                    tab
+                });
+            }
+
             string? hastaTC = tc;
 
             if (hastaGuid.HasValue)

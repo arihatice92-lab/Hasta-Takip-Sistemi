@@ -42,10 +42,27 @@ namespace HastaTakip.Web.Controllers
             DateTime? baslangicTarihi = null,
             DateTime? bitisTarihi = null,
             short? doktorID = null,
+            Guid? hastaGuid = null,
             string? hastaTC = null,
             string? durum = null,
             int sayfa = 1)
         {
+
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(hastaTC))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(hastaTC);
+                if (hastaGecici != null)
+                {
+                    hastaTC = null; // eski parametreyi temizliyoruz
+                    return RedirectToAction(nameof(Index), new { ara, siralama, baslangicTarihi, bitisTarihi, doktorID, hastaGuid = hastaGecici.HastaGuid, durum, sayfa });
+                }
+            }
+
+            if (hastaGuid.HasValue)
+            {
+                var hasta = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+                hastaTC = hasta?.HastaTC;
+            }
             const int sayfaBoyutu = 10;
 
             var (randevular, toplamKayit) = _randevuBusiness.RandevuListele(
@@ -60,7 +77,7 @@ namespace HastaTakip.Web.Controllers
             ViewBag.Hastalar = hastalar;
             ViewBag.Doktorlar = doktorlar;
             ViewBag.Saatler = saatler;
-
+            ViewBag.HastaGuid = hastaGuid;
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             ViewBag.Ara = ara;
             ViewBag.Siralama = siralama;

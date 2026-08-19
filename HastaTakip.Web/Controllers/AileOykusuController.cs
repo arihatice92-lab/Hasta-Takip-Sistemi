@@ -10,11 +10,33 @@ namespace HastaTakip.Web.Controllers
     public class AileOykusuController : Controller
     {
         private readonly AileOykusuBusiness _business;
-        public AileOykusuController(AileOykusuBusiness business) { _business = business; }
 
-        public IActionResult Ekle(string hastaTC)
+        private readonly HastaBusiness _hastaBusiness;
+        public AileOykusuController(
+            AileOykusuBusiness business, 
+            HastaBusiness hastaBusiness) 
+        {   _business = business; 
+            _hastaBusiness = hastaBusiness;
+        
+        }
+
+        public IActionResult Ekle(Guid? hastaGuid, string? hastaTC)
         {
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(hastaTC))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(hastaTC);
+                if (hastaGecici == null) return NotFound();
+
+                return RedirectToAction(nameof(Ekle), new { hastaGuid = hastaGecici.HastaGuid });
+            }
+
+            if (!hastaGuid.HasValue) return NotFound();
+
+            var hasta = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+            if (hasta == null) return NotFound();
+
             ViewBag.HastaTC = hastaTC;
+            ViewBag.HastaGuid = hastaGuid.Value;
             return View();
         }
 

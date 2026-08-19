@@ -20,17 +20,21 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">Ana Sayfa</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Hasta" asp-action="Index">Hasta Listesi</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
                                     Randevular
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Index">Randevu Listesi</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Index">Doktor Randevuları</a></li>
                                     <li><a class="dropdown-item" asp-controller="Randevu" asp-action="Takvim">Doktor Takvimi</a></li>
                                     <li><hr class="dropdown-divider" /></li>
                                     <li><a class="dropdown-item" asp-controller="PsikologRandevu" asp-action="Index">Psikolog Randevuları</a></li>
@@ -38,9 +42,7 @@
                                 </ul>
                             </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Hasta" asp-action="Index">Hasta Listesi</a>
-                            </li>
+                            
 
                             @if (User.IsInRole("Doktor"))
                             {

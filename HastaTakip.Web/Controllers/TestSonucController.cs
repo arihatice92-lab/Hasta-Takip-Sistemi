@@ -16,13 +16,16 @@ namespace HastaTakip.Web.Controllers
         private readonly AltKumeSonucBusiness _altKumeSonucBusiness;
         private readonly KullaniciBusiness _kullaniciBusiness;
 
+        private readonly HastaBusiness _hastaBusiness;
+
         public TestSonucController(
             HastaTestSonucBusiness testSonucBusiness,
             TestBusiness testBusiness,
             PsikologBusiness psikologBusiness,
             TestAltKumeBusiness testAltKumeBusiness,
             AltKumeSonucBusiness altKumeSonucBusiness,
-            KullaniciBusiness kullaniciBusiness)
+            KullaniciBusiness kullaniciBusiness,
+            HastaBusiness hastaBusiness)
         {
             _testSonucBusiness = testSonucBusiness;
             _testBusiness = testBusiness;
@@ -30,6 +33,7 @@ namespace HastaTakip.Web.Controllers
             _testAltKumeBusiness = testAltKumeBusiness;
             _altKumeSonucBusiness = altKumeSonucBusiness;
             _kullaniciBusiness = kullaniciBusiness;
+            _hastaBusiness = hastaBusiness;
         }
         private bool BuKayitIcinIslemYapabilirMi(byte psikologID)
         {
@@ -47,9 +51,23 @@ namespace HastaTakip.Web.Controllers
             var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
             return kullanici?.PsikologID == psikologID;
         }
-        public IActionResult Ekle(string hastaTC)
+        public IActionResult Ekle(Guid? hastaGuid, string? hastaTC)
         {
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(hastaTC))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(hastaTC);
+                if (hastaGecici == null) return NotFound();
+
+                return RedirectToAction(nameof(Ekle), new { hastaGuid = hastaGecici.HastaGuid });
+            }
+
+            if (!hastaGuid.HasValue) return NotFound();
+
+            var hasta = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+            if (hasta == null) return NotFound();
+
             ViewBag.HastaTC = hastaTC;
+            ViewBag.HastaGuid = hastaGuid.Value;
             ViewBag.TestListesi = _testBusiness.TestleriListele();
             ViewBag.PsikologListesi = _psikologBusiness.PsikologlariListele();
             ViewBag.TumAltKumeler = _testAltKumeBusiness.TumAltKumeleriListele();

@@ -1,5 +1,5 @@
 ﻿@model HastaTakip.Entities.Hasta
-
+@inject HastaTakip.Business.KayitDosyasiBusiness KayitDosyasiBusiness
 @{
     ViewData["Title"] = "Hasta Detayı";
 }
@@ -168,7 +168,7 @@
         <h5>Tanılar</h5>
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="Tani" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tanı Ekle</a>
+            <a asp-controller="Tani" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Tanı Ekle</a>
             
         }
 
@@ -206,7 +206,7 @@
         <h5>Tedaviler</h5>
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="Tedavi" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Tedavi Ekle</a>
+            <a asp-controller="Tedavi" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Tedavi Ekle</a>
         }
         @if (tedaviler.Count == 0)
         {
@@ -254,7 +254,7 @@
     <h5>Test Sonuçları</h5>
     @if (User.IsInRole("Yönetici") || User.IsInRole("Psikolog"))
         {
-            <a asp-controller="TestSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Test Sonucu Ekle</a>
+            <a asp-controller="TestSonuc" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Test Sonucu Ekle</a>
         }
         @if (testSonuclari.Count == 0)
     {
@@ -330,7 +330,7 @@
    
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="OlcekSonuc" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Ölçek Sonucu Ekle</a>
+            <a asp-controller="OlcekSonuc" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Ölçek Sonucu Ekle</a>
         }
 
         @if (olcekSonuclari.Count == 0)
@@ -370,6 +370,49 @@
                                     
                             </td>
                         </tr>
+
+                            <tr>
+                                <td></td>
+                                <td colspan="6">
+                                    @{
+                                        var osDosyalari = KayitDosyasiBusiness.DosyalariListele("OlcekSonuc", os.OlcekSonucID);
+                                        var donusUrlDosya = Url.Action("Detay", "Hasta", new { hastaGuid = Model.HastaGuid, tab = "testOlcek" });
+                                    }
+                                    <div class="ps-3 border-start">
+                                        <strong class="small">Ekli Dosyalar</strong>
+                                        <ul class="list-unstyled small">
+                                            @foreach (var d in osDosyalari)
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("Goster", "KayitDosyasi", new { dosyaID = d.DosyaID })" target="_blank">@d.DosyaAdi</a>
+                                                    <a href="@Url.Action("Indir", "KayitDosyasi", new { dosyaID = d.DosyaID })" class="ms-1" title="İndir">⬇</a>
+                                                    @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
+                                                    {
+                                                        <form asp-controller="KayitDosyasi" asp-action="Sil" method="post" class="d-inline">
+                                                            <input type="hidden" name="dosyaID" value="@d.DosyaID" />
+                                                            <input type="hidden" name="donusUrl" value="@donusUrlDosya" />
+                                                            <button type="submit" class="btn btn-sm btn-link text-danger p-0"
+                                                                    onclick="return confirm('Bu dosyayı silmek istediğinize emin misiniz?');">
+                                                                Sil
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+
+                                        <form asp-controller="KayitDosyasi" asp-action="Yukle" method="post" enctype="multipart/form-data" class="d-flex gap-2">
+                                            <input type="hidden" name="kayitTuru" value="OlcekSonuc" />
+                                            <input type="hidden" name="kayitID" value="@os.OlcekSonucID" />
+                                            <input type="hidden" name="donusUrl" value="@donusUrlDosya" />
+                                            <input type="file" name="dosya" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" required />
+                                            <input type="text" name="gorunenAd" class="form-control form-control-sm" placeholder="Görünen ad (opsiyonel)" />
+                                            <button type="submit" class="btn btn-sm btn-primary">Yükle</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        
                     }
                 </tbody>
             </table>
@@ -396,7 +439,7 @@
         <h5>Aile Bilgileri</h5>
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="AileBilgileri" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Bilgisi Ekle</a>
+            <a asp-controller="AileBilgileri" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Yeni Aile Bilgisi Ekle</a>
         }
 
         @if (aileBilgileriListesi.Count == 0)
@@ -504,7 +547,7 @@
         <h5>Aile Öyküsü</h5>
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="AileOykusu" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Aile Öyküsü Ekle</a>
+            <a asp-controller="AileOykusu" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Yeni Aile Öyküsü Ekle</a>
         }
 
         @if (aileOykusuListesi.Count == 0)
@@ -553,7 +596,7 @@
         <h5>Gelişimsel Öykü</h5>
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="GelisimselOyku" asp-action="Ekle" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">Yeni Gelişimsel Öykü Ekle</a>
+            <a asp-controller="GelisimselOyku" asp-action="Ekle" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">Yeni Gelişimsel Öykü Ekle</a>
         }
 
         @if (gelisimselOykuListesi.Count == 0)
@@ -758,7 +801,7 @@
                                     _ => "bg-primary"
                                 };                            
                                 }
-                            <span class="badge @prRenk" style="width: 80px;">@pr.RandevuDurum</span></td>
+                            <span class="badge @prRenk" style="width: 100px;">@pr.RandevuDurum</span></td>
                         </tr>
                     }
                 </tbody>
@@ -786,7 +829,7 @@
 
         @if (User.IsInRole("Yönetici") || User.IsInRole("Doktor"))
         {
-            <a asp-controller="Randevu" asp-action="Index" asp-route-hastaTC="@Model.HastaTC" class="btn btn-sm btn-primary mb-2">
+            <a asp-controller="Randevu" asp-action="Index" asp-route-hastaGuid="@Model.HastaGuid" class="btn btn-sm btn-primary mb-2">
                 Randevu Notu Ekle
             </a>
         }

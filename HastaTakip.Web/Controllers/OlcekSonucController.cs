@@ -13,12 +13,15 @@ namespace HastaTakip.Web.Controllers
         private readonly DoktorBusiness _doktorBusiness;
         private readonly KullaniciBusiness _kullaniciBusiness;
 
-        public OlcekSonucController(HastaOlcekSonucBusiness olcekSonucBusiness, OlcekBusiness olcekBusiness, DoktorBusiness doktorBusiness, KullaniciBusiness kullaniciBusiness)
+        private readonly HastaBusiness _hastaBusiness;
+
+        public OlcekSonucController(HastaOlcekSonucBusiness olcekSonucBusiness, OlcekBusiness olcekBusiness, DoktorBusiness doktorBusiness, KullaniciBusiness kullaniciBusiness, HastaBusiness hastaBusiness)
         {
             _olcekSonucBusiness = olcekSonucBusiness;
             _olcekBusiness = olcekBusiness;
             _doktorBusiness = doktorBusiness;
             _kullaniciBusiness = kullaniciBusiness;
+            _hastaBusiness = hastaBusiness;
         }
         private bool BuKayitIcinIslemYapabilirMi(short doktorID)
         {
@@ -36,9 +39,23 @@ namespace HastaTakip.Web.Controllers
             var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
             return kullanici?.DoktorID == doktorID;
         }
-        public IActionResult Ekle(string hastaTC)
+        public IActionResult Ekle(Guid? hastaGuid, string? hastaTC)
         {
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(hastaTC))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(hastaTC);
+                if (hastaGecici == null) return NotFound();
+
+                return RedirectToAction(nameof(Ekle), new { hastaGuid = hastaGecici.HastaGuid });
+            }
+
+            if (!hastaGuid.HasValue) return NotFound();
+
+            var hasta = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+            if (hasta == null) return NotFound();
+
             ViewBag.HastaTC = hastaTC;
+            ViewBag.HastaGuid = hastaGuid;
             ViewBag.OlcekListesi = _olcekBusiness.OlcekleriListele();
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             return View();

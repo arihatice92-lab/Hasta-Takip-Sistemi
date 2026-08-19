@@ -10,11 +10,32 @@ namespace HastaTakip.Web.Controllers
     public class GelisimselOykuController : Controller
     {
         private readonly GelisimselOykuBusiness _business;
-        public GelisimselOykuController(GelisimselOykuBusiness business) { _business = business; }
+        private readonly HastaBusiness _hastaBusiness;
+        public GelisimselOykuController(
+            GelisimselOykuBusiness business,
+            HastaBusiness hastaBusiness) 
+        {   _business = business; 
+            _hastaBusiness = hastaBusiness;
+        
+        }
 
-        public IActionResult Ekle(string hastaTC)
+        public IActionResult Ekle(Guid? hastaGuid, string? hastaTC)
         {
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(hastaTC))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(hastaTC);
+                if (hastaGecici == null) return NotFound();
+
+                return RedirectToAction(nameof(Ekle), new { hastaGuid = hastaGecici.HastaGuid });
+            }
+
+            if (!hastaGuid.HasValue) return NotFound();
+
+            var hasta = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+            if (hasta == null) return NotFound();
+
             ViewBag.HastaTC = hastaTC;
+            ViewBag.HastaGuid = hastaGuid.Value;
             return View();
         }
 

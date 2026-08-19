@@ -61,7 +61,7 @@
     <div id="altKumeAlanlari" class="mb-3"></div>
 
     <button type="submit" class="btn btn-primary">Kaydet</button>
-    <a asp-controller="Hasta" asp-action="Detay" asp-route-tc="@ViewBag.HastaTC" asp-route-tab="testOlcek" class="btn btn-secondary">İptal</a>
+    <a asp-controller="Hasta" asp-action="Detay" asp-route-hastaGuid="@ViewBag.HastaGuid" asp-route-tab="testOlcek" class="btn btn-secondary">İptal</a>
 </form>
 
 @section Scripts {

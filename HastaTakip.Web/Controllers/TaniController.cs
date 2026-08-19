@@ -12,15 +12,18 @@ namespace HastaTakip.Web.Controllers
         private readonly TaniBusiness _taniBusiness;
         private readonly DoktorBusiness _doktorBusiness;
         private readonly KullaniciBusiness _kullaniciBusiness;
+
+        private readonly HastaBusiness _hastaBusiness; 
         
 
 
-        public TaniController(HastaTaniBusiness hastaTaniBusiness, TaniBusiness taniBusiness, DoktorBusiness doktorBusiness, KullaniciBusiness kullaniciBusiness)
+        public TaniController(HastaTaniBusiness hastaTaniBusiness, TaniBusiness taniBusiness, DoktorBusiness doktorBusiness, KullaniciBusiness kullaniciBusiness, HastaBusiness hastaBusiness)
         {
             _hastaTaniBusiness = hastaTaniBusiness;
             _taniBusiness = taniBusiness;
             _doktorBusiness = doktorBusiness;
             _kullaniciBusiness = kullaniciBusiness;
+            _hastaBusiness = hastaBusiness;
         }
         private bool BuKayitIcinIslemYapabilirMi(short doktorID)
         {
@@ -40,9 +43,24 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Tani/Ekle?hastaTC=...
-        public IActionResult Ekle(string hastaTC)
+        public IActionResult Ekle(Guid? hastaGuid, string? hastaTC)
         {
+
+            if (!hastaGuid.HasValue && !string.IsNullOrWhiteSpace(hastaTC))
+            {
+                var hastaGecici = _hastaBusiness.HastaGetir(hastaTC);
+                if (hastaGecici == null) return NotFound();
+
+                return RedirectToAction(nameof(Ekle), new { hastaGuid = hastaGecici.HastaGuid });
+            }
+
+            if (!hastaGuid.HasValue) return NotFound();
+
+            var hasta = _hastaBusiness.HastaGetirById(hastaGuid.Value);
+            if (hasta == null) return NotFound();
+
             ViewBag.HastaTC = hastaTC;
+            ViewBag.HastaGuid = hastaGuid.Value;
             ViewBag.TaniListesi = _taniBusiness.TanilariListele();
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             if (User.IsInRole("Doktor"))

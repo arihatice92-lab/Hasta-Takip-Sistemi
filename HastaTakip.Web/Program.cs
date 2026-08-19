@@ -86,6 +86,9 @@ builder.Services.AddScoped<IstatistikBusiness>();
 builder.Services.AddScoped<DoktorIzniDal>();
 builder.Services.AddScoped<DoktorIzniBusiness>();
 
+builder.Services.AddScoped<KayitDosyasiDal>();
+builder.Services.AddScoped<KayitDosyasiBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -96,6 +99,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 var app = builder.Build();
+
+// Dosya klasörünü, wwwroot DIŞINDA, uygulama kök dizininde oluşturuyoruz
+var dosyaKlasoruAdi = builder.Configuration["DosyaAyarlari:KayitDosyalariKlasoru"] ?? "KayitDosyalari";
+var dosyaKlasoruYolu = Path.Combine(app.Environment.ContentRootPath, dosyaKlasoruAdi);
+if (!Directory.Exists(dosyaKlasoruYolu))
+{
+    Directory.CreateDirectory(dosyaKlasoruYolu);
+}
 
 // Configure the HTTP request pipeline."geliştirirken bana her şeyi göster, ama gerçek kullanıcılara teknik detayları gösterme" diyen bir güvenlik/kullanılabilirlik ayrımı
 if (!app.Environment.IsDevelopment())
