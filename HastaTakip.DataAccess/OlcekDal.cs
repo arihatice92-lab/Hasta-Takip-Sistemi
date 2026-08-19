@@ -27,7 +27,8 @@ namespace HastaTakip.DataAccess
                 {
                     OlcekID = (byte)reader["olcekID"],
                     OlcekAdi = reader["olcekAdi"].ToString()!,
-                    OlcekBilgi = reader["olcekBilgi"] == DBNull.Value ? null : reader["olcekBilgi"].ToString()
+                    OlcekBilgi = reader["olcekBilgi"] == DBNull.Value ? null : reader["olcekBilgi"].ToString(),
+                    OlcekAktif = (bool)reader["olcekAktif"]
                 });
             }
             return olcekler;
@@ -64,7 +65,29 @@ namespace HastaTakip.DataAccess
             }
             return null;
         }
-
+        public List<Olcek> OlcekAra(string? ara, string aktif)
+        {
+            var liste = new List<Olcek>();
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_OlcekAra", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@Ara",
+                string.IsNullOrWhiteSpace(ara) ? DBNull.Value : (object)ara);
+            command.Parameters.AddWithValue("@Aktif", aktif);
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                liste.Add(new Olcek
+                {
+                    OlcekID = (byte)reader["olcekID"],
+                    OlcekAdi = reader["olcekAdi"].ToString()!,
+                    OlcekBilgi = reader["olcekBilgi"] == DBNull.Value ? null : reader["olcekBilgi"].ToString(),
+                    OlcekAktif = (bool)reader["olcekAktif"]
+                });
+            }
+            return liste;
+        }
         public void OlcekGuncelle(Olcek olcek)
         {
             using var connection = _dbHelper.GetConnection();
@@ -82,6 +105,26 @@ namespace HastaTakip.DataAccess
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_OlcekSil", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@olcekID", olcekID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        public void OlcekPasifeAl(byte olcekID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_OlcekPasifeAl", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@olcekID", olcekID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        public void OlcekAktifEt(byte olcekID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_OlcekAktifEt", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@olcekID", olcekID);
             connection.Open();

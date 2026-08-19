@@ -67,9 +67,32 @@ namespace HastaTakip.Business
             _kullaniciDal.SifreGuncelle(kullaniciID, yeniHash);
         }
 
+        private void RolBaglantiKontrolEt(Kullanici kullanici)
+        {
+            // Rol ID'lerinizin sabit değerleri: 1=Yönetici, 2=Doktor, 3=Sekreter, 4=Psikolog
+            if (kullanici.RolID == 2 && kullanici.PsikologID.HasValue)
+            {
+                throw new Exception("Doktor rolündeki bir kullanıcı, Psikolog ile eşleştirilemez.");
+            }
 
+            if (kullanici.RolID == 4 && kullanici.DoktorID.HasValue)
+            {
+                throw new Exception("Psikolog rolündeki bir kullanıcı, Doktor ile eşleştirilemez.");
+            }
+
+            if (kullanici.RolID != 2 && kullanici.DoktorID.HasValue)
+            {
+                throw new Exception("Sadece Doktor rolündeki kullanıcılar bir doktor kaydına bağlanabilir.");
+            }
+
+            if (kullanici.RolID != 4 && kullanici.PsikologID.HasValue)
+            {
+                throw new Exception("Sadece Psikolog rolündeki kullanıcılar bir psikolog kaydına bağlanabilir.");
+            }
+        }
         public void KullaniciEkle(Kullanici kullanici, string sifre)
         {
+            RolBaglantiKontrolEt(kullanici);
             SifreKurallariniKontrolEt(sifre);
             kullanici.SifreHash = BCrypt.Net.BCrypt.HashPassword(sifre);
             _kullaniciDal.KullaniciEkle(kullanici);
@@ -111,6 +134,10 @@ namespace HastaTakip.Business
             string yeniHash = BCrypt.Net.BCrypt.HashPassword(yeniSifre);
             _kullaniciDal.SifreGuncelle(kullaniciID, yeniHash);
         }
-        public void KullaniciGuncelle(Kullanici kullanici) => _kullaniciDal.KullaniciGuncelle(kullanici);
+        public void KullaniciGuncelle(Kullanici kullanici)
+        {
+            RolBaglantiKontrolEt(kullanici);
+            _kullaniciDal.KullaniciGuncelle(kullanici);
+        }
     }
 }

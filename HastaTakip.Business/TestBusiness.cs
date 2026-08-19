@@ -36,5 +36,8 @@ namespace HastaTakip.Business
                 throw new Exception("Bu test daha önce bir hastaya uygulanmış olduğu için silinemez.");
             }
         }
+
+        public void TestPasifeAl(byte testID) => _testDal.TestPasifeAl(testID);
+        public void TestAktifEt(byte testID) => _testDal.TestAktifEt(testID);
     }
 }

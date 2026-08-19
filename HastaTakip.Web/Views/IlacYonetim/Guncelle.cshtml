@@ -1,0 +1,23 @@
+﻿@model HastaTakip.Entities.Ilac
+
+@{
+    ViewData["Title"] = "İlaç Güncelle";
+}
+
+<h2>İlaç Güncelle</h2>
+
+<form asp-action="Guncelle" method="post">
+    <input type="hidden" asp-for="IlacID" />
+
+    <div class="mb-3">
+        <label asp-for="IlacAdi" class="form-label">İlaç Adı</label>
+        <input asp-for="IlacAdi" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label asp-for="IlacEtkenMadde" class="form-label">Etken Madde</label>
+        <input asp-for="IlacEtkenMadde" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

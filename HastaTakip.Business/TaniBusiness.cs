@@ -1,5 +1,6 @@
-﻿using System;
+﻿using HastaTakip.Entities;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace HastaTakip.Business
 {
@@ -20,6 +21,10 @@ namespace HastaTakip.Business
         public HastaTakip.Entities.Tani? TaniGetir(short taniID) => _taniDal.TaniGetir(taniID);
 
         public void TaniGuncelle(HastaTakip.Entities.Tani tani) => _taniDal.TaniGuncelle(tani);
+
+        public List<Tani> TaniAra(string? ara, string aktif) => _taniDal.TaniAra(ara, aktif);
+        public void TaniPasifeAl(short taniID) => _taniDal.TaniPasifeAl(taniID);
+        public void TaniAktifEt(short taniID) => _taniDal.TaniAktifEt(taniID);
 
         public void TaniSil(short taniID)
         {

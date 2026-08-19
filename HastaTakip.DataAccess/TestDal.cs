@@ -28,7 +28,8 @@ namespace HastaTakip.DataAccess
                 {
                     TestID = (byte)reader["testID"],
                     TestAdi = reader["testAdi"].ToString()!,
-                    TestBilgi = reader["testBilgi"] == DBNull.Value ? null : reader["testBilgi"].ToString()
+                    TestBilgi = reader["testBilgi"] == DBNull.Value ? null : reader["testBilgi"].ToString(),
+                    TestAktif = (bool)reader["testAktif"]
                 });
             }
             return testler;
@@ -83,6 +84,26 @@ namespace HastaTakip.DataAccess
         {
             using var connection = _dbHelper.GetConnection();
             using var command = new SqlCommand("sp_TestSil", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@testID", testID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        public void TestPasifeAl(byte testID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_TestPasifeAl", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@testID", testID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        public void TestAktifEt(byte testID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_TestAktifEt", connection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@testID", testID);
             connection.Open();

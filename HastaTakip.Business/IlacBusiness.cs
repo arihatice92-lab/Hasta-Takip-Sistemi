@@ -21,7 +21,11 @@ namespace HastaTakip.Business
             _ilacDal.IlacSil(ilacID);
         }
 
-        public List<Ilac> IlacAra (string? ara){ return _ilacDal.IlacAra(ara); }
-        
+        public List<Ilac> IlacAra (string? ara, string aktif){ return _ilacDal.IlacAra(ara, aktif); }
+        public Ilac? IlacGetir(short ilacID) => _ilacDal.IlacGetir(ilacID);
+        public void IlacGuncelle(Ilac ilac) => _ilacDal.IlacGuncelle(ilac);
+        public void IlacPasifeAl(short ilacID) => _ilacDal.IlacPasifeAl(ilacID);
+        public void IlacAktifEt(short ilacID) => _ilacDal.IlacAktifEt(ilacID);
+
     }
 }

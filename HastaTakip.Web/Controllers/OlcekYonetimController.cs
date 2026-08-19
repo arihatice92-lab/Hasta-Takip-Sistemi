@@ -11,7 +11,13 @@ namespace HastaTakip.Web.Controllers
         private readonly OlcekBusiness _olcekBusiness;
         public OlcekYonetimController(OlcekBusiness olcekBusiness) { _olcekBusiness = olcekBusiness; }
 
-        public IActionResult Index() => View(_olcekBusiness.OlcekleriListele());
+        public IActionResult Index(string? ara, string aktif = "aktif")
+        {
+            ViewBag.Ara = ara;
+            ViewBag.Aktif = aktif;
+            var olcekler = _olcekBusiness.OlcekAra(ara, aktif);
+            return View(olcekler);
+        }
 
         public IActionResult Ekle() => View();
 
@@ -61,6 +67,24 @@ namespace HastaTakip.Web.Controllers
             {
                 TempData["HataMesaji"] = ex.Message;
             }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasifeAl(byte olcekID)
+        {
+            _olcekBusiness.OlcekPasifeAl(olcekID);
+            TempData["BasariMesaji"] = "Ölçek pasife alındı.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AktifEt(byte olcekID)
+        {
+            _olcekBusiness.OlcekAktifEt(olcekID);
+            TempData["BasariMesaji"] = "Ölçek aktife alındı.";
             return RedirectToAction(nameof(Index));
         }
     }

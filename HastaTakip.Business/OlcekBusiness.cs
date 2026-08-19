@@ -19,7 +19,7 @@ namespace HastaTakip.Business
                 throw new Exception("Ölçek adı boş olamaz.");
             _olcekDal.OlcekEkle(olcek);
         }
-
+        public List<Olcek> OlcekAra(string? ara, string aktif) => _olcekDal.OlcekAra(ara, aktif);
         public Olcek? OlcekGetir(byte olcekID) => _olcekDal.OlcekGetir(olcekID);
 
         public void OlcekGuncelle(Olcek olcek) => _olcekDal.OlcekGuncelle(olcek);
@@ -35,5 +35,7 @@ namespace HastaTakip.Business
                 throw new Exception("Bu ölçek daha önce bir hastaya uygulanmış olduğu için silinemez.");
             }
         }
+        public void OlcekPasifeAl(byte olcekID) => _olcekDal.OlcekPasifeAl(olcekID);
+        public void OlcekAktifEt(byte olcekID) => _olcekDal.OlcekAktifEt(olcekID);
     }
 }

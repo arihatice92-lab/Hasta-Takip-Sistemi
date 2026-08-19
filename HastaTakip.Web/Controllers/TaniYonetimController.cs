@@ -11,7 +11,31 @@ namespace HastaTakip.Web.Controllers
         private readonly TaniBusiness _taniBusiness;
         public TaniYonetimController(TaniBusiness taniBusiness) { _taniBusiness = taniBusiness; }
 
-        public IActionResult Index() => View(_taniBusiness.TanilariListele());
+        public IActionResult Index(string? ara, string aktif = "aktif")
+        {
+            ViewBag.Ara = ara;
+            ViewBag.Aktif = aktif;
+            var tanilar = _taniBusiness.TaniAra(ara, aktif);
+            return View(tanilar);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasifeAl(short taniID)
+        {
+            _taniBusiness.TaniPasifeAl(taniID);
+            TempData["BasariMesaji"] = "Tanı pasife alındı.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AktifEt(short taniID)
+        {
+            _taniBusiness.TaniAktifEt(taniID);
+            TempData["BasariMesaji"] = "Tanı aktife alındı.";
+            return RedirectToAction(nameof(Index));
+        }
 
         public IActionResult Ekle() => View();
 

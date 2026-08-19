@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Yeni Kullanıcı Ekle";
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    var psikologlar = (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi;
 }
 
 <h2>Yeni Kullanıcı Ekle</h2>
@@ -36,22 +38,22 @@
             <option value="4">Psikolog</option>
         </select>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Bağlı Doktor <small class="text-muted">(sadece Doktor rolü için)</small></label>
+    <div class="mb-3" id="doktorSeciciAlani">
+        <label class="form-label">Bağlı Doktor</label>
         <select name="DoktorID" class="form-select">
             <option value="">Yok</option>
-            @foreach (var doktor in (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi)
+            @foreach (var doktor in doktorlar)
             {
                 <option value="@doktor.DoktorID">@doktor.DoktorAd @doktor.DoktorSoyad</option>
             }
         </select>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Bağlı Psikolog <small class="text-muted">(sadece Psikolog rolü için)</small></label>
+    <div class="mb-3" id="psikologSeciciAlani">
+        <label class="form-label">Bağlı Psikolog</label>
         <select name="PsikologID" class="form-select">
             <option value="">Yok</option>
-            @foreach (var psikolog in (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi)
+            @foreach (var psikolog in psikologlar)
             {
                 <option value="@psikolog.PsikologID">@psikolog.PsikologAd @psikolog.PsikologSoyad</option>
             }
@@ -61,3 +63,25 @@
     <button type="submit" class="btn btn-primary">Oluştur</button>
     <a asp-action="Index" class="btn btn-secondary">İptal</a>
 </form>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var rolSelect = document.querySelector('select[name="RolID"]');
+            var doktorDiv = document.getElementById('doktorSeciciAlani');
+            var psikologDiv = document.getElementById('psikologSeciciAlani');
+
+            function guncelle() {
+                var rol = rolSelect.value;
+                doktorDiv.style.display = (rol === '2') ? 'block' : 'none';
+                psikologDiv.style.display = (rol === '4') ? 'block' : 'none';
+
+                if (rol !== '2') document.querySelector('select[name="DoktorID"]').value = '';
+                if (rol !== '4') document.querySelector('select[name="PsikologID"]').value = '';
+            }
+
+            rolSelect.addEventListener('change', guncelle);
+            guncelle();
+        });
+    </script>
+}

@@ -9,5 +9,6 @@ namespace HastaTakip.Entities
         public short IlacID { get; set; }
         public string IlacAdi { get; set; } = string.Empty;
         public string IlacEtkenMadde { get; set; } = string.Empty;
+        public bool IlacAktif { get; set; }
     }
 }

@@ -9,5 +9,6 @@ namespace HastaTakip.Entities
         public byte OlcekID { get; set; }
         public string OlcekAdi { get; set; } = string.Empty;
         public string? OlcekBilgi { get; set; }
+        public bool OlcekAktif {  get; set; }
     }
 }

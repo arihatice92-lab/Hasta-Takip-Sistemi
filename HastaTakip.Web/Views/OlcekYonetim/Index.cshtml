@@ -17,28 +17,117 @@
 
 <a asp-action="Ekle" class="btn btn-primary mb-3">Yeni Ölçek Ekle</a>
 
+<!-- Arama ve Filtreleme -->
+<form asp-action="Index" method="get" class="row g-2 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Ölçek Ara</label>
+        <input type="text" name="ara" value="@ViewBag.Ara" class="form-control" placeholder="Ölçek adı..." />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Durum</label>
+        <select name="aktif" class="form-select" onchange="this.form.submit()">
+            <option value="hepsi" selected="@(ViewBag.Aktif == "hepsi")">Tümü</option>
+            <option value="aktif" selected="@(ViewBag.Aktif == "aktif")">Aktif</option>
+            <option value="pasif" selected="@(ViewBag.Aktif == "pasif")">Pasif</option>
+        </select>
+    </div>
+
+    <!-- Butonlar -->
+    <div class="col-md-2 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-primary w-100">
+            Filtrele
+        </button>
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <a asp-action="Index" class="btn btn-secondary w-100">
+            Temizle
+        </a>
+    </div>
+</form>
+
 <table class="table table-striped">
     <thead>
-        <tr><th>Ölçek Adı</th><th>Bilgi</th><th>İşlemler</th></tr>
+        <tr><th style="width: 30%">Ölçek Adı</th><th style="width: 40%">Bilgi</th><th style="width: 10%">Durum</th><th style="width: 20%">İşlemler</th></tr>
     </thead>
     <tbody>
         @foreach (var olcek in Model)
         {
             <tr>
                 <td>@olcek.OlcekAdi</td>
-                <td>@(olcek.OlcekBilgi ?? "-")</td>
+                <td style="max-width: 250px;">
+                    @{
+                        var kisaMetin = olcek.OlcekBilgi;
+                        var kisaltildiMi = false;
+                        if (!string.IsNullOrEmpty(kisaMetin) && kisaMetin.Length > 60)
+                        {
+                            kisaMetin = kisaMetin.Substring(0, 60) + "...";
+                            kisaltildiMi = true;
+                        }
+                    }
+                    @if (kisaltildiMi)
+                    {
+                        <span title="@olcek.OlcekBilgi">@kisaMetin</span>
+                    }
+                    else
+                    {
+                        @(olcek.OlcekBilgi ?? "-")
+                    }
+                </td>
+                <td>
+
+                    @if (olcek.OlcekAktif)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Pasif</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Guncelle" asp-route-olcekID="@olcek.OlcekID" class="btn btn-sm btn-warning">Düzenle</a>
                     
-                    <form asp-action="Sil" method="post" class="d-inline">
-                        <input type="hidden" name="testID" value="@olcek.OlcekID" />
-                        <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Bu testi silmek istediğinize emin misiniz?');">
-                            Sil
-                        </button>
-                    </form>
+                    @if (olcek.OlcekAktif)
+                    {
+                        <form asp-action="PasifeAl" method="post" class="d-inline">
+                            <input type="hidden" name="olcekID" value="@olcek.OlcekID" />
+                            <button type="submit" class="btn btn-sm btn-secondary">Pasife Al</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="AktifEt" method="post" class="d-inline">
+                            <input type="hidden" name="olcekID" value="@olcek.OlcekID" />
+                            <button type="submit" class="btn btn-sm btn-success">Aktife Al</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var aramaKutusu = document.querySelector('input[name="ara"]');
+            var form = aramaKutusu.closest('form');
+            var zamanlayici;
+
+            if (aramaKutusu.value) {
+                aramaKutusu.focus();
+                var deger = aramaKutusu.value;
+                aramaKutusu.value = '';
+                aramaKutusu.value = deger;
+            }
+
+            aramaKutusu.addEventListener('input', function() {
+                clearTimeout(zamanlayici);
+                zamanlayici = setTimeout(function() {
+                    form.submit();
+                }, 400);
+            });
+        });
+    </script>
+}

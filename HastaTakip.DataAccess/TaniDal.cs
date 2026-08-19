@@ -40,7 +40,49 @@ namespace HastaTakip.DataAccess
             connection.Open();
             command.ExecuteNonQuery();
         }
+        public List<Tani> TaniAra(string? ara, string aktif)
+        {
+            var liste = new List<Tani>();
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_TaniAra", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@Ara",
+                string.IsNullOrWhiteSpace(ara) ? DBNull.Value : (object)ara);
+            command.Parameters.AddWithValue("@Aktif", aktif);
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                liste.Add(new Tani
+                {
+                    TaniID = (short)reader["taniID"],
+                    TaniAdi = reader["taniAdi"].ToString()!,
+                    TaniKodu = reader["taniKodu"] == DBNull.Value ? null : reader["taniKodu"].ToString(),
+                    TaniAktif = (bool)reader["taniAktif"]
+                });
+            }
+            return liste;
+        }
 
+        public void TaniPasifeAl(short taniID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_TaniPasifeAl", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@taniID", taniID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        public void TaniAktifEt(short taniID)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_TaniAktifEt", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@taniID", taniID);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
         public Tani? TaniGetir(short taniID)
         {
             using var connection = _dbHelper.GetConnection();

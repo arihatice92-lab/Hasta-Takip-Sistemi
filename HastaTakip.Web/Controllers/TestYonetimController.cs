@@ -73,6 +73,24 @@ namespace HastaTakip.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasifeAl(byte testID)
+        {
+            _testBusiness.TestPasifeAl(testID);
+            TempData["BasariMesaji"] = "Test pasife alındı.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AktifEt(byte testID)
+        {
+            _testBusiness.TestAktifEt(testID);
+            TempData["BasariMesaji"] = "Test aktife alındı.";
+            return RedirectToAction(nameof(Index));
+        }
+
         // Alt küme yönetimi — test bazında
         public IActionResult AltKumeler(byte testID)
         {

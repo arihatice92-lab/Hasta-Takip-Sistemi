@@ -19,24 +19,59 @@
 
 <table class="table table-striped">
     <thead>
-        <tr><th>Test Adı</th><th>Bilgi</th><th>İşlemler</th></tr>
+        <tr><th style="width: 30%">Test Adı</th><th style="width: 40%">Bilgi</th><th style="width: 10%">Durum</th><th style="width: 20%">İşlemler</th></tr>
     </thead>
     <tbody>
         @foreach (var test in Model)
         {
             <tr>
                 <td>@test.TestAdi</td>
-                <td>@(test.TestBilgi ?? "-")</td>
+                <td style="max-width: 250px;">
+                    @{
+                        var kisaMetin = test.TestBilgi;
+                        var kisaltildiMi = false;
+                        if (!string.IsNullOrEmpty(kisaMetin) && kisaMetin.Length > 60)
+                        {
+                            kisaMetin = kisaMetin.Substring(0, 60) + "...";
+                            kisaltildiMi = true;
+                        }
+                    }
+                    @if (kisaltildiMi)
+                    {
+                        <span title="@test.TestBilgi">@kisaMetin</span>
+                    }
+                    else
+                    {
+                        @(test.TestBilgi ?? "-")
+                    }
+                </td>
+                <td>
+                    @if (test.TestAktif)
+                    {
+                        <span class="badge bg-success">Aktif</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Pasif</span>
+                    }
+                </td>
                 <td>
                     <a asp-action="Guncelle" asp-route-testID="@test.TestID" class="btn btn-sm btn-warning">Düzenle</a>
                     <a asp-action="AltKumeler" asp-route-testID="@test.TestID" class="btn btn-sm btn-info">Alt Kümeler</a>
-                    <form asp-action="Sil" method="post" class="d-inline">
-                        <input type="hidden" name="testID" value="@test.TestID" />
-                        <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('Bu testi silmek istediğinize emin misiniz?');">
-                            Sil
-                        </button>
-                    </form>
+                    @if (test.TestAktif)
+                    {
+                        <form asp-action="PasifeAl" method="post" class="d-inline">
+                            <input type="hidden" name="testID" value="@test.TestID" />
+                            <button type="submit" class="btn btn-sm btn-secondary">Pasife Al</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="AktifEt" method="post" class="d-inline">
+                            <input type="hidden" name="testID" value="@test.TestID" />
+                            <button type="submit" class="btn btn-sm btn-success">Aktife Al</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }

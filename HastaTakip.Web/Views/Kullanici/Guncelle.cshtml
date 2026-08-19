@@ -33,9 +33,9 @@
         </select>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Bağlı Doktor <small class="text-muted">(sadece Doktor rolü için)</small></label>
-        <select asp-for="DoktorID" class="form-select">
+    <div class="mb-3" id="doktorSeciciAlani">
+        <label class="form-label">Bağlı Doktor</label>
+        <select name="DoktorID" class="form-select">
             <option value="">Yok</option>
             @foreach (var doktor in doktorlar)
             {
@@ -44,9 +44,9 @@
         </select>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Bağlı Psikolog <small class="text-muted">(sadece Psikolog rolü için)</small></label>
-        <select asp-for="PsikologID" class="form-select">
+    <div class="mb-3" id="psikologSeciciAlani">
+        <label class="form-label">Bağlı Psikolog</label>
+        <select name="PsikologID" class="form-select">
             <option value="">Yok</option>
             @foreach (var psikolog in psikologlar)
             {
@@ -58,3 +58,25 @@
     <button type="submit" class="btn btn-primary">Güncelle</button>
     <a asp-action="Index" class="btn btn-secondary">İptal</a>
 </form>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var rolSelect = document.querySelector('select[name="RolID"]');
+            var doktorDiv = document.getElementById('doktorSeciciAlani');
+            var psikologDiv = document.getElementById('psikologSeciciAlani');
+
+            function guncelle() {
+                var rol = rolSelect.value;
+                doktorDiv.style.display = (rol === '2') ? 'block' : 'none';
+                psikologDiv.style.display = (rol === '4') ? 'block' : 'none';
+
+                if (rol !== '2') document.querySelector('select[name="DoktorID"]').value = '';
+                if (rol !== '4') document.querySelector('select[name="PsikologID"]').value = '';
+            }
+
+            rolSelect.addEventListener('change', guncelle);
+            guncelle();
+        });
+    </script>
+}

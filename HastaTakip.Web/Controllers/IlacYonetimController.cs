@@ -11,10 +11,11 @@ namespace HastaTakip.Web.Controllers
         private readonly IlacBusiness _ilacBusiness;
         public IlacYonetimController(IlacBusiness ilacBusiness) { _ilacBusiness = ilacBusiness; }
 
-        public IActionResult Index(string? ara)
+        public IActionResult Index(string? ara, string aktif)
         {
             ViewBag.Ara = ara;
-            var ilaclar = _ilacBusiness.IlacAra(ara);
+            ViewBag.Aktif = aktif;
+            var ilaclar = _ilacBusiness.IlacAra(ara, aktif);
             return View(ilaclar);
         }
         
@@ -36,6 +37,40 @@ namespace HastaTakip.Web.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View(ilac);
             }
+        }
+
+        public IActionResult Guncelle(short ilacID)
+        {
+            var ilac = _ilacBusiness.IlacGetir(ilacID);
+            if (ilac == null) return NotFound();
+            return View(ilac);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Guncelle(Ilac ilac)
+        {
+            _ilacBusiness.IlacGuncelle(ilac);
+            TempData["BasariMesaji"] = "İlaç bilgileri güncellendi.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasifeAl(short ilacID)
+        {
+            _ilacBusiness.IlacPasifeAl(ilacID);
+            TempData["BasariMesaji"] = "İlaç pasife alındı.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AktifEt(short ilacID)
+        {
+            _ilacBusiness.IlacAktifEt(ilacID);
+            TempData["BasariMesaji"] = "İlaç aktife alındı.";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
