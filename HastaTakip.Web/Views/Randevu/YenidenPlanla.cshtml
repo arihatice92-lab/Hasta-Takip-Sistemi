@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Randevuyu Yeniden Planla";
+    var randevu = (HastaTakip.Entities.RandevuTarihi)ViewBag.Randevu;
+    var hasta = (HastaTakip.Entities.Hasta?)ViewBag.Hasta;
+    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
+    var saatler = (List<HastaTakip.Entities.RandevuSaat>)ViewBag.SaatListesi;
+}
+
+<h2>Randevuyu Yeniden Planla</h2>
+
+<div class="alert alert-info">
+    <strong>Hasta:</strong> @(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : "-")<br />
+    <strong>Mevcut Tarih/Saat:</strong> @randevu.RandevuTarih.ToString("dd.MM.yyyy")
+</div>
+
+<form asp-action="YenidenPlanla" method="post">
+    <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
+
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label">Doktor <span style="color:red">*</span></label>
+            <select name="yeniDoktorID" class="form-select" required>
+                @foreach (var doktor in doktorlar)
+                {
+                    <option value="@doktor.DoktorID" selected="@(doktor.DoktorID == randevu.DoktorID)">
+                        @doktor.DoktorAd @doktor.DoktorSoyad
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Yeni Tarih <span style="color:red">*</span></label>
+            <input type="date" name="yeniTarih" class="form-control" value="@randevu.RandevuTarih.ToString("yyyy-MM-dd")" required />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Saat <span style="color:red">*</span></label>
+            <select name="yeniSaatID" class="form-select" required>
+                @foreach (var saat in saatler)
+                {
+                    <option value="@saat.SaatID" selected="@(saat.SaatID == randevu.SaatID)">
+                        @saat.RandevuBaslangicSaat.ToString(@"hh\:mm") - @saat.RandevuBitisSaat.ToString(@"hh\:mm")
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+    <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-secondary mt-3">İptal</a>
+</form>

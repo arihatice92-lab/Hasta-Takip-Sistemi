@@ -5,20 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 namespace HastaTakip.Web.Controllers
 {
-    [Authorize(Roles = "Yönetici, Sekreter")]
+    [Authorize]
     public class DoktorController : Controller
     {
         private readonly DoktorBusiness _doktorBusiness;
         private readonly DoktorIzniBusiness _doktorIzniBusiness;
-        public DoktorController(DoktorBusiness doktorBusiness, DoktorIzniBusiness doktorIzniBusiness)
+        private readonly KullaniciBusiness _kullaniciBusiness;
+        public DoktorController(DoktorBusiness doktorBusiness, DoktorIzniBusiness doktorIzniBusiness, KullaniciBusiness kullaniciBusiness)
         {
             _doktorBusiness = doktorBusiness;
             _doktorIzniBusiness = doktorIzniBusiness;
+            _kullaniciBusiness = kullaniciBusiness;
         }
 
         // GET: /Doktor
-        
 
+        [Authorize(Roles = "Yönetici, Sekreter")]
         public IActionResult Index(
             string? ara,
             string siralama = "AZ",
@@ -62,8 +64,22 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Doktor/Detay/5
+
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
         public IActionResult Detay(short doktorID)
         {
+
+            if (User.IsInRole("Doktor") && !User.IsInRole("Yönetici") && !User.IsInRole("Sekreter"))
+            {
+                var kullaniciAdi = User.Identity?.Name;
+                var kullanici = !string.IsNullOrEmpty(kullaniciAdi) ? _kullaniciBusiness.KullaniciGetir(kullaniciAdi) : null;
+
+                if (kullanici?.DoktorID != doktorID)
+                {
+                    return Forbid();
+                }
+            }
+
             var doktor = _doktorBusiness.DoktorGetir(doktorID);
             if (doktor == null) return NotFound();
 
@@ -72,6 +88,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /Doktor/Ekle
+        [Authorize(Roles = "Yönetici, Sekreter")]
         public IActionResult Ekle()
         {
             return View();
@@ -103,6 +120,7 @@ namespace HastaTakip.Web.Controllers
 
 
         // GET: /Doktor/Guncelle/5
+        [Authorize(Roles = "Yönetici, Sekreter")]
         public IActionResult Guncelle(short doktorID)
         {
             var doktor = _doktorBusiness.DoktorGetir(doktorID);
@@ -114,6 +132,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         // POST: /Doktor/Guncelle
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Guncelle(Doktor doktor)
@@ -129,6 +148,7 @@ namespace HastaTakip.Web.Controllers
         }
 
         // POST: /Doktor/Ayrilis
+        [Authorize(Roles = "Yönetici, Sekreter")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Ayrilis(short doktorID)
@@ -138,19 +158,31 @@ namespace HastaTakip.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
         //Doktor izin  ekle
+        [Authorize(Roles = "Yönetici,Sekreter,Doktor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult IzinEkle(DoktorIzni izin)
         {
+            if (User.IsInRole("Doktor") && !User.IsInRole("Yönetici") && !User.IsInRole("Sekreter"))
+            {
+                var kullaniciAdi = User.Identity?.Name;
+                var kullanici = !string.IsNullOrEmpty(kullaniciAdi) ? _kullaniciBusiness.KullaniciGetir(kullaniciAdi) : null;
 
+                if (kullanici?.DoktorID != izin.DoktorID)
+                {
+                    TempData["HataMesaji"] = "Sadece kendi izin kaydınızı ekleyebilirsiniz.";
+                    return RedirectToAction(nameof(Detay), new { doktorID = izin.DoktorID });
+                }
+            }
             var cakismalar = _doktorIzniBusiness.RandevuCakismalariGetir(izin.DoktorID, izin.BaslangicTarihi, izin.BitisTarihi);
 
             if (cakismalar.Count > 0)
             {
-                var mesaj = "Bu tarih aralığında çakışan randevular var, önce bunları çözmelisiniz: " +
-                    string.Join("; ", cakismalar.Select(c => $"{c.RandevuTarih:dd.MM.yyyy} {c.Saat:hh\\:mm} - {c.HastaAdSoyad}"));
-                TempData["HataMesaji"] = mesaj;
-                return RedirectToAction(nameof(Detay), new { doktorID = izin.DoktorID });
+                var doktor = _doktorBusiness.DoktorGetir(izin.DoktorID);
+                ViewBag.Izinler = _doktorIzniBusiness.IzinleriListele(izin.DoktorID);
+                ViewBag.Cakismalar = cakismalar;
+                TempData["HataMesaji"] = $"Bu tarih aralığında {cakismalar.Count} randevu çakışması bulunuyor. Önce bunları çözmelisiniz.";
+                return View("Detay", doktor);
             }
 
             var kullaniciID = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);

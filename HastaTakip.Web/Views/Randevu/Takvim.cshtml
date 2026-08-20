@@ -60,13 +60,30 @@
                         @for (int gun = 0; gun < 7; gun++)
                         {
                             var gunTarih = haftaBasi.AddDays(hafta * 7 + gun);
+
+                            bool haftaSonu = gunTarih.DayOfWeek == DayOfWeek.Saturday || gunTarih.DayOfWeek == DayOfWeek.Sunday;
                             var araligaDahilMi = gunTarih >= aralikBaslangic && gunTarih <= aralikBitis;
                             gunlukDurumlar.TryGetValue(gunTarih, out var durum);
                             bool izinliMi = araligaDahilMi && durum != null && durum.IzinliMi;
                             bool musait = araligaDahilMi && durum != null && !durum.IzinliMi && durum.TamamenMusait;
 
                             <td class="p-0 @(!araligaDahilMi ? "bg-light" : "")" style="height:70px;">
-                                @if (izinliMi)
+                                
+                                @if (haftaSonu)
+                                {
+                                    <div class="p-2 h-100 text-muted bg-light">
+                                        <div><strong>@gunTarih.Day</strong></div>
+                                        <small>Kapalı</small>
+                                    </div>
+                                }
+                                else if (izinliMi)
+                                {
+                                    <div class="p-2 h-100 text-white bg-secondary" style="opacity: 0.7;">
+                                        <div><strong>@gunTarih.Day</strong></div>
+                                        <small>Kapalı</small>
+                                    </div>
+                                }
+                                else if(izinliMi)
                                 {
                                     <div class="p-2 h-100 text-white bg-secondary" style="opacity: 0.7;">
                                         <div><strong>@gunTarih.Day</strong></div>

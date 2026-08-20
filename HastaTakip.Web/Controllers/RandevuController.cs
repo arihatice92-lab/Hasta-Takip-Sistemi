@@ -117,11 +117,22 @@ namespace HastaTakip.Web.Controllers
                 ViewBag.AralikBitis = aralikBitis;
                 ViewBag.GunlukDurumlar = _randevuBusiness.DoktorTakvimAraligiGetir(doktorID.Value, haftaBasi, toplamGun);
 
-                if (secilenGun.HasValue)
+                if (secilenGun.HasValue &&
+                    secilenGun.Value.DayOfWeek != DayOfWeek.Saturday &&
+                    secilenGun.Value.DayOfWeek != DayOfWeek.Sunday)
                 {
                     ViewBag.SecilenGun = secilenGun.Value;
-                    ViewBag.SecilenGunSlotlari = _randevuBusiness.DoktorGunlukTakvimGetir(doktorID.Value, secilenGun.Value);
+                    ViewBag.SecilenGunSlotlari =
+                        _randevuBusiness.DoktorGunlukTakvimGetir(
+                            doktorID.Value,
+                            secilenGun.Value);
                 }
+
+                //if (secilenGun.HasValue)
+                //{
+                //    ViewBag.SecilenGun = secilenGun.Value;
+                //    ViewBag.SecilenGunSlotlari = _randevuBusiness.DoktorGunlukTakvimGetir(doktorID.Value, secilenGun.Value);
+                //}
             }
 
             return View();
@@ -216,23 +227,6 @@ namespace HastaTakip.Web.Controllers
             }
         }
 
-        // POST: /Randevu/Iptal
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Iptal(int randevuTarihID)
-        //{
-        //    try
-        //    {
-        //        _randevuBusiness.RandevuIptalEt(randevuTarihID);
-        //        TempData["BasariMesaji"] = "Randevu iptal edildi.";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["HataMesaji"] = ex.Message;
-        //    }
-        //    return RedirectToAction(nameof(Index));
-        //}
-
         // POST: /Randevu/Tamamlandi
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -249,23 +243,6 @@ namespace HastaTakip.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-        // POST: /Randevu/Gelmedi
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Gelmedi(int randevuTarihID)
-        //{
-        //    try
-        //    {
-        //        _randevuBusiness.RandevuGelmediIsaretle(randevuTarihID);
-        //        TempData["BasariMesaji"] = "Randevu 'Gelmedi' olarak işaretlendi.";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["HataMesaji"] = ex.Message;
-        //    }
-        //    return RedirectToAction(nameof(Index));
-        //}
 
 
         [HttpPost]
@@ -324,6 +301,73 @@ namespace HastaTakip.Web.Controllers
                 TempData["HataMesaji"] = ex.Message;
             }
             return YonlendirGeriDon(donus, hastaTC);
+        }
+
+        private bool BuRandevuyaIslemYapabilirMi(short doktorID)
+        {
+            if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
+            {
+                return true;
+            }
+
+            var kullaniciAdi = User.Identity?.Name;
+            if (string.IsNullOrEmpty(kullaniciAdi))
+            {
+                return false;
+            }
+
+            var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+            return kullanici?.DoktorID == doktorID;
+        }
+
+        public IActionResult YenidenPlanla(int randevuTarihID)
+        {
+            var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
+            if (randevu == null) return NotFound();
+
+            if (randevu.RandevuDurum != "Planlandı")
+            {
+                TempData["HataMesaji"] = "Sadece 'Planlandı' durumundaki randevular yeniden planlanabilir.";
+                return RedirectToAction(nameof(Detay), new { randevuTarihID });
+            }
+
+            if (!BuRandevuyaIslemYapabilirMi(randevu.DoktorID))
+            {
+                TempData["HataMesaji"] = "Bu randevuyu yeniden planlama yetkiniz yok.";
+                return RedirectToAction(nameof(Detay), new { randevuTarihID });
+            }
+
+            ViewBag.Randevu = randevu;
+            ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
+            ViewBag.SaatListesi = _randevuSaatBusiness.SaatleriListele();
+            ViewBag.Hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult YenidenPlanla(int randevuTarihID, short yeniDoktorID, byte yeniSaatID, DateTime yeniTarih)
+        {
+            var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
+            if (randevu == null) return NotFound();
+
+            if (!BuRandevuyaIslemYapabilirMi(randevu.DoktorID))
+            {
+                TempData["HataMesaji"] = "Bu randevuyu yeniden planlama yetkiniz yok.";
+                return RedirectToAction(nameof(Detay), new { randevuTarihID });
+            }
+
+            try
+            {
+                _randevuBusiness.RandevuYenidenPlanla(randevuTarihID, yeniDoktorID, yeniSaatID, yeniTarih);
+                TempData["BasariMesaji"] = "Randevu başarıyla yeniden planlandı.";
+            }
+            catch (Exception ex)
+            {
+                TempData["HataMesaji"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Detay), new { randevuTarihID });
         }
 
         private IActionResult YonlendirGeriDon(string? donus, string? hastaTC)

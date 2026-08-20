@@ -17,7 +17,10 @@
             <div class="card-body">
                 <h5 class="card-title">@doktor?.DoktorAd @doktor?.DoktorSoyad</h5>
                 <p class="card-text mb-1"><strong>Branş:</strong> @doktor?.DoktorBrans</p>
-                <p class="card-text mb-0"><strong>Sicil No:</strong> @doktor?.DoktorSicilNo</p>
+                <p class="card-text mb-2"><strong>Sicil No:</strong> @doktor?.DoktorSicilNo</p>
+                <a asp-controller="Doktor" asp-action="Detay" asp-route-doktorID="@doktor?.DoktorID" class="btn btn-sm btn-outline-primary">
+                    İzin/Rapor Kayıtlarım
+                </a>
             </div>
         </div>
 

@@ -14,6 +14,11 @@ namespace HastaTakip.Business
         {
             if (izin.BitisTarihi < izin.BaslangicTarihi)
                 throw new Exception("Bitiş tarihi başlangıç tarihinden önce olamaz.");
+
+            //if (izin.BaslangicTarihi < DateTime.Today)
+            //{
+            //    throw new Exception("Geçmiş bir tarihe izin planlanamaz.");
+            //}
             _dal.IzinEkle(izin);
         }
 

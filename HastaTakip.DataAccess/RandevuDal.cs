@@ -156,6 +156,19 @@ namespace HastaTakip.DataAccess
 
             return slotlar;
         }
+
+        public void RandevuYenidenPlanla(int randevuTarihID, short yeniDoktorID, byte yeniSaatID, DateTime yeniTarih)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_RandevuYenidenPlanla", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@randevuTarihID", randevuTarihID);
+            command.Parameters.AddWithValue("@yeniDoktorID", yeniDoktorID);
+            command.Parameters.AddWithValue("@yeniSaatID", yeniSaatID);
+            command.Parameters.AddWithValue("@yeniTarih", yeniTarih);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
         public void RandevuDurumGuncelle(int randevuTarihID, string yeniDurum)
         {
             using var connection = _dbHelper.GetConnection();

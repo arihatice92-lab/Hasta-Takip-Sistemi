@@ -5,7 +5,7 @@
     var hasta = (HastaTakip.Entities.Hasta?)ViewBag.Hasta;
     var doktor = (HastaTakip.Entities.Doktor?)ViewBag.Doktor;
     var saat = (HastaTakip.Entities.RandevuSaat?)ViewBag.Saat;
-}
+ }
 
 <h2>Randevu Detayı</h2>
 
@@ -26,7 +26,10 @@
     <dd class="col-sm-9">@(saat != null ? saat.RandevuBaslangicSaat.ToString(@"hh\:mm") + " - " + saat.RandevuBitisSaat.ToString(@"hh\:mm") : "-")</dd>
 
     <dt class="col-sm-3">Hasta</dt>
-    <dd class="col-sm-9">@(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad} ({hasta.HastaDosyaNo})" : "-")</dd>
+    <dd class="col-sm-9">@(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}": "-")</dd>
+
+    <dt class="col-sm-3">Dosya No</dt>
+    <dd class="col-sm-9">@(hasta != null ? $"{hasta.HastaDosyaNo}" : "-")</dd>
 
     <dt class="col-sm-3">Doktor</dt>
     <dd class="col-sm-9">@(doktor != null ? $"{doktor.DoktorAd} {doktor.DoktorSoyad}" : "-")</dd>
@@ -51,7 +54,7 @@
     <a asp-controller="RandevuNotu"
        asp-action="Ekle"
        asp-route-randevuTarihID="@Model.RandevuTarihID"
-       class="btn btn-sm btn-primary">
+       class="btn btn-primary">
         Randevu Notu Ekle
     </a>
 }
@@ -62,5 +65,12 @@ else
             disabled>
         Randevu Notu Ekle
     </button>
+}
+
+@if (Model.RandevuDurum == "Planlandı")
+{
+    <a asp-action="YenidenPlanla" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-warning">
+        Yeniden Planla
+    </a>
 }
 <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

@@ -66,6 +66,26 @@ namespace HastaTakip.Business
             return _randevuDal.RandevuListele(ara, siralama, baslangicTarihi, bitisTarihi, doktorID, hastaTC, durum, sayfa, sayfaBoyutu);
         }
 
+        public void RandevuYenidenPlanla(int randevuTarihID, short yeniDoktorID, byte yeniSaatID, DateTime yeniTarih)
+        {
+            if (yeniTarih.Date < DateTime.Today)
+            {
+                throw new Exception("Geçmiş bir tarihe randevu planlanamaz.");
+            }
+
+            try
+            {
+                _randevuDal.RandevuYenidenPlanla(randevuTarihID, yeniDoktorID, yeniSaatID, yeniTarih);
+            }
+            catch (SqlException ex) when (ex.Message.Contains("başka bir randevu bulunmaktadır"))
+            {
+                throw new Exception("Seçilen doktor ve saat için zaten bir randevu bulunuyor. Lütfen farklı bir saat seçin.");
+            }
+            catch (SqlException ex) when (ex.Message.Contains("artık düzenlenemez"))
+            {
+                throw new Exception("Bu randevu artık düzenlenemez.");
+            }
+        }
         public List<DoktorTakvimSlotu> DoktorGunlukTakvimGetir(short doktorID, DateTime tarih)
         {
             return _randevuDal.DoktorGunlukTakvimGetir(doktorID, tarih);

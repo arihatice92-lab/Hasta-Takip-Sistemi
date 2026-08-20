@@ -14,6 +14,47 @@
 {
     <div class="alert alert-danger">@TempData["HataMesaji"]</div>
 }
+
+@if (ViewBag.Cakismalar != null)
+{
+    var cakismalar = (List<HastaTakip.Entities.RandevuCakismasi>)ViewBag.Cakismalar;
+
+    <div class="card border-danger mb-4">
+        <div class="card-header bg-danger text-white">
+            Çakışan Randevular (@cakismalar.Count)
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th>Hasta</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in cakismalar)
+                    {
+                        <tr>
+                            <td>@c.RandevuTarih.ToString("dd.MM.yyyy dddd")</td>
+                            <td>@c.Saat.ToString(@"hh\:mm")</td>
+                            <td>@c.HastaAdSoyad</td>
+                            <td>
+                                <a asp-controller="Randevu" asp-action="Detay" asp-route-randevuTarihID="@c.RandevuTarihID" class="btn btn-sm btn-outline-primary">
+                                    Randevuya Git
+                                </a>
+                                <a asp-controller="Randevu" asp-action="YenidenPlanla" asp-route-randevuTarihID="@c.RandevuTarihID" class="btn btn-sm btn-warning">
+                                    Yeniden Planla
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
 <dl class="row">
     <dt class="col-sm-3">Sicil No</dt>
     <dd class="col-sm-9">@Model.DoktorSicilNo</dd>
@@ -43,18 +84,27 @@
     </dd>
 </dl>
 
-<a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
-<a asp-action="Guncelle" asp-route-doktorID="@Model.DoktorID" class="btn btn-warning">Düzenle</a>
-
-@if (Model.DoktorKurumAyrilisTarih == null)
+@if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
 {
-    <form asp-action="Ayrilis" method="post" class="d-inline">
-        <input type="hidden" name="doktorID" value="@Model.DoktorID" />
-        <button type="submit" class="btn btn-danger"
-                onclick="return confirm('Bu doktorun kurumdan ayrıldığını işaretlemek istediğinize emin misiniz?');">
-            Kurumdan Ayrıldı Olarak İşaretle
-        </button>
-    </form>
+    <a asp-action="Guncelle" asp-route-doktorID="@Model.DoktorID" class="btn btn-warning">Düzenle</a>
+    <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>
+}
+else
+{
+    <a asp-controller="DoktorPaneli" asp-action="Index" class="btn btn-secondary">Panelime Dön</a>
+}
+@if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
+{
+    @if (Model.DoktorKurumAyrilisTarih == null)
+    {
+        <form asp-action="Ayrilis" method="post" class="d-inline">
+            <input type="hidden" name="doktorID" value="@Model.DoktorID" />
+            <button type="submit" class="btn btn-danger"
+            onclick="return confirm('Bu doktorun kurumdan ayrıldığını işaretlemek istediğinize emin misiniz?');">
+                Kurumdan Ayrıldı Olarak İşaretle
+            </button>
+        </form>
+    }
 }
 
 <hr class="my-4" />
