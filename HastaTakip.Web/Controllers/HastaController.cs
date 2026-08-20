@@ -175,10 +175,10 @@ namespace HastaTakip.Web.Controllers
                 baslangicTarihi: null,
                 bitisTarihi: null,
                 doktorID: null,
-                hastaTC: tc,
+                hastaTC: hastaTC,
                 durum: null,
                 sayfa: 1,
-                sayfaBoyutu: 50);
+                sayfaBoyutu: 100);
 
             ViewBag.GecmisRandevular = randevular;
             ViewBag.Doktorlar = _doktorBusiness.DoktorListele(sadeceAktif: false).ToDictionary(d => d.DoktorID);
@@ -205,7 +205,7 @@ namespace HastaTakip.Web.Controllers
             ViewBag.GelisimselOykuListesi = _gelisimselOykuBusiness.HastaGelisimselOykuListele(hastaTC);
 
             var (psikologRandevular, _) = _psikologRandevuBusiness.RandevuListele(
-                null, "TarihYeni", null, null, null, tc, null, 1, 100);
+                null, "TarihYeni", null, null, null, hastaTC, null, 1, 100);
             ViewBag.PsikologRandevular = psikologRandevular;
             ViewBag.PsikologSozlugu = _psikologBusiness.PsikologAra(null, "AZ", "hepsi").ToDictionary(p => p.PsikologID);
             ViewBag.PsikologSaatSozlugu = _psikologRandevuSaatBusiness.SaatleriListele().ToDictionary(s => s.SaatID);

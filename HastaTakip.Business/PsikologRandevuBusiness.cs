@@ -51,6 +51,27 @@ namespace HastaTakip.Business
             byte? psikologID, string? hastaTC, string? durum, int sayfa, int sayfaBoyutu)
             => _dal.RandevuListele(ara, siralama, baslangicTarihi, bitisTarihi, psikologID, hastaTC, durum, sayfa, sayfaBoyutu);
 
+        public void RandevuYenidenPlanla(int randevuTarihID, byte yeniPsikologID, byte yeniSaatID, DateTime yeniTarih)
+        {
+            if (yeniTarih.Date < DateTime.Today)
+            {
+                throw new Exception("Geçmiş bir tarihe randevu planlanamaz.");
+            }
+
+            try
+            {
+                _dal.RandevuYenidenPlanla(randevuTarihID, yeniPsikologID, yeniSaatID, yeniTarih);
+            }
+            catch (SqlException ex) when (ex.Message.Contains("başka bir randevu bulunmaktadır"))
+            {
+                throw new Exception("Seçilen psikolog ve saat için zaten bir randevu bulunuyor. Lütfen farklı bir saat seçin.");
+            }
+            catch (SqlException ex) when (ex.Message.Contains("artık düzenlenemez"))
+            {
+                throw new Exception("Bu randevu artık düzenlenemez.");
+            }
+        }
+
         public void RandevuIptalEt(int randevuTarihID) => _dal.DurumGuncelle(randevuTarihID, "İptal");
 
         public void RandevuTamamlandiIsaretle(int randevuTarihID) => _dal.DurumGuncelle(randevuTarihID, "Tamamlandı");

@@ -71,11 +71,12 @@ namespace HastaTakip.Web.Controllers
         }
 
         // GET: /PsikologRandevu/Takvim
-        public IActionResult Takvim(byte? psikologID, DateTime? tarih, string? hastaTC, DateTime? secilenGun)
+        public IActionResult Takvim(byte? psikologID, DateTime? tarih, string? hastaTC, DateTime? secilenGun, int? randevuTarihID)
         {
             ViewBag.PsikologListesi = _psikologBusiness.PsikologAra(null, "AZ", "aktif");
             ViewBag.SeciliPsikologID = psikologID;
             ViewBag.HastaTC = hastaTC;
+            ViewBag.RandevuTarihID = randevuTarihID;
 
             var baslangicTarih = tarih ?? DateTime.Today;
             ViewBag.BaslangicTarih = baslangicTarih;
@@ -96,10 +97,15 @@ namespace HastaTakip.Web.Controllers
                 ViewBag.AralikBitis = aralikBitis;
                 ViewBag.GunlukDurumlar = _psikologRandevuBusiness.TakvimAraligiGetir(psikologID.Value, haftaBasi, toplamGun);
 
-                if (secilenGun.HasValue)
+                if (secilenGun.HasValue &&
+                    secilenGun.Value.DayOfWeek != DayOfWeek.Saturday &&
+                    secilenGun.Value.DayOfWeek != DayOfWeek.Sunday)
                 {
                     ViewBag.SecilenGun = secilenGun.Value;
-                    ViewBag.SecilenGunSlotlari = _psikologRandevuBusiness.GunlukTakvimGetir(psikologID.Value, secilenGun.Value);
+                    ViewBag.SecilenGunSlotlari =
+                        _psikologRandevuBusiness.GunlukTakvimGetir(
+                            psikologID.Value,
+                            secilenGun.Value);
                 }
             }
 
@@ -174,6 +180,78 @@ namespace HastaTakip.Web.Controllers
                 ViewBag.SaatListesi = _psikologRandevuSaatBusiness.SaatleriListele();
                 return View();
             }
+        }
+
+        private bool BuRandevuyaIslemYapabilirMi(byte psikologID)
+        {
+            if (User.IsInRole("Yönetici") || User.IsInRole("Sekreter"))
+            {
+                return true;
+            }
+
+            var kullaniciAdi = User.Identity?.Name;
+            if (string.IsNullOrEmpty(kullaniciAdi))
+            {
+                return false;
+            }
+
+            var kullanici = _kullaniciBusiness.KullaniciGetir(kullaniciAdi);
+            return kullanici?.PsikologID == psikologID;
+        }
+
+        public IActionResult YenidenPlanla(int randevuTarihID, byte? yeniPsikologID = null, DateTime? yeniTarih = null, byte? yeniSaatID = null)
+        {
+            var randevu = _psikologRandevuBusiness.RandevuGetir(randevuTarihID);
+            if (randevu == null) return NotFound();
+
+            if (randevu.RandevuDurum != "Planlandı")
+            {
+                TempData["HataMesaji"] = "Sadece 'Planlandı' durumundaki randevular yeniden planlanabilir.";
+                return RedirectToAction(nameof(Detay), new { randevuTarihID });
+            }
+
+            if (!BuRandevuyaIslemYapabilirMi(randevu.PsikologID))
+            {
+                TempData["HataMesaji"] = "Bu randevuyu yeniden planlama yetkiniz yok.";
+                return RedirectToAction(nameof(Detay), new { randevuTarihID });
+            }
+
+            ViewBag.Randevu = randevu;
+            ViewBag.PsikologListesi = _psikologBusiness.PsikologAra(null, "AZ", "aktif");
+            ViewBag.SaatListesi = _psikologRandevuSaatBusiness.SaatleriListele();
+            ViewBag.Hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
+
+            ViewBag.OnSeciliPsikologID = yeniPsikologID ?? randevu.PsikologID;
+            ViewBag.OnSeciliTarih = yeniTarih ?? randevu.RandevuTarih;
+            ViewBag.OnSeciliSaatID = yeniSaatID ?? randevu.SaatID;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult YenidenPlanla(int randevuTarihID, byte yeniPsikologID, byte yeniSaatID, DateTime yeniTarih)
+        {
+            var randevu = _psikologRandevuBusiness.RandevuGetir(randevuTarihID);
+            if (randevu == null) return NotFound();
+
+            if (!BuRandevuyaIslemYapabilirMi(randevu.PsikologID))
+            {
+                TempData["HataMesaji"] = "Bu randevuyu yeniden planlama yetkiniz yok.";
+                return RedirectToAction(nameof(Detay), new { randevuTarihID });
+            }
+
+            try
+            {
+                _psikologRandevuBusiness.RandevuYenidenPlanla(randevuTarihID, yeniPsikologID, yeniSaatID, yeniTarih);
+                TempData["BasariMesaji"] = "Randevu başarıyla yeniden planlandı.";
+            }
+            catch (Exception ex)
+            {
+                TempData["HataMesaji"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Detay), new { randevuTarihID });
         }
 
         [HttpPost]

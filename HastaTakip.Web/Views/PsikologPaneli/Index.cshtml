@@ -15,9 +15,11 @@
     <div class="col-md-4">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">@psikolog?.PsikologAd @psikolog?.PsikologSoyad</h5>
-                
+                <h5 class="card-title">@psikolog?.PsikologAd @psikolog?.PsikologSoyad</h5>                
                 <p class="card-text mb-0"><strong>Sicil No:</strong> @psikolog?.PsikologSicilNo</p>
+                <a asp-controller="Psikolog" asp-action="Detay" asp-route-psikologID="@psikolog?.PsikologID" class="btn btn-sm btn-outline-primary">
+                    İzin/Rapor Kayıtlarım
+                </a>
             </div>
         </div>
 

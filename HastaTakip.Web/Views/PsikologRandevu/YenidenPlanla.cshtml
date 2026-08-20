@@ -1,34 +1,33 @@
 ﻿@{
     ViewData["Title"] = "Randevuyu Yeniden Planla";
-    var randevu = (HastaTakip.Entities.RandevuTarihi)ViewBag.Randevu;
+    var randevu = (HastaTakip.Entities.PsikologRandevuTarihi)ViewBag.Randevu;
     var hasta = (HastaTakip.Entities.Hasta?)ViewBag.Hasta;
-    var doktorlar = (List<HastaTakip.Entities.Doktor>)ViewBag.DoktorListesi;
-    var saatler = (List<HastaTakip.Entities.RandevuSaat>)ViewBag.SaatListesi;
+    var psikologlar = (List<HastaTakip.Entities.Psikolog>)ViewBag.PsikologListesi;
+    var saatler = (List<HastaTakip.Entities.PsikologRandevuSaat>)ViewBag.SaatListesi;
 }
 
 <h2>Randevuyu Yeniden Planla</h2>
 
-<a asp-action="Takvim" asp-route-doktorID="@randevu.DoktorID" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-outline-primary mb-3">
-    Takvimden Uygun Saat Seç
-</a>
- 
 <div class="alert alert-info">
     <strong>Hasta:</strong> @(hasta != null ? $"{hasta.HastaAd} {hasta.HastaSoyad}" : "-")<br />
-    <strong>Mevcut Tarih/Saat:</strong> @randevu.RandevuTarih.ToString("dd.MM.yyyy")
+    <strong>Mevcut Tarih:</strong> @randevu.RandevuTarih.ToString("dd.MM.yyyy")
 </div>
+
+<a asp-action="Takvim" asp-route-psikologID="@randevu.PsikologID" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-outline-primary mb-3">
+    Takvimden Uygun Saat Seç
+</a>
 
 <form asp-action="YenidenPlanla" method="post">
     <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-    <input type="hidden" name="hastaTC" value="@ViewBag.HastaTC" />
 
     <div class="row">
         <div class="col-md-4">
-            <label class="form-label">Doktor <span style="color:red">*</span></label>
-            <select name="yeniDoktorID" class="form-select" required>
-                @foreach (var doktor in doktorlar)
+            <label class="form-label">Psikolog <span style="color:red">*</span></label>
+            <select name="yeniPsikologID" class="form-select" required>
+                @foreach (var psikolog in psikologlar)
                 {
-                    <option value="@doktor.DoktorID" selected="@(doktor.DoktorID == (short)ViewBag.OnSeciliDoktorID)">
-                        @doktor.DoktorAd @doktor.DoktorSoyad
+                    <option value="@psikolog.PsikologID" selected="@(psikolog.PsikologID == (byte)ViewBag.OnSeciliPsikologID)">
+                        @psikolog.PsikologAd @psikolog.PsikologSoyad
                     </option>
                 }
             </select>
@@ -51,7 +50,6 @@
             </select>
         </div>
     </div>
-    
 
     <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
     <a asp-action="Detay" asp-route-randevuTarihID="@randevu.RandevuTarihID" class="btn btn-secondary mt-3">İptal</a>

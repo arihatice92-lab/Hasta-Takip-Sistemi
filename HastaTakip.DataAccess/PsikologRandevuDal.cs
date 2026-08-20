@@ -81,6 +81,18 @@ namespace HastaTakip.DataAccess
             return (randevular, toplamKayit);
         }
 
+        public void RandevuYenidenPlanla(int randevuTarihID, byte yeniPsikologID, byte yeniSaatID, DateTime yeniTarih)
+        {
+            using var connection = _dbHelper.GetConnection();
+            using var command = new SqlCommand("sp_PsikologRandevuYenidenPlanla", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@randevuTarihID", randevuTarihID);
+            command.Parameters.AddWithValue("@yeniPsikologID", yeniPsikologID);
+            command.Parameters.AddWithValue("@yeniSaatID", yeniSaatID);
+            command.Parameters.AddWithValue("@yeniTarih", yeniTarih);
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
         public void DurumGuncelle(int randevuTarihID, string yeniDurum)
         {
             using var connection = _dbHelper.GetConnection();
@@ -154,7 +166,8 @@ namespace HastaTakip.DataAccess
                 {
                     Tarih = (DateTime)reader["Tarih"],
                     ToplamSaat = (int)reader["ToplamSaat"],
-                    DoluSaat = (int)reader["DoluSaat"]
+                    DoluSaat = (int)reader["DoluSaat"],
+                    IzinliMi = (bool)reader["IzinliMi"]
                 });
             }
             return liste;

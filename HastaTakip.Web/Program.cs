@@ -89,6 +89,9 @@ builder.Services.AddScoped<DoktorIzniBusiness>();
 builder.Services.AddScoped<KayitDosyasiDal>();
 builder.Services.AddScoped<KayitDosyasiBusiness>();
 
+builder.Services.AddScoped<PsikologIzniDal>();
+builder.Services.AddScoped<PsikologIzniBusiness>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

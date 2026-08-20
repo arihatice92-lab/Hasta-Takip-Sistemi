@@ -7,8 +7,10 @@
     var saat = (HastaTakip.Entities.PsikologRandevuSaat?)ViewBag.Saat;
 }
 
-
-
+@if (TempData["BasariMesaji"] != null)
+{
+    <div class="alert alert-success">@TempData["BasariMesaji"]</div>
+}
 
 @if (TempData["HataMesaji"] != null)
 {
@@ -51,5 +53,10 @@ else
         Test Sonucu Ekle
     </button>
 }
-
+@if (Model.RandevuDurum == "Planlandı")
+{
+    <a asp-action="YenidenPlanla" asp-route-randevuTarihID="@Model.RandevuTarihID" class="btn btn-warning">
+        Yeniden Planla
+    </a>
+}
 <a asp-action="Index" class="btn btn-secondary">Listeye Dön</a>

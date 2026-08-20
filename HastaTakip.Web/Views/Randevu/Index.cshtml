@@ -137,7 +137,7 @@
                     {
                         @if (randevu.MuayeneBaslangicZamani.HasValue)
                         {
-                            <span class="badge bg-primary">Muayenede (@randevu.MuayeneBaslangicZamani.Value.ToString("HH:mm"))</span>
+                            <span class="badge bg-warning">Muayenede (@randevu.MuayeneBaslangicZamani.Value.ToString("HH:mm"))</span>
                         }
                         else if (randevu.HastaGelisZamani.HasValue)
                         {
@@ -172,7 +172,7 @@
                     {
                         <form asp-action="Gelmedi" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                            <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Bu randevuyu \'Gelmedi\' olarak işaretlemek istediğinize emin misiniz? Bu işlem geri alınamaz.');">Gelmedi</button>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu randevuyu \'Gelmedi\' olarak işaretlemek istediğinize emin misiniz? Bu işlem geri alınamaz.');">Gelmedi</button>
                         </form>
                         <form asp-action="Iptal" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />

@@ -91,11 +91,12 @@ namespace HastaTakip.Web.Controllers
 
             return View(randevular);
         }
-        public IActionResult Takvim(short? doktorID, DateTime? tarih, string? hastaTC, DateTime? secilenGun)
+        public IActionResult Takvim(short? doktorID, DateTime? tarih, string? hastaTC, DateTime? secilenGun, int? randevuTarihID)
         {
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             ViewBag.SeciliDoktorID = doktorID;
             ViewBag.HastaTC = hastaTC;
+            ViewBag.RandevuTarihID = randevuTarihID;
 
             var baslangicTarih = tarih ?? DateTime.Today;
             ViewBag.BaslangicTarih = baslangicTarih;
@@ -121,12 +122,13 @@ namespace HastaTakip.Web.Controllers
                     secilenGun.Value.DayOfWeek != DayOfWeek.Saturday &&
                     secilenGun.Value.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    ViewBag.SecilenGun = secilenGun.Value;
+                    ViewBag.SecilenGun = secilenGun.Value; 
                     ViewBag.SecilenGunSlotlari =
                         _randevuBusiness.DoktorGunlukTakvimGetir(
                             doktorID.Value,
                             secilenGun.Value);
                 }
+                
 
                 //if (secilenGun.HasValue)
                 //{
@@ -320,7 +322,7 @@ namespace HastaTakip.Web.Controllers
             return kullanici?.DoktorID == doktorID;
         }
 
-        public IActionResult YenidenPlanla(int randevuTarihID)
+        public IActionResult YenidenPlanla(int randevuTarihID, short? yeniDoktorID = null, DateTime? yeniTarih = null, byte? yeniSaatID = null)
         {
             var randevu = _randevuBusiness.RandevuGetir(randevuTarihID);
             if (randevu == null) return NotFound();
@@ -341,6 +343,12 @@ namespace HastaTakip.Web.Controllers
             ViewBag.DoktorListesi = _doktorBusiness.DoktorListele();
             ViewBag.SaatListesi = _randevuSaatBusiness.SaatleriListele();
             ViewBag.Hasta = _hastaBusiness.HastaGetir(randevu.HastaTC);
+
+            // Takvimden geldiyse ön-seçili değerleri kullan, yoksa mevcut randevunun değerlerini
+            ViewBag.OnSeciliDoktorID = yeniDoktorID ?? randevu.DoktorID;
+            ViewBag.OnSeciliTarih = yeniTarih ?? randevu.RandevuTarih;
+            ViewBag.OnSeciliSaatID = yeniSaatID ?? randevu.SaatID;
+
             return View();
         }
 

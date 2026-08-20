@@ -122,7 +122,7 @@
                         @if (randevu.TestBaslangicZamani.HasValue)
                         {
                            
-                          <span class="badge bg-primary">Testte (@randevu.TestBaslangicZamani.Value.ToString("HH:mm"))</span>
+                          <span class="badge bg-warning">Testte (@randevu.TestBaslangicZamani.Value.ToString("HH:mm"))</span>
                              <form asp-action="Tamamlandi" method="post" class="d-inline ms-2">
                                 <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
                                 <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Bu randevuyu tamamlamak istediğinize emin misiniz? Bu işlem geri alınamaz.');">Tamamla</button>
@@ -163,7 +163,7 @@
                     {
                         <form asp-action="Gelmedi" method="post" class="d-inline">
                             <input type="hidden" name="randevuTarihID" value="@randevu.RandevuTarihID" />
-                            <button type="submit" class="btn btn-sm btn-warning"
+                            <button type="submit" class="btn btn-sm btn-danger"
                                     onclick="return confirm('Bu randevuyu \'Gelmedi\' olarak işaretlemek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
                                 Gelmedi
                             </button>
